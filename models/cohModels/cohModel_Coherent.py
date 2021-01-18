@@ -1,32 +1,47 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        Perfectly coherent
+# Purpose:     PyWolf's Coherence Model
 #
-# Author:      Tiago
+# Author:      Tiago E. C. Magalhaes
 #
-# Created:     24/01/2020
-# Copyright:   (c) Tiago 2020
-# Licence:     <your licence>
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
 
 
-#==============================================================================
-# Where do things come from?
-#==============================================================================
+#===============================================================================
+# Importing Packages
+#===============================================================================
+# PyOpenCL
 from pyopencl import *
-from pylab import *
 
+# NumPy
+from numpy import int32, double, float32, float, zeros
 from numpy import count_nonzero
+
+# import copy
 import copy
-#------------------------------------------------------------------------------
-#//////////////////////////////////////////////////////////////////////////////
-#------------------------------------------------------------------------------
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# Pre-requisites
+#===============================================================================
 
 cohModel_name = "Coherent"
 
 cohModel_parameters = []
 
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
+
+#===============================================================================
+# Coherece Model Function
+#===============================================================================
 def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug):
 
     user_interface.update_outputText("Starting Coherent model function...")
@@ -35,7 +50,7 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
     # parameters
     M = N/2
 
-    CL_incoh = None
+    CL_coh = None
 
     if parallel:
         #***********************************************************************
@@ -98,14 +113,13 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                     dataW_gpu_memory = Buffer(context, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=dataW)
 
                     # Running the program (kernel)
-                    CL_incoh.increase(queue,result.shape,None,result_gpu_memory,data_gpu_memory,dataW_gpu_memory,int32(N),int32(i1),int32(j1))
+                    CL_coh.increase(queue,result.shape,None,result_gpu_memory,data_gpu_memory,dataW_gpu_memory,int32(N),int32(i1),int32(j1))
 
                     #  Copying results to PCmemory
                     enqueue_copy(queue,result,result_gpu_memory)
 
                     # Copying results to matrices
                     W_main.real[i1,j1] = result
-
 
         user_interface.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
 
@@ -123,6 +137,9 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
 
 
     return W_main
-    #__________________________________________________________________________
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
 

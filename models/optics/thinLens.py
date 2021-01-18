@@ -1,34 +1,31 @@
-# -*- coding: utf-8 -*-
-#-----------------------------------------------------------------------------
-# Name:        Prop
-# Purpose:     PyProPCL
+#-------------------------------------------------------------------------------
+# Name:        Thin Lens
+# Purpose:     PyWolf's Optics Models
 #
-# Author:      Tiago Magalhaes
+# Author:      Tiago E. C. Magalhaes
 #
-# Created:     2017
-# Copyright:   (c) Tiago Magalhaes 2017
-# Licence:     IA
-#-----------------------------------------------------------------------------
-##
-##
-#==============================================================================
-# Importing Packages
-#==============================================================================
-from pyopencl import *
-from pylab import *
-import time
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
+#-------------------------------------------------------------------------------
 
 
-#------------------------------------------------------------------------------
-#//////////////////////////////////////////////////////////////////////////////
-#------------------------------------------------------------------------------
-###############################################################################
-###############################################################################
-###############################################################################
-#
-#
 #===============================================================================
-# PROPAGATION FROM SOURCE TO ENTRANCE PUPIL
+# Importing Packages
+#===============================================================================
+# PyOpenCL
+from pyopencl import *
+
+# Numpy
+from numpy import zeros, float32, int32, double, exp
+
+# Copy
+import copy
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# Pre-requisites
 #===============================================================================
 
 optics_messages = ""
@@ -37,7 +34,14 @@ optics_name = "Thin Lens"
 
 optics_parameters = ["focal length (m)"]
 
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
+
+#===============================================================================
+# Optics Model Function
+#===============================================================================
 def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,parallel,debug):
 
     C1 = w0/(2*parameters[0]*3e8)
@@ -69,10 +73,7 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
                                        const unsigned int j1,
                                        const double dlp,
                                        const double C1,
-                                       const double theta1,
-                                       const double w0,
-                                       const double ra,
-                                       const double As)
+                                       const double theta1)
                 {
                     int row= get_global_id(0);
                     int col = get_global_id(1);
@@ -91,7 +92,7 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
 
                     double r2_mag = r2_x*r2_x + r2_y*r2_y;
 
-                    double theta2 = -C1*r2_mag + (w0/3e8)*As*(r2_mag/ra)*(r2_mag/ra);
+                    double theta2 = -C1*r2_mag;
 
                     double total_theta = theta1 + theta2;
 
@@ -126,7 +127,7 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
                     r1_y=y1*dlp
                     r1_mag=(r1_x**2)+(r1_y**2)
 
-                    theta1 = C1*(r1_mag)-(w0/3e8)*As*(r1_mag/ra)**2
+                    theta1 = C1*(r1_mag)
 
                     import copy
 
@@ -150,7 +151,7 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
                     CL_qfunc.increase(queue,data_real.shape,None,result_real_gpu_memory,result_imag_gpu_memory,
                                        data_real_gpu_memory,data_imag_gpu_memory,
                                        int32(N),int32(M),int32(i1),int32(j1),double(dlp),
-                                       double(C1),double(theta1),double(w0),double(ra),double(As))
+                                       double(C1),double(theta1))
 
                     # Copying Result to PC memory
                     enqueue_copy(queue,result_real,result_real_gpu_memory)
@@ -207,3 +208,7 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
     else:
         user_interface.update_outputText("No need for q function multiplication: no phase values to add.")
         return W_main
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================

@@ -1,32 +1,44 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        Quasi-homogeneous Lasjunen-Saastamoinen
+# Purpose:     PyWolf's Coherence Model
 #
-# Author:      Tiago
+# Author:      Tiago E. C. Magalhaes
 #
-# Created:     24/01/2020
-# Copyright:   (c) Tiago 2020
-# Licence:     <your licence>
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
 
 
-#==============================================================================
-# Where do things come from?
-#==============================================================================
+#===============================================================================
+# Importing Packages
+#===============================================================================
+# PyOpenCL
 from pyopencl import *
-from pylab import *
-import copy
 
+# NumPy
+from numpy import int32, double, float32, float, zeros
 from numpy import count_nonzero
-#------------------------------------------------------------------------------
-#//////////////////////////////////////////////////////////////////////////////
-#------------------------------------------------------------------------------
 
+# import copy
+import copy
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# Pre-requisites
+#===============================================================================
 cohModel_name = "Quasi-homogeneous Lasjunen-Saastamoinen"
 
 cohModel_parameters = ["x0","y0","wc"]
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
 
+#===============================================================================
+# Coherece Model Function
+#===============================================================================
 def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug):
 
     user_interface.update_outputText("Starting Quasi-homogeneous Lasjunen-Saastamoinen model function...")
@@ -38,7 +50,6 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
     sigma=parameters[2]
 
     sigma=sigma**4
-
 
     try:
 
@@ -169,7 +180,6 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                             x2_n=x2-X0_x
                             y2_n=y2-X0_y
 
-
                             R2=x2_n**2+y2_n**2
 
                             rl=(R2-R1)**2
@@ -178,16 +188,14 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
 
                             W_main.real[i1,j1,i2,j2]=W_main.real[i1,j1,i2,j2]*miu
 
-
             user_interface.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
 
         return W_main
 
     except Exception as error:
         user_interface.update_outputTextSameLine(str(error))
-
-
-
-    #__________________________________________________________________________
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
 

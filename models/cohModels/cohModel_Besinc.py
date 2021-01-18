@@ -9,14 +9,21 @@
 
 
 #===============================================================================
-# Where do things come from?
+# Importing Packages
 #===============================================================================
+# PyOpenCL
 from pyopencl import *
-from pylab import *
+
+# NumPy
+from numpy import int32, double, float32, float, zeros
+from numpy import count_nonzero
+
+# import copy
 import copy
+
+# Special Functions
 from scipy.special import jv
 
-from numpy import count_nonzero
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
 #===============================================================================

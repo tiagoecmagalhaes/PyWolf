@@ -1,34 +1,50 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        Gaussian Schell-Model
+# Purpose:     PyWolf's Coherence Model
 #
-# Author:      Tiago
+# Author:      Tiago E. C. Magalhaes
 #
-# Created:     24/01/2020
-# Copyright:   (c) Tiago 2020
-# Licence:     <your licence>
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
 
 
-#==============================================================================
-# Where do things come from?
-#==============================================================================
+#===============================================================================
+# Importing Packages
+#===============================================================================
+# PyOpenCL
 from pyopencl import *
-from pylab import *
+
+# NumPy
+from numpy import int32, double, float32, float, zeros
+from numpy import count_nonzero
+
+# import copy
 import copy
+
+# import time
 import time
 
-from numpy import count_nonzero
-from numpy import exp
-#------------------------------------------------------------------------------
-#//////////////////////////////////////////////////////////////////////////////
-#------------------------------------------------------------------------------
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# Pre-requisites
+#===============================================================================
 
 cohModel_name = "Gaussian Schell-model"
 
 cohModel_parameters = ["Effective Coherence Length (a.u.):","Standard Deviation"]
 
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
+
+#===============================================================================
+# Coherece Model Function
+#===============================================================================
 def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug):
 
     user_interface.update_outputText("Starting Gaussian-Schell model function...")
@@ -169,11 +185,8 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
 
                             W_main.real[i1,j1,i2,j2]=W_main.real[i1,j1,i2,j2]*exp(-rl/sigma_mu)*exp(-r1/sigma_S)*exp(-r2/sigma_S)
 
-
-
             # printing
             user_interface.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
-
 
         # counting time
         end_time = time.time()
@@ -184,9 +197,8 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
 
     except Exception as error:
         user_interface.update_outputTextSameLine(str(error))
-
-
-
-    #__________________________________________________________________________
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
 

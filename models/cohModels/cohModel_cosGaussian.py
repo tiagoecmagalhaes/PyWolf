@@ -1,32 +1,47 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        Cosine-Gaussian
+# Purpose:     PyWolf's Coherence Model
 #
-# Author:      Tiago
+# Author:      Tiago E. C. Magalhaes
 #
-# Created:     24/01/2020
-# Copyright:   (c) Tiago 2020
-# Licence:     <your licence>
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
 
 
-#==============================================================================
-# Where do things come from?
-#==============================================================================
+#===============================================================================
+# Importing Packages
+#===============================================================================
+# PyOpenCL
 from pyopencl import *
-from pylab import *
+
+# NumPy
+from numpy import int32, double, float32, float, zeros, sqrt, pi, cos
+from numpy import count_nonzero
+
+# import copy
 import copy
 
-from numpy import count_nonzero
-#------------------------------------------------------------------------------
-#//////////////////////////////////////////////////////////////////////////////
-#------------------------------------------------------------------------------
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
-cohModel_name = "Cos Gaussian Schell-model"
+
+#===============================================================================
+# Pre-requisites
+#===============================================================================
+
+cohModel_name = "Cosine-Gaussian Schell-model"
 
 cohModel_parameters = ["Effective Coherence Length (a.u.):","n"]
 
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
+
+#===============================================================================
+# Coherece Model Function
+#===============================================================================
 def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug):
 
     user_interface.update_outputText("Starting Cosine Gaussian-Schell model function...")
@@ -34,7 +49,6 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
     sigma = 2*float(parameters[0]**2)
 
     K1 = parameters[1]*sqrt(2*pi)/sigma
-
 
     try:
 
@@ -168,8 +182,6 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                             else:
                                 W_main.real[i1,j1,i2,j2]=W_main.real[i1,j1,i2,j2]*exp(-rl/(2*sigma**2))*cos(K1*sqrt(2*pi)*rl/sigma)
 
-
-
             user_interface.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
 
         return W_main
@@ -177,8 +189,8 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
     except Exception as error:
         user_interface.update_outputTextSameLine(str(error))
 
-
-
-    #__________________________________________________________________________
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
 
