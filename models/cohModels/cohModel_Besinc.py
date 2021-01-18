@@ -1,50 +1,64 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        Besinc Model
+# Purpose:     PyWolf's Coherence Model
 #
-# Author:      Tiago
+# Author:      Tiago E. C. Magalhaes
 #
-# Created:     24/01/2020
-# Copyright:   (c) Tiago 2020
-# Licence:     <your licence>
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
 
 
-#==============================================================================
+#===============================================================================
 # Where do things come from?
-#==============================================================================
+#===============================================================================
 from pyopencl import *
 from pylab import *
 import copy
 from scipy.special import jv
 
 from numpy import count_nonzero
-#------------------------------------------------------------------------------
-#//////////////////////////////////////////////////////////////////////////////
-#------------------------------------------------------------------------------
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# Pre-requisites
+#===============================================================================
 
 cohModel_name = "Besinc"
 
 cohModel_parameters = ["Alpha (a.u.):"]
 
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
+
+#===============================================================================
+# Coherece Model Function
+#===============================================================================
 def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug):
 
+    # Update Text in PyWolf
     user_interface.update_outputText("Starting Besinc model function...")
 
+    # Parameter
     alpha = float(parameters[0])
 
     try:
-
-        # parameters
+        # useful parameters
         M = N/2
-
         CL_pcohGS = None
 
+        #***********************************************************************
+        # USING PyOpenCL
+        #***********************************************************************
+
         if parallel:
-            #*******************************************************************
+            #-------------------------------------------------------------------
             # PyOpenCL kernel function
-            #*******************************************************************
+            #-------------------------------------------------------------------
 
             # KERNEL: CODE EXECUTED ON THE GPU
             CL_pcohGS=Program(context,"""
@@ -111,10 +125,6 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                    ans = 1.0;
                    }
 
-
-
-
-
                     double data_const = (double) data[col + N*row ];
 
                     double final;
@@ -125,16 +135,12 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                     else {
                         final = zero;
                     }
-
-
-
                     res[col + N*row ]= (float) final;
-
-
                 }
             """).build()
             #___________________________________________________________________
 
+            # Update Text in PyWolf
             user_interface.update_outputText("PyOpenCl will be used. Starting Cycle...")
             user_interface.update_outputText("__")
 
@@ -174,10 +180,12 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                         # Copying results to matrices
                         W_main.real[i1,j1]=W_main.real[i1,j1]*result
 
-
             user_interface.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
 
-        # Without PyOpenCL
+
+        #***********************************************************************
+        # SEQUENTIAL COMPUTING
+        #***********************************************************************
         else:
             user_interface.update_outputText("PyOpenCl will NOT be used. Starting Cycle...")
             for i1 in range(0,N):
@@ -206,8 +214,6 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
 
                             W_main.real[i1,j1,i2,j2]=W_main.real[i1,j1,i2,j2]*y
 
-
-
             user_interface.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
 
     except Exception as error:
@@ -215,6 +221,8 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
 
 
     return W_main
-    #__________________________________________________________________________
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
 

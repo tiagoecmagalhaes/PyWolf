@@ -39,7 +39,7 @@ from fonts import *
 
 class Canvas_propSpec:
 
-    def __init__(self,ui,CSDM,CSDM_source,N):
+    def __init__(self,ui,CSDA,CSDA_source,N):
 
         # tab
         ui.list_of_tabs.append(QtWidgets.QWidget())  # ui.gridLayout_TabSourceImage
@@ -89,8 +89,8 @@ class Canvas_propSpec:
         self.N = N
 
         # W matrix
-        self.CSDM = CSDM
-        self.CSDM_source = CSDM_source
+        self.CSDA = CSDA
+        self.CSDA_source = CSDA_source
 
         # User interface
         self.ui = ui
@@ -139,11 +139,11 @@ class Canvas_propSpec:
         #=======================================================================
 
         # creating image prop
-        spectrum        = self.CSDM.spectrum/self.CSDM.spectrum.max()
-        source_spectrum = self.CSDM_source.spectrum/self.CSDM_source.spectrum.max()
+        spectrum        = self.CSDA.spectrum/self.CSDA.spectrum.max()
+        source_spectrum = self.CSDA_source.spectrum/self.CSDA_source.spectrum.max()
 
         # b array
-        b_array=self.CSDM.omega_array
+        b_array=self.CSDA.omega_array
 
         # PLOT magnitude
         self.im  = self.axes.plot(b_array,spectrum,marker="o",linewidth=1.0,label="Propagation Spectrum",color="blue")

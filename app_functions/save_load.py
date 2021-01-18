@@ -4,11 +4,8 @@
 #
 # Author:      Tiago E. C. Magalhaes
 #
-# Created:     10/01/2021
-# Copyright:   (c) Tiago 2021
-# Licence:     <your licence>
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
-
 
 
 #===============================================================================
@@ -33,8 +30,8 @@ def save_project_file2(ui,dirName):
         except:
             txt+="None\n"
         txt+= str(ui.checkBox_save.isChecked()) + "\n"                          # 7: Save Results
-        txt+= str(ui.checkBox_saveSourceCSDM.isChecked()) + "\n"                # 8: Save Source CSDM
-        txt+= str(ui.checkBox_savePropCSDM.isChecked()) + "\n"                  # 9: Save Prop CSDM
+        txt+= str(ui.checkBox_saveSourceCSDA.isChecked()) + "\n"                # 8: Save Source CSDA
+        txt+= str(ui.checkBox_savePropCSDA.isChecked()) + "\n"                  # 9: Save Prop CSDA
         txt+= str(ui.lineEdit_saveFiles.text()) + "\n"                          # 10: Save Directory
         txt+= str(ui.checkBox_debug.isChecked()) + "\n"                         # 11: Debug
         txt+= ui.lineEdit_N.text()+"\n"                                         # 12: Matrix Size
@@ -57,8 +54,8 @@ def save_project_file2(ui,dirName):
         txt+= ui.lineEdit_sourceRes.text() + "\n"                                # 21: Spatial Resolution
         txt+= str(ui.checkBox_geoFromFile.isChecked()) + "\n"                    # 22: Load Geometry (bolean)
         txt+= ui.lineEdit_dirGeoMatrix.text() + "\n"                             # 23: Load Geometry Directory
-        txt+= str(ui.checkBox_CSDMFromFile.isChecked()) + "\n"                   # 24: Load Source CSDM (bolean)
-        txt+= ui.lineEdit_dirCSDMmatrix.text() + "\n"                            # 25: Load Source CSDM Directory
+        txt+= str(ui.checkBox_CSDAFromFile.isChecked()) + "\n"                   # 24: Load Source CSDA (bolean)
+        txt+= ui.lineEdit_dirCSDAmatrix.text() + "\n"                            # 25: Load Source CSDA Directory
         txt+= ui.geometry_list[ui.comboBox_geometry.currentIndex()][0] + "\n"    # 26: Geometry Model
 
         # 27: Geometry Parameters
@@ -156,10 +153,14 @@ def save_project_file2(ui,dirName):
                 txt+= "None" + "\t"
         txt+="\n"
 
+        # 42
+        txt+="?"+str(ui.plainTextEdit.toPlainText())
+        txt+="\n"
+
         # writing file
         file.write(txt)
         file.close()
-        ui.update_outputText("[Info] Project has been saved in "+dirName+"/"+str(ui.lineEdit_simName.text())+".wolf")
+        ui.update_outputText("[Info] Project has been saved in "+dirName)
 
     except Exception as error:
         ui.update_outputText("[Error] "+str(error))
@@ -230,6 +231,9 @@ def load_project_file2(ui,dirProj):
                 sub_list = []
                 actual = ""
 
+            elif text[i]=="?":
+                ui.final_list.append([text[i+1:-1]])
+
             elif text[i]=="\n":
                 if one_state == True:
                     ui.final_list.append(one_list)
@@ -297,17 +301,17 @@ def load_project_file2(ui,dirProj):
         else:
             ui.checkBox_save.setChecked(False)
 
-        ## Save Source CSDM
+        ## Save Source CSDA
         if ui.final_list[7] == "True":
-            ui.checkBox_saveSourceCSDM.setChecked(True)
+            ui.checkBox_saveSourceCSDA.setChecked(True)
         else:
-            ui.checkBox_saveSourceCSDM.setChecked(False)
+            ui.checkBox_saveSourceCSDA.setChecked(False)
 
-        ## Save Prop CSDM
+        ## Save Prop CSDA
         if ui.final_list[8] == "True":
-            ui.checkBox_savePropCSDM.setChecked(True)
+            ui.checkBox_savePropCSDA.setChecked(True)
         else:
-            ui.checkBox_savePropCSDM.setChecked(False)
+            ui.checkBox_savePropCSDA.setChecked(False)
 
         ## Save Directory
         ui.lineEdit_saveFiles.setText(ui.final_list[9])
@@ -379,15 +383,15 @@ def load_project_file2(ui,dirProj):
         if ui.final_list[21] == "True":
             ui.lineEdit_dirGeoMatrix.setText(ui.final_list[22])
 
-        ## Load CSDM geometry (boolean)
+        ## Load CSDA geometry (boolean)
         if ui.final_list[23] == "True":
-            ui.checkBox_CSDMFromFile.setChecked(True)
+            ui.checkBox_CSDAFromFile.setChecked(True)
         else:
-            ui.checkBox_CSDMFromFile.setChecked(False)
+            ui.checkBox_CSDAFromFile.setChecked(False)
 
-        ## Load Source CSDM
+        ## Load Source CSDA
         if ui.final_list[23] == "True":
-            ui.lineEdit_dirCSDMmatrix.setText(ui.final_list[24])
+            ui.lineEdit_dirCSDAmatrix.setText(ui.final_list[24])
 
         ## Source Geometry Model
         geoModel_num = 0
@@ -492,6 +496,9 @@ def load_project_file2(ui,dirProj):
         #///////////////////////////////////////////////////////////////////////
         #-----------------------------------------------------------------------
 
+        ## Comments
+        ui.plainTextEdit.setPlainText(str(ui.final_list[-1]))
+
         ui.update_outputText("Project loaded!")
 
     except Exception as error:
@@ -508,40 +515,40 @@ def load_project_file2(ui,dirProj):
 def save_results_file2(ui,dirName,spec=False):
     try:
         # Source image
-        save(dirName+"\\source_image",ui.CSDM_source.image)
-        ui.update_outputText("[Info] Source image saved in "+str(dirName)+"/CSDM_source_image.npy")
+        save(dirName+"\\source_image",ui.CSDA_source.image)
+        ui.update_outputText("[Info] Source image saved in "+str(dirName)+"/CSDA_source_image.npy")
 
         # Propagated image
-        save(dirName+"\\prop_image",ui.CSDM_prop.image)
-        ui.update_outputText("[Info] Propagation image saved in "+str(dirName)+"/CSDM_prop_image.npy")
+        save(dirName+"\\prop_image",ui.CSDA_prop.image)
+        ui.update_outputText("[Info] Propagation image saved in "+str(dirName)+"/CSDA_prop_image.npy")
 
         # Source SDC
         save(dirName+"\\sourceSDC_mag",ui.canvasSourceSDC.propSDC_mag)
         ui.update_outputText("[Info] Source 2D SDC magnitude saved in "+str(dirName)+"/source2dSDC_mag.npy")
         save(dirName+"\\sourceSDC_phase",ui.canvasSourceSDC.propSDC_phase)
-        ui.update_outputText("[Info] Source SDC Phase saved in "+str(dirName)+"/CSDM_source2dSDC_phase.npy")
+        ui.update_outputText("[Info] Source SDC Phase saved in "+str(dirName)+"/CSDA_source2dSDC_phase.npy")
 
         # Propagated SDC
         save(dirName+"\\sourceSDC_mag",ui.canvasPropSDC.propSDC_mag)
         ui.update_outputText("[Info] Source 2D SDC magnitude saved in "+str(dirName)+"/source2dSDC_mag.npy")
         save(dirName+"\\sourceSDC_phase",ui.canvasPropSDC.propSDC_phase)
-        ui.update_outputText("[Info] Source SDC Phase saved in "+str(dirName)+"/CSDM_source2dSDC_phase.npy")
+        ui.update_outputText("[Info] Source SDC Phase saved in "+str(dirName)+"/CSDA_source2dSDC_phase.npy")
 
         # Source 2D SDC
         save(dirName+"\\source2dSDC_mag",ui.canvasSourceSDC2d.SDC2D_mag)
         ui.update_outputText("[Info] Source 2D SDC magnitude saved in "+str(dirName)+"/source2dSDC_mag.npy")
         save(dirName+"\\source2dSDC_phase",ui.canvasSourceSDC2d.SDC2D_phase)
-        ui.update_outputText("[Info] Source 2D SDC Phase saved in "+str(dirName)+"/CSDM_source2dSDC_phase.npy")
+        ui.update_outputText("[Info] Source 2D SDC Phase saved in "+str(dirName)+"/CSDA_source2dSDC_phase.npy")
 
         # Propagated 2D SDC
         save(dirName+"\\prop2dSDC_real",ui.canvasProp2D_SDC.SDC2D_real)
-        ui.update_outputText("[Info] Propagation 2D SDC real saved in "+str(dirName)+"/CSDM_propSDC2D_real.npy")
+        ui.update_outputText("[Info] Propagation 2D SDC real saved in "+str(dirName)+"/CSDA_propSDC2D_real.npy")
         save(dirName+"\\prop2dSDC_imag",ui.canvasProp2D_SDC.SDC2D_imag)
-        ui.update_outputText("[Info] Propagation 2D SDC imaginary saved in "+str(dirName)+"/CSDM_propSDC2D_imag.npy")
+        ui.update_outputText("[Info] Propagation 2D SDC imaginary saved in "+str(dirName)+"/CSDA_propSDC2D_imag.npy")
         save(dirName+"\\prop2dSDC_mag",ui.canvasProp2D_SDC.SDC2D_mag)
-        ui.update_outputText("[Info] Propagation 2D SDC magnitude saved in "+str(dirName)+"/CSDM_propSDC2D_mag.npy")
+        ui.update_outputText("[Info] Propagation 2D SDC magnitude saved in "+str(dirName)+"/CSDA_propSDC2D_mag.npy")
         save(dirName+"\\prop2dSDC_phase",ui.canvasProp2D_SDC.SDC2D_phase)
-        ui.update_outputText("[Info] Propagation 2D SDC Phase saved in "+str(dirName)+"/CSDM_propSDC2D_phase.npy")
+        ui.update_outputText("[Info] Propagation 2D SDC Phase saved in "+str(dirName)+"/CSDA_propSDC2D_phase.npy")
 
         # SDC source x-array
         save(dirName+"\\x_array_source",ui.canvasSourceSDC.b_array)
@@ -586,19 +593,19 @@ def save_results_file2(ui,dirName,spec=False):
         if spec:
 
             # Source Spectrum
-            save(dirName+"\\sourceSpectrum",ui.CSDM_source.spectrum)
+            save(dirName+"\\sourceSpectrum",ui.CSDA_source.spectrum)
             ui.update_outputText("[Info] Source Spectrum saved in "+str(dirName)+"/sourceSpectrum.npy")
 
             # Propagation Spectrum
-            save(dirName+"\\propSpectrum",ui.CSDM_prop.spectrum)
+            save(dirName+"\\propSpectrum",ui.CSDA_prop.spectrum)
             ui.update_outputText("[Info] Propagation Spectrum saved in "+str(dirName)+"/propSpectrum.npy")
 
             # Angular Frequency Array
-            save(dirName+"\\omega_array",ui.CSDM_prop.omega_array)
+            save(dirName+"\\omega_array",ui.CSDA_prop.omega_array)
             ui.update_outputText("[Info] Angular frequency array saved in "+str(dirName)+"/omega_array.npy")
 
             # Ciii Array
-            save(dirName+"\\C4ir",ui.CSDM_prop.Ciiii_real)
+            save(dirName+"\\C4ir",ui.CSDA_prop.Ciiii_real)
             ui.update_outputText("[Info]C4ir array saved in "+str(dirName)+"/C4ir.npy")
 
         # Save log file

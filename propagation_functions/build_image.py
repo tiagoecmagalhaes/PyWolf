@@ -1,28 +1,32 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        Build source image from file
+# Purpose:     PyWolf's function to build seource geometry from file
 #
-# Author:      Tiago
+# Author:      Tiago E. C. Magalhaes
 #
-# Created:     24/01/2020
-# Copyright:   (c) Tiago 2020
-# Licence:     <your licence>
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
 
 
-#==============================================================================
-# Where do things come from?
-#==============================================================================
+#===============================================================================
+# Importing Packages
+#===============================================================================
+# PyOpenCL
 from pyopencl import *
-from pylab import *
 
-from numpy import *
-#------------------------------------------------------------------------------
-#//////////////////////////////////////////////////////////////////////////////
-#------------------------------------------------------------------------------
+# NumPy
+from numpy import float32, int32, double, zeros
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
 
-def buildCSDMimage(ui,context,queue,W_temp,N,image_array,parallel,debug):
+#===============================================================================
+# Build image function
+#===============================================================================
+
+def buildCSDAimage(ui,context,queue,W_temp,N,image_array,parallel,debug):
 
     ui.update_outputText("Starting function (image from file)...")
 
@@ -103,14 +107,21 @@ def buildCSDMimage(ui,context,queue,W_temp,N,image_array,parallel,debug):
         ui.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
 
     if debug:
+        from matplotlib import pyplot
+
         temp_image = zeros((N,N)).astype(float32)
         for i in range(0,N):
             for j in range(0,N):
                 temp_image[i,j] = W_temp[i,j,i,j].real
 
-        figure()
-        pcolormesh(temp_image)
-        colorbar()
-        show()
+        pyplot.figure()
+        pyplot.title("Source Image from <build_image.py>")
+        pyplot.pcolormesh(temp_image)
+        pyplot.colorbar()
+        pyplot.show()
 
     return W_temp
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================

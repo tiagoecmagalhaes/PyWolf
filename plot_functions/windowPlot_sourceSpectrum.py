@@ -39,7 +39,7 @@ from fonts import *
 
 class Canvas_sourceSpec:
 
-    def __init__(self,ui,CSDM,N):
+    def __init__(self,ui,CSDA,N):
 
         # tab
         ui.list_of_tabs.append(QtWidgets.QWidget())  # ui.gridLayout_TabSourceImage
@@ -89,7 +89,7 @@ class Canvas_sourceSpec:
         self.N = N
 
         # W matrix
-        self.CSDM = CSDM
+        self.CSDA = CSDA
 
         # User interface
         self.ui = ui
@@ -138,10 +138,10 @@ class Canvas_sourceSpec:
         #=======================================================================
 
         # creating image prop
-        spectrum   = self.CSDM.spectrum
+        spectrum   = self.CSDA.spectrum
 
         # b array
-        b_array=self.CSDM.omega_array
+        b_array=self.CSDA.omega_array
 
         # PLOT magnitude
         self.im = self.axes.plot(b_array,spectrum,marker="o",linewidth=1.0,label="Source Spectrum")

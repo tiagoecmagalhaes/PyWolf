@@ -92,7 +92,7 @@ class Canvas_sourceSpecPreview:
         self.N = N
 
         # W matrix
-        #self.CSDM = CSDM
+        #self.CSDA = CSDA
 
         # User interface
         self.ui = ui
@@ -157,10 +157,10 @@ class Canvas_sourceSpecPreview:
         omega_array = result[0]
 
         # creating image prop
-        spectrum   = result[1] #self.CSDM.spectrum
+        spectrum   = result[1] #self.CSDA.spectrum
 
         # b array
-        b_array=omega_array    #self.CSDM.omega_array
+        b_array=omega_array    #self.CSDA.omega_array
 
         # PLOT magnitude
         self.im = self.axes.plot(b_array,spectrum,marker="o",linewidth=1.0,label="Source Spectrum")

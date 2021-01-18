@@ -1,21 +1,37 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        TestPars
+# Purpose:     PyWolf's function to test input parameters
 #
-# Author:      Tiago
+# Author:      Tiago E. C. Magalhaes
 #
-# Created:     25/01/2020
-# Copyright:   (c) Tiago 2020
-# Licence:     <your licence>
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
 
+
+#===============================================================================
+# Importing Packages
+#===============================================================================
+# NumPy
 from numpy import pi
 
+# Time
 import time
 from datetime import datetime
+
+# os
 import os
+
+# PyQT5
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# FUNCTION TEST PARAMETERS
+#===============================================================================
 def func_testPars(ui):
 
     #===========================================================================
@@ -26,10 +42,10 @@ def func_testPars(ui):
     # options
     nameTime_list = [ui.lineEdit_simName.text(),ui.give_time()]
     pyopencl_list = [ui.checkBox_pyopencl.isChecked(),ui.comboBox_platform.currentIndex(),ui.comboBox_device.currentIndex()]
-    save_list     = [ui.checkBox_save.isChecked(),ui.saveDirName,ui.checkBox_saveSourceCSDM.isChecked(),ui.checkBox_savePropCSDM.isChecked()]
+    save_list     = [ui.checkBox_save.isChecked(),ui.saveDirName,ui.checkBox_saveSourceCSDA.isChecked(),ui.checkBox_savePropCSDA.isChecked()]
     debug_list    = [ui.checkBox_debug.isChecked()]
     matrix_list   = [ui.lineEdit_N.text(),ui.checkBox_FFT.isChecked(), ui.lineEdit_NZ.text()]
-    schedule      = [ui.checkBox_schedule.isChecked(),ui.dateTimeEdit.text()]
+    ##schedule      = [ui.checkBox_schedule.isChecked(),ui.dateTimeEdit.text()]
     options_list  = [nameTime_list, pyopencl_list,save_list,debug_list,matrix_list]
 
     # propagation quantity
@@ -50,7 +66,7 @@ def func_testPars(ui):
     #---------------------------------------------------------------------------
     source_res      = ui.lineEdit_sourceRes.text()
 
-    file_list       = [ui.checkBox_geoFromFile.isChecked(), ui.lineEdit_dirGeoMatrix.text(), ui.checkBox_CSDMFromFile.isChecked(), ui.lineEdit_dirCSDMmatrix.text()]
+    file_list       = [ui.checkBox_geoFromFile.isChecked(), ui.lineEdit_dirGeoMatrix.text(), ui.checkBox_CSDAFromFile.isChecked(), ui.lineEdit_dirCSDAmatrix.text()]
 
     #--> Coherence
     chosen_geometry = ui.comboBox_geometry.currentIndex()
@@ -192,12 +208,12 @@ def func_testPars(ui):
     #---------------------------------------------------------------------------
     # Creating Directory
     #---------------------------------------------------------------------------
-    try:
-        add_directory="\\"+"results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
-        "_"+str(time_now.hour)+"h"+minutes+"_"+nameTime_list[0]
-    except:
-        add_directory="\\"+"results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
-        "_"+str(time_now.hour)+"h"+minutes
+    ##try:
+        ##add_directory="\\"+"results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
+        ##"_"+str(time_now.hour)+"h"+minutes+"_"+nameTime_list[0]
+    ##except:
+        ##add_directory="\\"+"results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
+        ##"_"+str(time_now.hour)+"h"+minutes
     #---------------------------------------------------------------------------
 
     if options_list[2][0]:
@@ -306,10 +322,10 @@ def func_testPars(ui):
         return([False,all_parameters_list])
 
     #---------------------------------------------------------------------------
-    # No geometry or CSDM is pre-loaded
+    # No geometry or CSDA is pre-loaded
     #---------------------------------------------------------------------------
     if not file_list[0] and not file_list[2]:
-        ui.update_outputText("No geometry or CSDM is pre-loaded.")
+        ui.update_outputText("No geometry or CSDA is pre-loaded.")
 
         # testing geometrical model parameters
         for i in range(0,len(geoPars_list)):
@@ -358,8 +374,7 @@ def func_testPars(ui):
 
 
     elif file_list[0] and not file_list[2]:
-        ui.update_outputText("Geometry pre-loaded.")
-        ui.update_outputText(str(len(cohPars_list)))
+        ##ui.update_outputText("Geometry pre-loaded.")
 
         # testing source coherence model parameters
         for i in range(0,len(cohPars_list)):
@@ -376,7 +391,7 @@ def func_testPars(ui):
                 return([False,all_parameters_list])
 
     else:
-        ui.update_outputText("CSDM is pre-loaded.")
+        ui.update_outputText("CSDA is pre-loaded.")
 
     """
     elif file_list[0] and not file_list[2]:
@@ -457,4 +472,6 @@ def func_testPars(ui):
     #print(return_list)
     return return_list
 
-
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================

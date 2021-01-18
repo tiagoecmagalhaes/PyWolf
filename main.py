@@ -110,6 +110,11 @@ class Ui_MainWindow(QMainWindow):
 
         # directories
         self.dir_examples = None
+
+        # resize
+        #self.resized.connect(self.update_resize)
+        #self.resizeEvent(self.update_resize)
+
         #=======================================================================
         #///////////////////////////////////////////////////////////////////////
         #=======================================================================
@@ -212,19 +217,22 @@ class Ui_MainWindow(QMainWindow):
         self.scrollArea_messages.setPalette(palette_messageArea)
         self.scrollArea_messages.setWidgetResizable(True)
         self.scrollArea_messages.setObjectName("scrollArea_messages")
+        ##*self.scrollArea_messages.setMaximumHeight(2*rect.height()/10)
 
         # Size
-        ##self.scrollArea_messages.setMaximumHeight(self.rect.height()/3)
-        ##self.scrollArea_messages.setMaximumHeight(int(rect.height()*0.30))
+        percentage = 0.22
+        self.scrollArea_messages.setMaximumHeight(int(MainWindow.frameGeometry().height())*percentage)
 
         # Scroll Area Message
         self.scrollAreaWidgetContents_messages = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_messages.setGeometry(QtCore.QRect(0, 0, 465, 490))
         self.scrollAreaWidgetContents_messages.setObjectName("scrollAreaWidgetContents_9")
 
         # Creating gridLayout in Scroll Area
         self.gridLayout_messages = QtWidgets.QGridLayout(self.scrollAreaWidgetContents_messages)
         self.gridLayout_messages.setObjectName("gridLayout_messages")
+
+        # Adding Scroll Area Messages do Project
+        self.gridLayout_project.addWidget(self.scrollArea_messages, 0, 2, 1, 1)
 
         # scrollArea_messages -> scrollAreaWidgetContents_messages -> gridLayout_messages
         #=======================================================================
@@ -240,7 +248,8 @@ class Ui_MainWindow(QMainWindow):
         # Creating text browser
         self.textBrowser = QtWidgets.QTextBrowser(self.scrollAreaWidgetContents_messages)
         self.textBrowser.setPalette(palette_outputText)
-        self.textBrowser.setMinimumHeight(2*rect.height()/12)
+        ##*self.textBrowser.setMinimumHeight(2*rect.height()/14)
+        ##*self.textBrowser.setMaximumHeight(2*rect.height()/12.5)
 
         # adding font
         self.textBrowser.setFont(font_outText)
@@ -260,25 +269,24 @@ class Ui_MainWindow(QMainWindow):
         # Adding Messages to Project Layout
         #=======================================================================
         # creatins spacers
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        ##spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        ##spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
 
         # adding spacer to gridLayout messages
-        self.gridLayout_messages.addItem(spacerItem2, 2, 0, 1, 1)
+        ##self.gridLayout_messages.addItem(spacerItem2, 2, 0, 1, 1)
 
         # set <scrollAreaWidgetContents_messages> to <scrollArea_messages>
         self.scrollArea_messages.setWidget(self.scrollAreaWidgetContents_messages)
 
         # adding things to gridLayout project
-        self.gridLayout_project.addWidget(self.scrollArea_messages, 0, 2, 1, 1)
-        self.gridLayout_project.addItem(spacerItem3, 0, 1, 1, 1)
+        ##self.gridLayout_project.addItem(spacerItem3, 0, 1, 1, 1)
         #=======================================================================
         #///////////////////////////////////////////////////////////////////////
         #=======================================================================
 
 
         #=======================================================================
-        # Matplotlib Scroll area Color palette
+        # Matplotlib Scroll Area Color Palette
         #=======================================================================
         stylesheet_pywolf = """
 
@@ -293,14 +301,11 @@ class Ui_MainWindow(QMainWindow):
 
         # Customizing
         self.scrollArea_matplot.setPalette(palette_matplotScroll)
-        self.scrollArea_matplot.setMaximumHeight(int(self.rect.height()*0.70))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.scrollArea_matplot.setWidgetResizable(True)
         self.scrollArea_matplot.setObjectName("scrollArea_matplot")
 
         # Creating Widget
         self.scrollAreaWidgetContents_plots = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_plots.setGeometry(QtCore.QRect(0, 0, 444, 248))
         self.scrollAreaWidgetContents_plots.setObjectName("scrollAreaWidgetContents_plots")
 
         # Setting Widget to scrollArea_matplot
@@ -311,7 +316,8 @@ class Ui_MainWindow(QMainWindow):
         self.gridLayout_matplot.setObjectName("gridLayout_matplot")
 
         # Adding Grid Layout
-        self.gridLayout_project.addWidget(self.scrollArea_matplot, 1, 2, 1, 1)
+        self.gridLayout_project.addWidget(self.scrollArea_matplot, 1, 2, 4, 1)
+
         #=======================================================================
         #///////////////////////////////////////////////////////////////////////
         #=======================================================================
@@ -329,11 +335,11 @@ class Ui_MainWindow(QMainWindow):
         # Customizing
         self.tabWidget_plots.setPalette(palette_TabPlots)
         self.tabWidget_plots.setObjectName("tabWidget_plots")
-        self.tabWidget_plots.setMinimumHeight(2*self.rect.height()/3)
+        #self.tabWidget_plots.setMinimumHeight(2*self.rect.height()/3)
         self.tabWidget_plots.setFont(font_semititle)
 
         # adding tabWidget plots to gridlayout matplot
-        self.gridLayout_matplot.addWidget(self.tabWidget_plots, 10,0,1,3)
+        self.gridLayout_matplot.addWidget(self.tabWidget_plots, 10,0,20,20)
 
         self.tabWidget_plots.setStyleSheet(stylesheet_pywolf)
         #=======================================================================
@@ -358,7 +364,6 @@ class Ui_MainWindow(QMainWindow):
         #=======================================================================
         # Scroll Area Section Parameters
         #=======================================================================
-
         # Scroll Area section parameters - Creation
         self.scrollArea_sectionParams = QtWidgets.QScrollArea(self.groupBox_project)
 
@@ -503,7 +508,7 @@ class Ui_MainWindow(QMainWindow):
 
 
         #=======================================================================
-        # Scroll Area CSDM from file
+        # Scroll Area CSDA from file
         #=======================================================================
         self.scrollArea_fromFile = QtWidgets.QScrollArea(self.scrollAreaWidgetContents_numPlanes)
         self.scrollArea_fromFile.setWidgetResizable(True)
@@ -670,12 +675,14 @@ class Ui_MainWindow(QMainWindow):
         #=======================================================================
         # date time widget
         #=======================================================================
+        """
         self.dateTimeEdit = QtWidgets.QDateTimeEdit(self.scrollAreaWidgetContents_numPlanes)
         self.dateTimeEdit.setFont(font_normalLabel)
         self.dateTimeEdit.setObjectName("dateTimeEdit")
         self.gridLayout_7.addWidget(self.dateTimeEdit, 85, 0, 1, 2)
         self.dateTimeEdit.setMaximumWidth(size_schedule(self))
         self.dateTimeEdit.setDateTime(QtCore.QDateTime.currentDateTime())
+        """
         #=======================================================================
         #///////////////////////////////////////////////////////////////////////
         #=======================================================================
@@ -691,7 +698,7 @@ class Ui_MainWindow(QMainWindow):
         # directories
         self.dirName       = None  # saved results directory
         self.dirSourceGeo  = None  # directory with source image
-        self.dirSourceCSDM  = None # directory with source CSDM
+        self.dirSourceCSDA  = None # directory with source CSDA
 
         # present time
         self.nowTime = datetime.now()
@@ -821,10 +828,10 @@ class Ui_MainWindow(QMainWindow):
         self.bar = "------------------------------------------------"
 
         # label simulation name
-        self.label = QtWidgets.QLabel(self.scrollAreaWidgetContents_numPlanes)
-        self.label.setFont(font_normalLabel)
-        self.label.setObjectName("label")
-        self.gridLayout_7.addWidget(self.label, 1, 0, 1, 1)
+        self.label_projName = QtWidgets.QLabel(self.scrollAreaWidgetContents_numPlanes)
+        self.label_projName.setFont(font_normalLabel)
+        self.label_projName.setObjectName("label")
+        self.gridLayout_7.addWidget(self.label_projName, 0, 0, 1, 1)
 
         # label computational parameters (title)
         self.label_comParams = QtWidgets.QLabel(self.scrollAreaWidgetContents_numPlanes)
@@ -1001,6 +1008,7 @@ class Ui_MainWindow(QMainWindow):
         for i in range(0,self.max_numPlanes):
             self.optDeviceFunc_labelParameters.append([])
 
+        """
         # label Start Simulation
         self.label_startSim = QtWidgets.QLabel(self.scrollAreaWidgetContents_numPlanes)
         self.label_startSim.setPalette(palette_titles)
@@ -1008,6 +1016,7 @@ class Ui_MainWindow(QMainWindow):
         self.label_startSim.setAlignment(QtCore.Qt.AlignCenter)
         self.label_startSim.setObjectName("label_2")
         self.gridLayout_7.addWidget(self.label_startSim, 74, 0, 1, 2)
+        """
 
         # Label Insert Comments
         self.label_insertComments = QtWidgets.QLabel(self.scrollAreaWidgetContents_textBox)
@@ -1113,6 +1122,7 @@ class Ui_MainWindow(QMainWindow):
         self.line_propSys2.setStyleSheet('background: '+colortxt_hor_line)
         self.gridLayout_7.addWidget(self.line_propSys2, 62, 0, 1, 3)
 
+        """
         # horizontal line start sim 1
         self.line = QtWidgets.QFrame(self.scrollAreaWidgetContents_numPlanes)
         self.line.setLineWidth(2)
@@ -1130,6 +1140,7 @@ class Ui_MainWindow(QMainWindow):
         self.line_2.setObjectName("line_startSim2")
         self.line_2.setStyleSheet('background: '+colortxt_hor_line)
         self.gridLayout_7.addWidget(self.line_2, 75, 0, 1, 3)
+        """
         #=======================================================================
         #///////////////////////////////////////////////////////////////////////
         #=======================================================================
@@ -1139,9 +1150,13 @@ class Ui_MainWindow(QMainWindow):
         # Spaces
         #=======================================================================
 
+        # space 5
+        ##spacerItem0 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        ##self.gridLayout_7.addItem(spacerItem0, 3, 0, 1, 2)
+
         # space 4
-        #spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        #self.gridLayout_7.addItem(spacerItem4, 52, 0, 1, 2)
+        ##spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        ##self.gridLayout_7.addItem(spacerItem4, 52, 0, 1, 2)
 
         # space 5
         spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -1206,7 +1221,7 @@ class Ui_MainWindow(QMainWindow):
         self.lineEdit_simName.setFont(font_normalLabel)
         self.lineEdit_simName.setObjectName("lineEdit_2")
         self.lineEdit_simName.setStyleSheet('background: '+colortxt_textEdit)
-        self.gridLayout_7.addWidget(self.lineEdit_simName, 1, 1, 1, 1)
+        self.gridLayout_7.addWidget(self.lineEdit_simName, 0, 1, 1, 1)
         # setting size
         self.lineEdit_simName.setMaximumWidth(self.minwidth_combo)
         #self.lineEdit_simName.actionEvent()
@@ -1238,17 +1253,17 @@ class Ui_MainWindow(QMainWindow):
         # setting size
         self.lineEdit_dirGeoMatrix.setMaximumWidth(self.minwidth_combo)
 
-        # line open CSDM matrix source
-        self.lineEdit_dirCSDMmatrix = QtWidgets.QLineEdit(self.scrollAreaWidgetContents_fromFile)
-        self.lineEdit_dirCSDMmatrix.setFont(font_normalLabel)
-        self.lineEdit_dirCSDMmatrix.setObjectName("dirCSDMmatrix")
-        self.lineEdit_dirCSDMmatrix.setStyleSheet('background: '+colortxt_textEdit)
-        self.gridLayout_fromFile.addWidget(self.lineEdit_dirCSDMmatrix, 2, 1, 1, 1)
-        self.lineEdit_dirCSDMmatrix.setText(results_directory)
+        # line open CSDA matrix source
+        self.lineEdit_dirCSDAmatrix = QtWidgets.QLineEdit(self.scrollAreaWidgetContents_fromFile)
+        self.lineEdit_dirCSDAmatrix.setFont(font_normalLabel)
+        self.lineEdit_dirCSDAmatrix.setObjectName("dirCSDAmatrix")
+        self.lineEdit_dirCSDAmatrix.setStyleSheet('background: '+colortxt_textEdit)
+        self.gridLayout_fromFile.addWidget(self.lineEdit_dirCSDAmatrix, 2, 1, 1, 1)
+        self.lineEdit_dirCSDAmatrix.setText(results_directory)
         # start at the line 0:
-        self.lineEdit_dirCSDMmatrix.setCursorPosition(0)
+        self.lineEdit_dirCSDAmatrix.setCursorPosition(0)
         # setting size
-        self.lineEdit_dirCSDMmatrix.setMaximumWidth(self.minwidth_combo)
+        self.lineEdit_dirCSDAmatrix.setMaximumWidth(self.minwidth_combo)
 
         # text edit Angle
         self.lineEdit_theta = QtWidgets.QLineEdit(self.scrollAreaWidgetContents_propQuantity)
@@ -1360,7 +1375,7 @@ class Ui_MainWindow(QMainWindow):
         self.comboBox_propQuant.setObjectName("comboBox_propQuant")
         self.gridLayout_propQuantity.addWidget(self.comboBox_propQuant, 0, 1, 1, 1)
         self.comboBox_propQuant.addItem("Degree of coherence",1)
-        self.comboBox_propQuant.addItem("Spectrum",2)
+        ##self.comboBox_propQuant.addItem("Spectrum",2)
         # setting size
         #self.comboBox_propQuant.setMaximumWidth(self.minwidth_combo)
         """
@@ -1468,7 +1483,7 @@ class Ui_MainWindow(QMainWindow):
         spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_7.addItem(spacerItem7, 41, 0, 1, 2)
         spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_7.addItem(spacerItem8, 2, 0, 1, 2)
+        ##self.gridLayout_7.addItem(spacerItem8, 2, 0, 1, 2)
         # setting checked by default
         self.checkBox_pyopencl.setChecked(True)
 
@@ -1488,17 +1503,17 @@ class Ui_MainWindow(QMainWindow):
         self.gridLayout_save.addWidget(self.checkBox_save, 0, 0, 1, 1)
         self.checkBox_save.setChecked(False)
 
-        # checkbox save source CSDM
-        self.checkBox_saveSourceCSDM = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_save)
-        self.checkBox_saveSourceCSDM.setFont(font_normalLabel)
-        self.checkBox_saveSourceCSDM.setObjectName("checkBox_saveSourceCSDM")
-        self.gridLayout_save.addWidget(self.checkBox_saveSourceCSDM, 2, 0, 1, 1)
+        # checkbox save source CSDA
+        self.checkBox_saveSourceCSDA = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_save)
+        self.checkBox_saveSourceCSDA.setFont(font_normalLabel)
+        self.checkBox_saveSourceCSDA.setObjectName("checkBox_saveSourceCSDA")
+        self.gridLayout_save.addWidget(self.checkBox_saveSourceCSDA, 2, 0, 1, 1)
 
-        # checkbox save propagation CSDM
-        self.checkBox_savePropCSDM = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_save)
-        self.checkBox_savePropCSDM.setFont(font_normalLabel)
-        self.checkBox_savePropCSDM.setObjectName("checkBox_saveSourceCSDM")
-        self.gridLayout_save.addWidget(self.checkBox_savePropCSDM, 4, 0, 1, 1)
+        # checkbox save propagation CSDA
+        self.checkBox_savePropCSDA = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_save)
+        self.checkBox_savePropCSDA.setFont(font_normalLabel)
+        self.checkBox_savePropCSDA.setObjectName("checkBox_saveSourceCSDA")
+        self.gridLayout_save.addWidget(self.checkBox_savePropCSDA, 4, 0, 1, 1)
 
         # checkBox_geoFromFile
         self.checkBox_geoFromFile = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_fromFile)
@@ -1508,14 +1523,14 @@ class Ui_MainWindow(QMainWindow):
         self.gridLayout_fromFile.addWidget(self.checkBox_geoFromFile, 0, 0, 1, 1)
         self.checkBox_geoFromFile.stateChanged.connect(self.updateGeoFromFile)
 
-        # checkBox_CSDMFromFile
-        self.checkBox_CSDMFromFile = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_fromFile)
-        self.checkBox_CSDMFromFile.setPalette(palette_parSection)
-        self.checkBox_CSDMFromFile.setFont(font_normalLabel)
-        self.checkBox_CSDMFromFile.setObjectName("checkBox_CSDMFromFile")
-        self.gridLayout_fromFile.addWidget(self.checkBox_CSDMFromFile, 2, 0, 1, 1)
-        self.checkBox_CSDMFromFile.stateChanged.connect(self.updateCSDMFromFile)
-        self.checkBox_CSDMFromFile.setText("CSDM from File (4D array '.npy')")
+        # checkBox_CSDAFromFile
+        self.checkBox_CSDAFromFile = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_fromFile)
+        self.checkBox_CSDAFromFile.setPalette(palette_parSection)
+        self.checkBox_CSDAFromFile.setFont(font_normalLabel)
+        self.checkBox_CSDAFromFile.setObjectName("checkBox_CSDAFromFile")
+        self.gridLayout_fromFile.addWidget(self.checkBox_CSDAFromFile, 2, 0, 1, 1)
+        self.checkBox_CSDAFromFile.stateChanged.connect(self.updateCSDAFromFile)
+        self.checkBox_CSDAFromFile.setText("CSDA from File (4D array '.npy')")
 
         # checkbox debug
         self.checkBox_debug = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_numPlanes)
@@ -1559,11 +1574,13 @@ class Ui_MainWindow(QMainWindow):
         # CheckBox for Optics for all planes
         self.checkBox_optics_list = []
 
+        """
         # checkbox schedule simulation
         self.checkBox_schedule = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_numPlanes)
         self.checkBox_schedule.setFont(font_normalLabel)
         self.checkBox_schedule.setObjectName("checkBox")
         self.gridLayout_7.addWidget(self.checkBox_schedule, 84, 0, 1, 2)
+        """
         #=======================================================================
         #///////////////////////////////////////////////////////////////////////
         #=======================================================================
@@ -1573,21 +1590,24 @@ class Ui_MainWindow(QMainWindow):
         # Radio buttons
         #=======================================================================
 
-        # Radio Buttons
+        # -- Radio Button Quasi-monochromatic --
         self.radioButton_quasi = QtWidgets.QRadioButton(self.scrollAreaWidgetContents_numPlanes)
         self.radioButton_quasi.setFont(font_normalLabel)
         self.radioButton_quasi.setObjectName("radioButton_quasi")
         self.gridLayout_7.addWidget(self.radioButton_quasi, 36, 0, 1, 1)
         self.radioButton_quasi.toggled.connect(self.update_specPars)
+        self.radioButton_quasi.setHidden(True)
 
-        # radio button
+        # -- Radio Button Polychromatic --
         self.radioButton_poly = QtWidgets.QRadioButton(self.scrollAreaWidgetContents_numPlanes)
         self.radioButton_poly.setFont(font_normalLabel)
         self.radioButton_poly.setObjectName("radioButton_2")
         self.gridLayout_7.addWidget(self.radioButton_poly, 37, 0, 1, 1)
         self.radioButton_poly.toggled.connect(self.update_specPars)
+        # hide
+        self.radioButton_poly.setHidden(True)
 
-        # 1 frequency, quasi-monochomatic, polychromatic
+        # -- Radio Button Single Frequency --
         self.radioButton_1freq = QtWidgets.QRadioButton(self.scrollAreaWidgetContents_numPlanes)
         self.radioButton_1freq.setFont(font_normalLabel)
         self.radioButton_1freq.setObjectName("radioButton_1freq")
@@ -1618,13 +1638,13 @@ class Ui_MainWindow(QMainWindow):
         self.gridLayout_fromFile.addWidget(self.toolButton_geoFromFile, 0, 3, 1, 1)
         self.toolButton_geoFromFile.clicked.connect(self.openFileNameDialog_openGeo)
 
-        # tool button CSDM from file
-        self.toolButton_CSDMfromfile = QtWidgets.QToolButton(self.scrollAreaWidgetContents_fromFile)
-        self.toolButton_CSDMfromfile.setFont(font_normalLabel)
-        self.toolButton_CSDMfromfile.setObjectName("toolButton_CSDMfromfile")
-        self.gridLayout_fromFile.addWidget(self.toolButton_CSDMfromfile, 2, 3, 1, 1)
-        self.toolButton_CSDMfromfile.clicked.connect(self.openFileNameDialog_openCSDM)
-        self.toolButton_CSDMfromfile.setText("...")
+        # tool button CSDA from file
+        self.toolButton_CSDAfromfile = QtWidgets.QToolButton(self.scrollAreaWidgetContents_fromFile)
+        self.toolButton_CSDAfromfile.setFont(font_normalLabel)
+        self.toolButton_CSDAfromfile.setObjectName("toolButton_CSDAfromfile")
+        self.gridLayout_fromFile.addWidget(self.toolButton_CSDAfromfile, 2, 3, 1, 1)
+        self.toolButton_CSDAfromfile.clicked.connect(self.openFileNameDialog_openCSDA)
+        self.toolButton_CSDAfromfile.setText("...")
         #=======================================================================
         #///////////////////////////////////////////////////////////////////////
         #=======================================================================
@@ -1634,18 +1654,51 @@ class Ui_MainWindow(QMainWindow):
         # Push buttons
         #=======================================================================
 
+
+        #***********************************************************************
         # Button Start
-        self.pushButton_start = QtWidgets.QPushButton(self.scrollAreaWidgetContents_numPlanes)
+        #***********************************************************************
+        ##self.pushButton_start = QtWidgets.QPushButton(self.scrollAreaWidgetContents_numPlanes)
+        self.pushButton_start = QtWidgets.QPushButton(self.groupBox_project)
+        ##self.pushButton_start = QtWidgets.QPushButton(self.gridLayout_main_project)
+
+        # info
+        self.pushButton_start.setToolTip('Click here to start the simulation')
+
+        # style
         self.pushButton_start.setPalette(palette_buttonStart)
         self.pushButton_start.setFont(font_button)
         self.pushButton_start.setObjectName("pushButton_start")
-        self.gridLayout_7.addWidget(self.pushButton_start, 83, 0, 1, 3,alignment=QtCore.Qt.AlignCenter)
-        self.pushButton_start.setMinimumWidth(self.rect.width()/8)
+        self.pushButton_start.setMaximumHeight(self.rect.height()/25)
+        stylesheet_start = """
+        QPushButton{
+            background-color: #FFF3C4;
+            border-style: outset;
+            border-width: 5px;
+            /*border-radius: 10px;*/
+            border-color: #C29A00;
+            font: bold 17px;
+            color: #00234C;
+            padding: 6px;
+        }
+        QPushButton::pressed{
+                             background-color : #C29A00;
+        }
+        """
+        self.pushButton_start.setStyleSheet(stylesheet_start)
+
+
+        # add to grid
+        ##self.gridLayout_7.addWidget(self.pushButton_start, 83, 0, 1, 3,alignment=QtCore.Qt.AlignCenter)
+        self.gridLayout_project.addWidget(self.pushButton_start, 2, 0, 1, 2)
+
+        # Function
         self.pushButton_start.clicked.connect(self.start_simulation)
+        #_______________________________________________________________________
+
 
         # Show source spectrum
         self.pushButton_showSpec = QtWidgets.QPushButton(self.scrollAreaWidgetContents_spectrumModel)
-
         #=======================================================================
         #///////////////////////////////////////////////////////////////////////
         #=======================================================================
@@ -1657,7 +1710,7 @@ class Ui_MainWindow(QMainWindow):
 
         # textBox
         self.scrollArea_textBox.setWidget(self.scrollAreaWidgetContents_textBox)
-        self.gridLayout_7.addWidget(self.scrollArea_textBox,0, 0, 1, 2)
+        self.gridLayout_7.addWidget(self.scrollArea_textBox, 2, 0, 1, 2)
 
         # FFT
         self.scrollArea_FFT.setWidget(self.scrollAreaWidgetContents_FFT)
@@ -1804,11 +1857,11 @@ class Ui_MainWindow(QMainWindow):
         self.actionExport_sourceImage.setText("Export Source Image")
         self.actionExport_sourceImage.triggered.connect(self.save_sourceImage)
 
-        # Export source CSDM
-        self.actionExport_sourceCSDM = QtWidgets.QAction(MainWindow)
-        self.actionExport_sourceCSDM.setObjectName("actionExport_sourceCSDM")
-        self.actionExport_sourceCSDM.setText("Export Source CSDM")
-        self.actionExport_sourceCSDM.triggered.connect(self.save_sourceCSDM)
+        # Export source CSDA
+        self.actionExport_sourceCSDA = QtWidgets.QAction(MainWindow)
+        self.actionExport_sourceCSDA.setObjectName("actionExport_sourceCSDA")
+        self.actionExport_sourceCSDA.setText("Export Source CSDA")
+        self.actionExport_sourceCSDA.triggered.connect(self.save_sourceCSDA)
 
         # Export propagation image
         self.actionExport_propImage = QtWidgets.QAction(MainWindow)
@@ -1816,11 +1869,11 @@ class Ui_MainWindow(QMainWindow):
         self.actionExport_propImage.setText("Export Propagation Image")
         self.actionExport_propImage.triggered.connect(self.save_propImage)
 
-        # Export prop CSDM
-        self.actionExport_propCSDM = QtWidgets.QAction(MainWindow)
-        self.actionExport_propCSDM.setObjectName("actionExport_propCSDM")
-        self.actionExport_propCSDM.setText("Export Propagated CSDM")
-        self.actionExport_propCSDM.triggered.connect(self.save_propCSDM)
+        # Export prop CSDA
+        self.actionExport_propCSDA = QtWidgets.QAction(MainWindow)
+        self.actionExport_propCSDA.setObjectName("actionExport_propCSDA")
+        self.actionExport_propCSDA.setText("Export Propagated CSDA")
+        self.actionExport_propCSDA.triggered.connect(self.save_propCSDA)
 
         # Adding to File Menu
         self.menuFile.addAction(self.actionNew_Project)
@@ -1844,10 +1897,10 @@ class Ui_MainWindow(QMainWindow):
 
         # Adding to Export Menu
         self.menuExport.addAction(self.actionExport_sourceImage)
-        self.menuExport.addAction(self.actionExport_sourceCSDM)
+        self.menuExport.addAction(self.actionExport_sourceCSDA)
         self.menuExport.addSeparator()
         self.menuExport.addSeparator()
-        self.menuExport.addAction(self.actionExport_propCSDM)
+        self.menuExport.addAction(self.actionExport_propCSDA)
         self.menuExport.addAction(self.actionExport_propImage)
         self.menuExport.addSeparator()
         self.menuExport.addSeparator()
@@ -1888,7 +1941,7 @@ class Ui_MainWindow(QMainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", appname))
         self.groupBox_project.setTitle(_translate("MainWindow", "New Project"))
         self.label_insertComments.setText(_translate("MainWindow", "Insert Comments: "))
-        self.plainTextEdit.setPlainText(_translate("MainWindow", "# Write your comments here. They are saved after the simulation\n"""))
+        self.plainTextEdit.setPlainText(_translate("MainWindow", "# Write your comments here. They are saved after the simulation.\n"""))
         ##self.label_outMessages.setText(_translate("MainWindow", "Output Messages:"))
         ##self.label_opticalSys.setText(_translate("MainWindow", "Optical System:"))
         ##self.label_Plots.setText(_translate("MainWindow", "Plots"))
@@ -1899,18 +1952,18 @@ class Ui_MainWindow(QMainWindow):
         self.label_N.setText(_translate("MainWindow", "Matrix size N:"))
         self.pushButton_start.setText(_translate("MainWindow", "Start Simulation"))
         self.checkBox_save.setText(_translate("MainWindow", "Save Results"))
-        self.checkBox_saveSourceCSDM.setText(_translate("MainWindow", "Save Source Matrix"))
-        self.checkBox_savePropCSDM.setText(_translate("MainWindow", "Save Propagation Matrix"))
+        self.checkBox_saveSourceCSDA.setText(_translate("MainWindow", "Save Source Matrix"))
+        self.checkBox_savePropCSDA.setText(_translate("MainWindow", "Save Propagation Matrix"))
         self.label_geometry.setText(_translate("MainWindow", "Geometry:"))
         self.label_SpectrumParameters.setText(_translate("MainWindow", "Spectrum Parameters"))
-        self.label.setText(_translate("MainWindow", "Simulation Name: "))
-        self.checkBox_schedule.setText(_translate("MainWindow", "Scheldule Simulation"))
+        self.label_projName.setText(_translate("MainWindow", "Project Name: "))
+        ##self.checkBox_schedule.setText(_translate("MainWindow", "Scheldule Simulation"))
         self.radioButton_poly.setText(_translate("MainWindow", "Polychromatic"))
         self.label_SourceParameters.setText(_translate("MainWindow", "Source Parameters"))
         self.label_specType.setText(_translate("MainWindow", "Spectrum model:"))
         self.checkBox_debug.setText(_translate("MainWindow", "Debug"))
         self.checkBox_pyopencl.setText(_translate("MainWindow", "Use PyOpenCL"))
-        self.label_startSim.setText(_translate("MainWindow", "Start Simulation"))
+        ##self.label_startSim.setText(_translate("MainWindow", "Start Simulation"))
         self.label_PropgationSystem.setText(_translate("MainWindow", "Propagation System"))
         self.label_device.setText(_translate("MainWindow", "Device:"))
         self.label_cohModel.setText(_translate("MainWindow", "Coherence Model:"))
@@ -2036,8 +2089,8 @@ class Ui_MainWindow(QMainWindow):
     def openFileNameDialog_saveDir(self):
         openFileNameDialog_saveDir2(self)
 
-    def openFileNameDialog_exportSourceCSDM(self):
-        "choose export directory for source CSDM"
+    def openFileNameDialog_exportSourceCSDA(self):
+        "choose export directory for source CSDA"
         download_path = ui.lineEdit_saveFiles.text()
         #options = QFileDialog.Options()
         #options |= QFileDialog.DontUseNativeDialog
@@ -2055,8 +2108,8 @@ class Ui_MainWindow(QMainWindow):
     def openFileNameDialog_openGeo(self):
         openFileNameDialog_openGeo2(self)
 
-    def openFileNameDialog_openCSDM(self):
-        openFileNameDialog_openCSDM2(self)
+    def openFileNameDialog_openCSDA(self):
+        openFileNameDialog_openCSDA2(self)
 
     def showRAM(self):
         showRAM2(self)
@@ -2133,8 +2186,8 @@ class Ui_MainWindow(QMainWindow):
     def updateGeoFromFile(self):
         updateGeoFromFile2(self)
 
-    def updateCSDMFromFile(self):
-        updateCSDMFromFile2(self)
+    def updateCSDAFromFile(self):
+        updateCSDAFromFile2(self)
 
     def updatePropQuantity(self):
         updatePropQuantity2(self)
@@ -2250,8 +2303,8 @@ This software is licensed to you under the terms of the GNU General Public Licen
                 download_path = self.lineEdit_saveFiles.text()
                 dirName = QFileDialog.getExistingDirectory(None,"Save Source Image",download_path)
                 if dirName:
-                    save(dirName+"\\CSDM_source_image",ui.CSDM_source.image)
-                    self.update_outputText("[Info] Source image saved in "+str(dirName)+"/CSDM_source_image.npy")
+                    save(dirName+"\\CSDA_source_image",ui.CSDA_source.image)
+                    self.update_outputText("[Info] Source image saved in "+str(dirName)+"/CSDA_source_image.npy")
             except Exception as error:
                 update_outputText("[Error] "+str(error))
         else:
@@ -2264,40 +2317,40 @@ This software is licensed to you under the terms of the GNU General Public Licen
                 download_path = self.lineEdit_saveFiles.text()
                 dirName = QFileDialog.getExistingDirectory(None,"Save Propagation Image",download_path)
                 if dirName:
-                    save(dirName+"\\CSDM_prop_image",ui.CSDM_prop.image)
-                    self.update_outputText("[Info] Propagation image saved in "+str(dirName)+"/CSDM_prop_image.npy")
+                    save(dirName+"\\CSDA_prop_image",ui.CSDA_prop.image)
+                    self.update_outputText("[Info] Propagation image saved in "+str(dirName)+"/CSDA_prop_image.npy")
             except Exception as error:
                 update_outputText("[Error] "+str(error))
         else:
             self.update_outputText("[Warning] "+"You can only export the propagation image after the simulation.")
 
-    def save_sourceCSDM(self):
-        "Saves the source CSDM into the desired location"
+    def save_sourceCSDA(self):
+        "Saves the source CSDA into the desired location"
         if self.sim:
             try:
                 download_path = self.lineEdit_saveFiles.text()
-                dirName = QFileDialog.getExistingDirectory(None,"Save Source CSDM",download_path)
+                dirName = QFileDialog.getExistingDirectory(None,"Save Source CSDA",download_path)
                 if dirName:
-                    save(dirName+"\\CSDM_source",ui.CSDM_source.matrix)
-                    self.update_outputText("[Info] Source CSDM saved in "+str(dirName)+"/CSDM_source.npy")
+                    save(dirName+"\\CSDA_source",ui.CSDA_source.matrix)
+                    self.update_outputText("[Info] Source CSDA saved in "+str(dirName)+"/CSDA_source.npy")
             except Exception as error:
                 update_outputText("[Error] "+str(error))
         else:
-            self.update_outputText("[Warning] "+"You can only export the CSDM matrix after the simulation.")
+            self.update_outputText("[Warning] "+"You can only export the CSDA matrix after the simulation.")
 
-    def save_propCSDM(self):
-        "Saves the propagated CSDM into the desired location"
+    def save_propCSDA(self):
+        "Saves the propagated CSDA into the desired location"
         if self.sim:
             try:
                 download_path = self.lineEdit_saveFiles.text()
-                dirName = QFileDialog.getExistingDirectory(None,"Save Propagation CSDM",download_path)
+                dirName = QFileDialog.getExistingDirectory(None,"Save Propagation CSDA",download_path)
                 if dirName:
-                    save(dirName+"\\CSDM_propagation",ui.CSDM_prop.matrix)
-                    self.update_outputText("[Info] Propagation CSDM saved in "+str(dirName)+"/CSDM_propagation.npy")
+                    save(dirName+"\\CSDA_propagation",ui.CSDA_prop.matrix)
+                    self.update_outputText("[Info] Propagation CSDA saved in "+str(dirName)+"/CSDA_propagation.npy")
             except Exception as error:
                 self.update_outputText("[Error] "+str(error))
         else:
-            self.update_outputText("[Warning] "+"You can only export the CSDM matrix after the simulation.")
+            self.update_outputText("[Warning] "+"You can only export the CSDA matrix after the simulation.")
 
     def save_results(self):
         "Saves results into directory <dirName>"
@@ -2310,7 +2363,7 @@ This software is licensed to you under the terms of the GNU General Public Licen
             except:
                 pass
         else:
-            self.update_outputText("[Warning] "+"You can only export the CSDM matrix after the simulation.")
+            self.update_outputText("[Warning] "+"You can only export the CSDA matrix after the simulation.")
 
     def save_results_file(self,dirName,spec=False):
         "Saves results into directory <dirName>"
@@ -2329,6 +2382,7 @@ This software is licensed to you under the terms of the GNU General Public Licen
             pass
 
     def save_project_file(self,dirName):
+        "Saves Project into user-defined File"
         save_project_file2(self,dirName)
 
     def load_project(self):
@@ -2439,6 +2493,9 @@ This software is licensed to you under the terms of the GNU General Public Licen
         updateSpecDenPars2(self)
 
 
+    def resizeEvent(self, *args, **kwargs):
+        print("a")
+
     #***************************************************************************
     # Starts the Simulation
     #***************************************************************************
@@ -2513,7 +2570,7 @@ if __name__ == "__main__":
 
     # initial parameters
     log_txt    = "" # log file
-    debug      = True
+    debug      = False
     appname    = "PyWolf v1.0"
     cr = "Copyright (C) 2020 Tiago E. C. Magalhaes under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."
 
@@ -2540,11 +2597,10 @@ if __name__ == "__main__":
         print('Available: %d x %d' % (rect.width(), rect.height()))
 
     # global variables
-    global CSDM_prop
+    global CSDA_prop
 
     # creating main window
     MainWindow = QtWidgets.QMainWindow()
-    ##app.setStyleSheet(stylesheet)
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow,appname,rect,current_dir,log_txt,output_txt)
     MainWindow.show()

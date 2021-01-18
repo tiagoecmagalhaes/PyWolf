@@ -1,12 +1,10 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        Main Functions
+# Purpose:     PyWolf functions
 #
-# Author:      Tiago
+# Author:      TEC MAGALHAES
 #
-# Created:     30/01/2020
-# Copyright:   (c) Tiago 2020
-# Licence:     <your licence>
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
 
 
@@ -40,15 +38,15 @@ from platdev import *
 from testPars import *
 from startSim import *
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
 #-------------------------------------------------------------------------------
-
-
 def update_devices2(ui):
-    #=======================================================================
-    # Platform and Device Combo Boxes
-    #=======================================================================
+    "Updates OpenCL devices"
+    # -- Platform and Device Combo Boxes --#
     global current_platform
     current_platform = ui.comboBox_platform.currentIndex()
     ui.comboBox_device.clear()
@@ -59,15 +57,20 @@ def update_devices2(ui):
         new="\n[info] There is currently no device for that selected platform."
         ui.textBrowser.append(str(new))
         ui.textBrowser.update()
-    #_______________________________________________________________________
+#_______________________________________________________________________________
 
+
+#-------------------------------------------------------------------------------
 def update_outputText2(ui,text):
     "Updates the Output Message box in the application"
     ui.textBrowser.append("\n"+ui.give_time()+"  | >> "+str(text))
     ui.textBrowser.update()
     ui.textBrowser.moveCursor(QtGui.QTextCursor.End)
     QtWidgets.qApp.processEvents()
+#_______________________________________________________________________________
 
+
+#-------------------------------------------------------------------------------
 def update_outputTextSameLine2(ui,text):
     "Updates the Output Message box in the application in the same previous line"
     cursor = ui.textBrowser.textCursor()
@@ -77,19 +80,28 @@ def update_outputTextSameLine2(ui,text):
     cursor.movePosition(QtGui.QTextCursor.StartOfLine)
     cursor.insertText(str(text))
     QtWidgets.qApp.processEvents()
+#_______________________________________________________________________________
 
+
+#-------------------------------------------------------------------------------
 def give_time2(ui):
     "returns the currente date and time"
     ui.nowTime = datetime.now()
     day_time = ui.nowTime.strftime("%d/%m/%Y %H:%M:%S")
     new_txt = "["+str(day_time)+"]"
     return new_txt
+#_______________________________________________________________________________
 
+
+#-------------------------------------------------------------------------------
 def show_citation2(ui):
     mydialog = QDialog()
     mydialog.setModal(True)
     mydialog.exec()
+#_______________________________________________________________________________
 
+
+#-------------------------------------------------------------------------------
 def openFileNameDialog_saveDir2(ui):
     "choose save directory"
     download_path = ui.lineEdit_saveFiles.text()
@@ -102,7 +114,10 @@ def openFileNameDialog_saveDir2(ui):
         ui.lineEdit_saveFiles.setText(ui.dirName)
     except:
         update_outputText("Something went wrong when choosing saving directory.")
+#_______________________________________________________________________________
 
+
+#-------------------------------------------------------------------------------
 def openFileNameDialog_openGeo2(ui):
     "choose save directory"
     geo_path = ui.lineEdit_saveFiles.text()
@@ -110,25 +125,30 @@ def openFileNameDialog_openGeo2(ui):
     #options |= QFileDialog.DontUseNativeDialog
     filename = None
     try:
-        geo_path = QFileDialog.getOpenFileName(None,"Open Numpy Array File","", "NPY Files (*.NPY)") # ,,options=options
+        geo_path = QFileDialog.getOpenFileName(None,"Open Numpy Array File",ui.current_dir+"\\source_images", "NPY Files (*.NPY *.jpg *.bmp *.png)")
         ui.dirSourceGeo = geo_path[0]
         ui.lineEdit_dirGeoMatrix.setText(str(ui.dirSourceGeo))
-
     except:
         update_outputText("Something went wrong when choosing saving directory.")
+#_______________________________________________________________________________
 
-def openFileNameDialog_openCSDM2(ui):
+
+#-------------------------------------------------------------------------------
+def openFileNameDialog_openCSDA2(ui):
     "Open Numpy Array File"
-    CSDM_path = ui.lineEdit_saveFiles.text()
+    CSDA_path = ui.lineEdit_saveFiles.text()
     filename = None
     try:
-        CSDM_path = QFileDialog.getOpenFileName(None,"Open Numpy Array File","", "NPY Files (*.NPY)") # ,,options=options
-        ui.dirSourceCSDM = CSDM_path[0]
-        ui.lineEdit_dirCSDMmatrix.setText(str(ui.dirSourceCSDM))
+        CSDA_path = QFileDialog.getOpenFileName(None,"Open Numpy Array File","", "NPY Files (*.NPY)") # ,,options=options
+        ui.dirSourceCSDA = CSDA_path[0]
+        ui.lineEdit_dirCSDAmatrix.setText(str(ui.dirSourceCSDA))
 
     except:
         update_outputText("Something went wrong when choosing saving directory.")
+#_______________________________________________________________________________
 
+
+#-------------------------------------------------------------------------------
 def showRAM2(ui):
     "Shows the ammount of RAM in the output Message Box"
     ram_info  = psutil.virtual_memory()
@@ -140,15 +160,49 @@ def showRAM2(ui):
     ui.update_outputText(new_txt)
     new_txt = "Available Ram: "+str(round(float(avail_ram)/1073741824.0,1))+" GB ("+str(100-perc_ram)+" %)"
     ui.update_outputText(new_txt)
+#_______________________________________________________________________________
 
+
+#-------------------------------------------------------------------------------
 def addTime2(ui):
+    "Updates Time and writes on message box"
     now = datetime.now()
     day_time = now.strftime("%d/%m/%Y %H:%M:%S")
     log_txt+="\n["+day_time+"]\n"
     new_txt = "\n\n["+str(dt_string)+"]"
     ui.update_outputText(new_txt)
+#_______________________________________________________________________________
 
+
+#-------------------------------------------------------------------------------
+def add_labelsText2(ui,label,text):
+    "Sets text to labsls"
+    _translate = QtCore.QCoreApplication.translate
+    label.setText(_translate("MainWindow", text))
+#_______________________________________________________________________________
+
+
+#-------------------------------------------------------------------------------
+def clear_LabelText2(ui,label):
+    label.clear()
+#_______________________________________________________________________________
+
+
+#-------------------------------------------------------------------------------
+def update_titleProject2(ui):
+    "Updates Title of Project"
+    _translate = QtCore.QCoreApplication.translate
+    ui.groupBox_project.setTitle(_translate("MainWindow", ui.lineEdit_simName.text()))
+#_______________________________________________________________________________
+
+
+#===============================================================================
+# SPECTRUM MODEL
+#===============================================================================
+
+#*******************************************************************************
 def search_specModel2(ui):
+    "Seachs for spectrum models"
     spec_dir=ui.current_dir+"\\models\\specModels\\"
     os.chdir(spec_dir)
     sys.path.append(spec_dir)
@@ -168,8 +222,11 @@ def search_specModel2(ui):
     else:
         temp_txt = "No Spectrum models were found in folder <specModels>"
         ui.update_outputText(temp_txt)
+#*******************************************************************************
 
+#*******************************************************************************
 def updateSpecModelPars2(ui):
+    "Updates spectrum model parameters from when Polychromatic is selected"
     for i in range(0,len(ui.specModelPar_list)):
         current_specModel = ui.comboBox_specType.currentText()
         for i in range(0,len(ui.specModel_list)):
@@ -213,221 +270,12 @@ def updateSpecModelPars2(ui):
                 ui.pushButton_showSpec.setMinimumWidth(ui.rect.width()/8)
                 ui.pushButton_showSpec.clicked.connect(ui.show_source_spectrum)
                 ui.gridLayout_specModel.addWidget(ui.pushButton_showSpec, 1+Npars, 0, 1, 2)
+#_______________________________________________________________________________
 
 
-
-
-def add_labelsText2(ui,label,text):
-    _translate = QtCore.QCoreApplication.translate
-    label.setText(_translate("MainWindow", text))
-
-def clear_LabelText2(ui,label):
-    label.clear()
-
-def search_geometry2(ui):
-    "searchs for geometry models"
-    geometry_dir=ui.current_dir+"\\models\\geometry\\"
-    os.chdir(geometry_dir)
-    sys.path.append(geometry_dir)
-    # cleaning combo box of spectrum models
-    ui.comboBox_geometry.clear()
-    new_file=None
-    count=0
-    for file_dir in glob.glob("*.py"):
-        new_file = __import__(str(file_dir[:-3]))
-        ui.geometry_list.append([new_file.geometry_name,new_file])
-        ui.geometryPar_list.append(new_file.geometry_parameters)
-        ui.comboBox_geometry.addItem(ui.geometry_list[-1][0])
-        ui.geometryModelsFunc.append(new_file.geomFunc)
-        ui.list_filesGeom.append(new_file)
-        count+=1
-    if count!=0:
-        ui.updateGeometryPars()
-    else:
-        temp_txt = "No Geometry models were found in folder <geometry>"
-        ui.update_outputText(temp_txt)
-
-def updateGeometryPars2(ui):
-    try:
-        for i in range(0,len(ui.geometryPar_list)):
-            current_geometry = ui.comboBox_geometry.currentText()
-            for i in range(0,len(ui.geometry_list)):
-                if current_geometry == ui.geometry_list[i][0]:
-                    # clearing
-                    for lab in ui.geometry_labelParameters:
-                        ui.clear_LabelText(lab)
-                        lab.deleteLater()
-                    for edits in ui.geometry_lineEditParameters:
-                        edits.deleteLater()
-                    # clearing label parameters
-                    ui.geometry_labelParameters = []
-                    ui.geometry_lineEditParameters = []
-                    # for each parameter:
-
-                    for j in range(0,len(ui.geometryPar_list[i])):
-                        # adding label for each parameter
-                        ui.geometry_labelParameters.append(QtWidgets.QLabel(ui.scrollAreaWidgetContents_geometry))
-                        ui.geometry_labelParameters[-1].setPalette(palette_parSection)
-                        ui.geometry_labelParameters[-1].setFont(font_normalLabel)
-                        ui.geometry_labelParameters[-1].setObjectName(ui.geometryPar_list[i][j])
-                        ui.gridLayout_geometry.addWidget(ui.geometry_labelParameters[-1], 1+j, 0, 1, 1)
-
-                        # adding line edit entries
-                        ui.geometry_lineEditParameters.append(QtWidgets.QLineEdit(ui.scrollAreaWidgetContents_geometry))
-                        ui.geometry_lineEditParameters[-1].setFont(font_normalLabel)
-                        ui.geometry_lineEditParameters[-1].setObjectName("lineEdit_"+ui.geometryPar_list[i][j])
-                        ui.geometry_lineEditParameters[-1].setStyleSheet('background: '+colortxt_textEdit)
-                        ui.gridLayout_geometry.addWidget(ui.geometry_lineEditParameters[-1], 1+j, 1, 1, 1)
-                        # setting size
-                        ui.geometry_lineEditParameters[-1].setMaximumWidth(size_entries(ui))
-                        # Text in APP
-                        ui.add_labelsText(ui.geometry_labelParameters[-1],ui.geometryPar_list[i][j]+":")
-                        ui.geometry_lineEditParameters[0].setText("11")
-    except Exception as error:
-        ui.update_outputText("[Error] "+str(error))
-
-def search_cohModel2(ui):
-    "Searches for coherence model functions <*.py> in a given directory"
-    coh_dir=ui.current_dir+"\\models\\cohModels\\"
-    os.chdir(coh_dir)
-    sys.path.append(coh_dir)
-    # cleaning combo box of spectrum models
-    ui.comboBox_cohModel.clear()
-    new_file=None
-    count=0
-    for file_dir in glob.glob("*.py"):
-        new_file = __import__(str(file_dir[:-3]))
-        ui.cohModel_list.append([new_file.cohModel_name,new_file])
-        ui.cohModelPar_list.append(new_file.cohModel_parameters)
-        ui.comboBox_cohModel.addItem(ui.cohModel_list[-1][0])
-        count+=1
-    if count!=0:
-        ui.updateCohModelPars()
-    else:
-        temp_txt = "No Coherence models were found in folder <cohModels>"
-        ui.update_outputText(temp_txt)
-
-
-
-def updateCohModelPars2(ui):
-    #ui.scrollArea_cohModel.setWidget(ui.scrollAreaWidgetContents_cohModel)
-    #ui.gridLayout_7.addWidget(ui.scrollArea_cohModel,51, 0, 1, 2)
-    for j in range(0,len(ui.cohModelPar_list)):
-        current_cohModel = ui.comboBox_cohModel.currentText()
-        for i in range(0,len(ui.cohModel_list)):
-            if current_cohModel == ui.cohModel_list[i][0]:
-                # clearing
-                for lab in ui.cohModel_labelParameters:
-                    ui.clear_LabelText(lab)
-                    lab.deleteLater()
-                for edits in ui.cohModel_lineEditParameters:
-                    edits.deleteLater()
-                # clearing label parameters
-                ui.cohModel_labelParameters = []
-                ui.cohModel_lineEditParameters = []
-                # for each parameter:
-                for j in range(0,len(ui.cohModelPar_list[i])):
-                    # adding label for each parameter
-                    ui.cohModel_labelParameters.append(QtWidgets.QLabel(ui.scrollAreaWidgetContents_cohModel))
-                    ui.cohModel_labelParameters[-1].setPalette(palette_parSection)
-                    ui.cohModel_labelParameters[-1].setFont(font_normalLabel)
-                    ui.cohModel_labelParameters[-1].setObjectName(ui.cohModelPar_list[i][j])
-                    ui.gridLayout_cohModel.addWidget(ui.cohModel_labelParameters[-1], 1+j, 0, 1, 1)
-                    # adding line edit entries
-                    ui.cohModel_lineEditParameters.append(QtWidgets.QLineEdit(ui.scrollAreaWidgetContents_cohModel))
-                    ui.cohModel_lineEditParameters[-1].setFont(font_normalLabel)
-                    ui.cohModel_lineEditParameters[-1].setObjectName("lineEdit_"+ui.cohModelPar_list[i][j])
-                    ui.cohModel_lineEditParameters[-1].setStyleSheet('background: '+colortxt_textEdit)
-                    ui.gridLayout_cohModel.addWidget(ui.cohModel_lineEditParameters[-1], 1+j, 1, 1, 1)
-                    # setting size
-                    ui.cohModel_lineEditParameters[-1].setMaximumWidth(size_entries(ui))
-                    # Text in APP
-                    ui.add_labelsText(ui.cohModel_labelParameters[-1],ui.cohModelPar_list[i][j]+":")
-
-
-
-
-
-#===============================================================================
-# Spectral Density Model
-#===============================================================================
-
-def update_specDenArea2(ui):
-    try:
-        if ui.checkBox_specDen.isChecked():
-            ui.scrollArea_SpecDensity.setWidget(ui.scrollAreaWidgetContents_SpecDensity)
-            ui.gridLayout_7.addWidget(ui.scrollArea_SpecDensity,56, 0, 1, 2)
-        else:
-            ui.gridLayout_7.removeWidget(ui.scrollArea_SpecDensity)
-            ui.scrollArea_SpecDensity.setParent(None)
-    except Exception as Error:
-        print(Error)
-
-def search_specDenModels2(ui):
-    specDen_dir=ui.current_dir+"\\models\\specDensity\\"
-    os.chdir(specDen_dir)
-    sys.path.append(specDen_dir)
-    # cleaning combo box of spectral density models models
-    ui.comboBox_specDenModel.clear()
-    new_file=None
-    count=0
-    for file_dir in glob.glob("*.py"):
-        new_file = __import__(str(file_dir[:-3]))
-        ui.specDenModel_list.append([new_file.specDenModel_name,new_file])
-        ui.specDenPar_list.append(new_file.specDenModel_parameters)
-        ui.comboBox_specDenModel.addItem(ui.specDenModel_list[-1][0])
-        count+=1
-    if count!=0:
-        ui.updateSpecDenPars()
-    else:
-        temp_txt = "No spectral density models were found in folder <specDensity>"
-        ui.update_outputText(temp_txt)
-
-def updateSpecDenPars2(ui):
-    "Updates Spectral Density Parameters"
-
-    for j in range(0,len(ui.specDenPar_list)):
-        current_specDenModel = ui.comboBox_specDenModel.currentText()
-        for i in range(0,len(ui.specDenModel_list)):
-            if current_specDenModel == ui.specDenModel_list[i][0]:
-                # clearing
-                for lab in ui.specDenModel_labelParameters:
-                    ui.clear_LabelText(lab)
-                    lab.deleteLater()
-                for edits in ui.specDen_lineEditParameters:
-                    edits.deleteLater()
-                # clearing label parameters
-                ui.specDenModel_labelParameters = []
-                ui.specDen_lineEditParameters = []
-                # for each parameter:
-                for j in range(0,len(ui.specDenPar_list[i])):
-                    # adding label for each parameter
-                    ui.specDenModel_labelParameters.append(QtWidgets.QLabel(ui.scrollAreaWidgetContents_SpecDensity))
-                    ui.specDenModel_labelParameters[-1].setPalette(palette_parSection)
-                    ui.specDenModel_labelParameters[-1].setFont(font_normalLabel)
-                    ui.specDenModel_labelParameters[-1].setObjectName(ui.specDenPar_list[i][j])
-                    ui.gridLayout_SpecDensity.addWidget(ui.specDenModel_labelParameters[-1], 4+j, 0, 1, 1)
-                    # adding line edit entries
-                    ui.specDen_lineEditParameters.append(QtWidgets.QLineEdit(ui.scrollAreaWidgetContents_SpecDensity))
-                    ui.specDen_lineEditParameters[-1].setFont(font_normalLabel)
-                    ui.specDen_lineEditParameters[-1].setObjectName("lineEdit_"+ui.specDenPar_list[i][j])
-                    ui.specDen_lineEditParameters[-1].setStyleSheet('background: '+colortxt_textEdit)
-                    ui.gridLayout_SpecDensity.addWidget(ui.specDen_lineEditParameters[-1], 4+j, 1, 1, 1)
-                    # setting size
-                    ui.specDen_lineEditParameters[-1].setMaximumWidth(size_entries(ui))
-                    # Text in APP
-                    ui.add_labelsText(ui.specDenModel_labelParameters[-1],ui.specDenPar_list[i][j]+":")
-
-#===============================================================================
-#///////////////////////////////////////////////////////////////////////////////
-#===============================================================================
-
-def update_titleProject2(ui):
-    _translate = QtCore.QCoreApplication.translate
-    ui.groupBox_project.setTitle(_translate("MainWindow", ui.lineEdit_simName.text()))
-
+#-------------------------------------------------------------------------------
 def update_specPars2(ui):
-    "Updates spectrum profile parameters"
+    "Updates spectrum parameters when selecting spectrum type"
     if ui.radioButton_poly.isChecked():
         # Spectrum Model
         ui.scrollArea_spectrumModel.setWidget(ui.scrollAreaWidgetContents_spectrumModel)
@@ -469,7 +317,249 @@ def update_specPars2(ui):
         ui.lineEdit_centralFreq.setParent(None)
         ui.gridLayout_7.removeWidget(ui.scrollArea_spectrumModel)
         ui.scrollArea_spectrumModel.setParent(None)
+#*******************************************************************************
 
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# GEOMETRY MODEL
+#===============================================================================
+
+#*******************************************************************************
+def search_geometry2(ui):
+    "searchs for geometry models <*.py> in a given directory"
+    geometry_dir=ui.current_dir+"\\models\\geometry\\"
+    os.chdir(geometry_dir)
+    sys.path.append(geometry_dir)
+    # cleaning combo box of spectrum models
+    ui.comboBox_geometry.clear()
+    new_file=None
+    count=0
+    for file_dir in glob.glob("*.py"):
+        new_file = __import__(str(file_dir[:-3]))
+        ui.geometry_list.append([new_file.geometry_name,new_file])
+        ui.geometryPar_list.append(new_file.geometry_parameters)
+        ui.comboBox_geometry.addItem(ui.geometry_list[-1][0])
+        ui.geometryModelsFunc.append(new_file.geomFunc)
+        ui.list_filesGeom.append(new_file)
+        count+=1
+    if count!=0:
+        ui.updateGeometryPars()
+    else:
+        temp_txt = "No Geometry models were found in folder <geometry>"
+        ui.update_outputText(temp_txt)
+#*******************************************************************************
+#*
+#*
+#*******************************************************************************
+def updateGeometryPars2(ui):
+    "Updates Geometry Model Parameters"
+    try:
+        for i in range(0,len(ui.geometryPar_list)):
+            current_geometry = ui.comboBox_geometry.currentText()
+            for i in range(0,len(ui.geometry_list)):
+                if current_geometry == ui.geometry_list[i][0]:
+                    # clearing
+                    for lab in ui.geometry_labelParameters:
+                        ui.clear_LabelText(lab)
+                        lab.deleteLater()
+                    for edits in ui.geometry_lineEditParameters:
+                        edits.deleteLater()
+                    # clearing label parameters
+                    ui.geometry_labelParameters = []
+                    ui.geometry_lineEditParameters = []
+                    # for each parameter:
+
+                    for j in range(0,len(ui.geometryPar_list[i])):
+                        # adding label for each parameter
+                        ui.geometry_labelParameters.append(QtWidgets.QLabel(ui.scrollAreaWidgetContents_geometry))
+                        ui.geometry_labelParameters[-1].setPalette(palette_parSection)
+                        ui.geometry_labelParameters[-1].setFont(font_normalLabel)
+                        ui.geometry_labelParameters[-1].setObjectName(ui.geometryPar_list[i][j])
+                        ui.gridLayout_geometry.addWidget(ui.geometry_labelParameters[-1], 1+j, 0, 1, 1)
+
+                        # adding line edit entries
+                        ui.geometry_lineEditParameters.append(QtWidgets.QLineEdit(ui.scrollAreaWidgetContents_geometry))
+                        ui.geometry_lineEditParameters[-1].setFont(font_normalLabel)
+                        ui.geometry_lineEditParameters[-1].setObjectName("lineEdit_"+ui.geometryPar_list[i][j])
+                        ui.geometry_lineEditParameters[-1].setStyleSheet('background: '+colortxt_textEdit)
+                        ui.gridLayout_geometry.addWidget(ui.geometry_lineEditParameters[-1], 1+j, 1, 1, 1)
+                        # setting size
+                        ui.geometry_lineEditParameters[-1].setMaximumWidth(size_entries(ui))
+                        # Text in APP
+                        ui.add_labelsText(ui.geometry_labelParameters[-1],ui.geometryPar_list[i][j]+":")
+                        ui.geometry_lineEditParameters[0].setText("11")
+    except Exception as error:
+        ui.update_outputText("[Error] "+str(error))
+#*******************************************************************************
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# Coherence Model
+#===============================================================================
+
+#*******************************************************************************
+def search_cohModel2(ui):
+    "Searches for coherence model functions <*.py> in a given directory"
+    coh_dir=ui.current_dir+"\\models\\cohModels\\"
+    os.chdir(coh_dir)
+    sys.path.append(coh_dir)
+    # cleaning combo box of spectrum models
+    ui.comboBox_cohModel.clear()
+    new_file=None
+    count=0
+    for file_dir in glob.glob("*.py"):
+        new_file = __import__(str(file_dir[:-3]))
+        ui.cohModel_list.append([new_file.cohModel_name,new_file])
+        ui.cohModelPar_list.append(new_file.cohModel_parameters)
+        ui.comboBox_cohModel.addItem(ui.cohModel_list[-1][0])
+        count+=1
+    if count!=0:
+        ui.updateCohModelPars()
+    else:
+        temp_txt = "No Coherence models were found in folder <cohModels>"
+        ui.update_outputText(temp_txt)
+#_______________________________________________________________________________
+#*
+#*
+#*******************************************************************************
+def updateCohModelPars2(ui):
+    "Updates Coherence Model paramters"
+    for j in range(0,len(ui.cohModelPar_list)):
+        current_cohModel = ui.comboBox_cohModel.currentText()
+        for i in range(0,len(ui.cohModel_list)):
+            if current_cohModel == ui.cohModel_list[i][0]:
+                # clearing
+                for lab in ui.cohModel_labelParameters:
+                    ui.clear_LabelText(lab)
+                    lab.deleteLater()
+                for edits in ui.cohModel_lineEditParameters:
+                    edits.deleteLater()
+                # clearing label parameters
+                ui.cohModel_labelParameters = []
+                ui.cohModel_lineEditParameters = []
+                # for each parameter:
+                for j in range(0,len(ui.cohModelPar_list[i])):
+                    # adding label for each parameter
+                    ui.cohModel_labelParameters.append(QtWidgets.QLabel(ui.scrollAreaWidgetContents_cohModel))
+                    ui.cohModel_labelParameters[-1].setPalette(palette_parSection)
+                    ui.cohModel_labelParameters[-1].setFont(font_normalLabel)
+                    ui.cohModel_labelParameters[-1].setObjectName(ui.cohModelPar_list[i][j])
+                    ui.gridLayout_cohModel.addWidget(ui.cohModel_labelParameters[-1], 1+j, 0, 1, 1)
+                    # adding line edit entries
+                    ui.cohModel_lineEditParameters.append(QtWidgets.QLineEdit(ui.scrollAreaWidgetContents_cohModel))
+                    ui.cohModel_lineEditParameters[-1].setFont(font_normalLabel)
+                    ui.cohModel_lineEditParameters[-1].setObjectName("lineEdit_"+ui.cohModelPar_list[i][j])
+                    ui.cohModel_lineEditParameters[-1].setStyleSheet('background: '+colortxt_textEdit)
+                    ui.gridLayout_cohModel.addWidget(ui.cohModel_lineEditParameters[-1], 1+j, 1, 1, 1)
+                    # setting size
+                    ui.cohModel_lineEditParameters[-1].setMaximumWidth(size_entries(ui))
+                    # Text in APP
+                    ui.add_labelsText(ui.cohModel_labelParameters[-1],ui.cohModelPar_list[i][j]+":")
+#*******************************************************************************
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# SPECTRAL DENSITY MODEL
+#===============================================================================
+
+#*******************************************************************************
+def update_specDenArea2(ui):
+    "Updates Spectral Density Area"
+    try:
+        if ui.checkBox_specDen.isChecked():
+            ui.scrollArea_SpecDensity.setWidget(ui.scrollAreaWidgetContents_SpecDensity)
+            ui.gridLayout_7.addWidget(ui.scrollArea_SpecDensity,56, 0, 1, 2)
+        else:
+            ui.gridLayout_7.removeWidget(ui.scrollArea_SpecDensity)
+            ui.scrollArea_SpecDensity.setParent(None)
+    except Exception as Error:
+        print(Error)
+#*******************************************************************************
+
+#*******************************************************************************
+def search_specDenModels2(ui):
+    "Searches Spectral Density models <*.py> in a given directory"
+    specDen_dir=ui.current_dir+"\\models\\specDensity\\"
+    os.chdir(specDen_dir)
+    sys.path.append(specDen_dir)
+    # cleaning combo box of spectral density models models
+    ui.comboBox_specDenModel.clear()
+    new_file=None
+    count=0
+    for file_dir in glob.glob("*.py"):
+        new_file = __import__(str(file_dir[:-3]))
+        ui.specDenModel_list.append([new_file.specDenModel_name,new_file])
+        ui.specDenPar_list.append(new_file.specDenModel_parameters)
+        ui.comboBox_specDenModel.addItem(ui.specDenModel_list[-1][0])
+        count+=1
+    if count!=0:
+        ui.updateSpecDenPars()
+    else:
+        temp_txt = "No spectral density models were found in folder <specDensity>"
+        ui.update_outputText(temp_txt)
+#*******************************************************************************
+
+#*******************************************************************************
+def updateSpecDenPars2(ui):
+    "Updates Spectral Density model parameters"
+    for j in range(0,len(ui.specDenPar_list)):
+        current_specDenModel = ui.comboBox_specDenModel.currentText()
+        for i in range(0,len(ui.specDenModel_list)):
+            if current_specDenModel == ui.specDenModel_list[i][0]:
+                # clearing
+                for lab in ui.specDenModel_labelParameters:
+                    ui.clear_LabelText(lab)
+                    lab.deleteLater()
+                for edits in ui.specDen_lineEditParameters:
+                    edits.deleteLater()
+                # clearing label parameters
+                ui.specDenModel_labelParameters = []
+                ui.specDen_lineEditParameters = []
+                # for each parameter:
+                for j in range(0,len(ui.specDenPar_list[i])):
+                    # adding label for each parameter
+                    ui.specDenModel_labelParameters.append(QtWidgets.QLabel(ui.scrollAreaWidgetContents_SpecDensity))
+                    ui.specDenModel_labelParameters[-1].setPalette(palette_parSection)
+                    ui.specDenModel_labelParameters[-1].setFont(font_normalLabel)
+                    ui.specDenModel_labelParameters[-1].setObjectName(ui.specDenPar_list[i][j])
+                    ui.gridLayout_SpecDensity.addWidget(ui.specDenModel_labelParameters[-1], 4+j, 0, 1, 1)
+                    # adding line edit entries
+                    ui.specDen_lineEditParameters.append(QtWidgets.QLineEdit(ui.scrollAreaWidgetContents_SpecDensity))
+                    ui.specDen_lineEditParameters[-1].setFont(font_normalLabel)
+                    ui.specDen_lineEditParameters[-1].setObjectName("lineEdit_"+ui.specDenPar_list[i][j])
+                    ui.specDen_lineEditParameters[-1].setStyleSheet('background: '+colortxt_textEdit)
+                    ui.gridLayout_SpecDensity.addWidget(ui.specDen_lineEditParameters[-1], 4+j, 1, 1, 1)
+                    # setting size
+                    ui.specDen_lineEditParameters[-1].setMaximumWidth(size_entries(ui))
+                    # Text in APP
+                    ui.add_labelsText(ui.specDenModel_labelParameters[-1],ui.specDenPar_list[i][j]+":")
+#*******************************************************************************
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+#*******************************************************************************
+# PROPAGATION PLANES
+#*******************************************************************************
+#===============================================================================
+
+
+#*******************************************************************************
 def update_numPlanes2(ui):
     "Updates number of propagation planes"
     current_numPlanes = ui.spinBox_numPlanes.value()  # number of planes
@@ -493,8 +583,11 @@ def update_numPlanes2(ui):
             ui.tabWidget_propsystem.addTab(ui.tab_planes_list[2],"Plane 3")
         elif ui.tabWidget_propsystem.count()==2:
             ui.tabWidget_propsystem.addTab(ui.tab_planes_list[2],"Plane 3")
+#*******************************************************************************
 
+#*******************************************************************************
 def updatePropPlanePars2(ui):
+    "Updates Propagation Planes labels, lineedits, models and parameters"
     # for later...
     _translate = QtCore.QCoreApplication.translate
 
@@ -619,11 +712,9 @@ def updatePropPlanePars2(ui):
         ''')
         #ui.comboBox_pupilGeom_list[-1].currentIndexChanged.connect(ui.updatePupilGeomPars)
         ui.comboBox_pupilGeom_list[-1].currentIndexChanged.connect(functools.partial(ui.updatePupilGeomPars,iP))
-
         #***********************************************************************
         #///////////////////////////////////////////////////////////////////////
         #***********************************************************************
-
 
         #***********************************************************************
         # OPTICS
@@ -684,11 +775,13 @@ def updatePropPlanePars2(ui):
     # add all to gridlayout 7
     ui.gridLayout_7.addWidget(ui.tabWidget_propsystem, 65, 0, 1, 2)
 
+#*******************************************************************************
 
 #===============================================================================
 # Pupil Functions
 #===============================================================================
 
+#*******************************************************************************
 def updatePupilArea2(ui):
     "Updates pupil scroll area"
     for i in range(0,ui.max_numPlanes):
@@ -698,7 +791,9 @@ def updatePupilArea2(ui):
         else:
             ui.gridLayout_propPlanes_list[i].removeWidget(ui.scrollArea_pupil_list[i])
             ui.scrollArea_pupil_list[i].setParent(None)
+#*******************************************************************************
 
+#*******************************************************************************
 def searchPupilGeom2(ui):
     "Search for Pupil geometry functions <*.py>"
     try:
@@ -729,7 +824,9 @@ def searchPupilGeom2(ui):
     except Exception as error:
         print(error)
         ui.update_outputText(str(error)+" at <mainFunctions.py> in function <searchPupilGeom2>")
+#*******************************************************************************
 
+#*******************************************************************************
 def updatePupilGeomPars2(ui,Plane):
     "Updates Pupil Geometry parameters"
 
@@ -766,6 +863,7 @@ def updatePupilGeomPars2(ui,Plane):
                 ui.pupilGeom_lineEditParameters[Plane][-1].setMaximumWidth(size_entries(ui))
                 # Text in APP:
                 ui.add_labelsText(ui.pupilGeom_labelParameters[Plane][-1],ui.pupilGeomFuncPars_list[Plane][i][j]+":")
+#*******************************************************************************
 
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
@@ -776,8 +874,7 @@ def updatePupilGeomPars2(ui,Plane):
 # Optic Devices Functions
 #===============================================================================
 
-###
-#update_opticsPars2
+#*******************************************************************************
 def update_opticsArea2(ui):
     "Updates optical device Scroll Area"
     for i in range(0,ui.max_numPlanes):
@@ -790,8 +887,9 @@ def update_opticsArea2(ui):
                 ui.scrollArea_optics_list[i].setParent(None)
         except Exception as Error:
             print(Error)
+#*******************************************************************************
 
-###
+#*******************************************************************************
 def searchOpticsFunc2(ui):
     "Search for optical device function in <functions\optics>"
     try:
@@ -823,8 +921,9 @@ def searchOpticsFunc2(ui):
     except Exception as Error:
         print(Error)
         #ui.comboBox_pupilGeom_list[i].currentIndexChanged.connect(ui.updatePupilGeomPars)
+#*******************************************************************************
 
-###
+#*******************************************************************************
 def updateOpticsFuncPars2(ui,Plane):
     "Update Optical Function Paremeters"
     # current selected Geometric model in plane <iP>
@@ -862,13 +961,23 @@ def updateOpticsFuncPars2(ui,Plane):
                 ui.optDevicePars_lineEditParameters[Plane][-1].setMaximumWidth(size_entries(ui))
                 # Text in APP
                 ui.add_labelsText(ui.optDeviceFunc_labelParameters[Plane][-1],ui.optDeviceFuncPars_list[Plane][i][j]+":")
-
+#*******************************************************************************
 
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
 #===============================================================================
 
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#///////////////////////////////////////////////////////////////////////////////
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#-------------------------------------------------------------------------------
 def updateSpaceRes2(ui):
+    "Updates Spatial resolution for each plane"
     try:
         dx_list = []
         numPlanes = int(ui.spinBox_numPlanes.text())
@@ -912,21 +1021,21 @@ def updateSpaceRes2(ui):
                 except Exception as error:
                     ui.update_outputText(error)
 
-
             ui.dx_list = dx_list
 
-
-
     except Exception as error:
-        pass# ui.update_outputText(error)
+        pass ## ui.update_outputText(error)
+#_______________________________________________________________________________
 
+
+#-------------------------------------------------------------------------------
 def updateOmegaRes2(ui):
+    "Updates the angular frequency resolution"
     try:
         theta = float(ui.lineEdit_theta.text())
         N = float(ui.lineEdit_N.text())
         if ui.checkBox_FFT.isChecked():
             N = float(ui.lineEdit_NZ.text())
-
 
         for i in range(0,int(ui.spinBox_numPlanes.text())):
             if i==0:
@@ -937,30 +1046,38 @@ def updateOmegaRes2(ui):
             ui.textBrowser_spatialRes_list[i].setText('Angular Frequency Resolution: '+"{:.6E}".format(Decimal(str(ui.d_omega)))+" rad/s")
 
     except Exception as error:
-        pass#ui.update_outputText(error)
+        pass ##ui.update_outputText(error)
+#_______________________________________________________________________________
 
 
+#===============================================================================
+# From File Updates
+#===============================================================================
 
+#*******************************************************************************
 def updateGeoFromFile2(ui):
     if ui.checkBox_geoFromFile.checkState():
         #ui.gridLayout_cohModel.removeWidget(ui.scrollArea_cohModel)
         #ui.scrollArea_cohModel.setParent(None)
         ui.gridLayout_geometry.removeWidget(ui.scrollArea_geometry)
         ui.scrollArea_geometry.setParent(None)
-        ui.checkBox_CSDMFromFile.setVisible(False)
-        ui.lineEdit_dirCSDMmatrix.setVisible(False)
-        ui.toolButton_CSDMfromfile.setVisible(False)
+        ui.checkBox_CSDAFromFile.setVisible(False)
+        ui.lineEdit_dirCSDAmatrix.setVisible(False)
+        ui.toolButton_CSDAfromfile.setVisible(False)
     else:
         #ui.scrollArea_cohModel.setWidget(ui.scrollAreaWidgetContents_cohModel)
         #ui.gridLayout_7.addWidget(ui.scrollArea_cohModel,51, 0, 1, 2)
-        ui.checkBox_CSDMFromFile.setVisible(True)
-        ui.lineEdit_dirCSDMmatrix.setVisible(True)
-        ui.toolButton_CSDMfromfile.setVisible(True)
+        ui.checkBox_CSDAFromFile.setVisible(True)
+        ui.lineEdit_dirCSDAmatrix.setVisible(True)
+        ui.toolButton_CSDAfromfile.setVisible(True)
         ui.scrollArea_geometry.setWidget(ui.scrollAreaWidgetContents_geometry)
         ui.gridLayout_7.addWidget(ui.scrollArea_geometry,49, 0, 1, 2)
+#*******************************************************************************
 
-def updateCSDMFromFile2(ui):
-    if ui.checkBox_CSDMFromFile.checkState():
+#*******************************************************************************
+def updateCSDAFromFile2(ui):
+    "Updates CSDA from file section"
+    if ui.checkBox_CSDAFromFile.checkState():
         ui.checkBox_geoFromFile.setVisible(False)
         ui.lineEdit_dirGeoMatrix.setVisible(False)
         ui.toolButton_geoFromFile.setVisible(False)
@@ -978,8 +1095,16 @@ def updateCSDMFromFile2(ui):
         ui.gridLayout_7.addWidget(ui.scrollArea_cohModel,51, 0, 1, 2)
         ui.scrollArea_geometry.setWidget(ui.scrollAreaWidgetContents_geometry)
         ui.gridLayout_7.addWidget(ui.scrollArea_geometry,49, 0, 1, 2)
+#*******************************************************************************
 
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#*******************************************************************************
 def updatePropQuantity2(ui):
+    "Updates Propagation Quantity Section"
     _translate = QtCore.QCoreApplication.translate
     if ui.comboBox_propQuant.currentIndex()==0:
         #ui.checkBox_freqDep.setVisible(False)
@@ -998,7 +1123,6 @@ def updatePropQuantity2(ui):
             ui.lineEdit_distances_list[i].textChanged.connect(ui.updateSpaceRes)
         ui.updateSpaceRes()
 
-
     elif ui.comboBox_propQuant.currentIndex()==1:
         #ui.checkBox_freqDep.setText(_translate("MainWindow", "Frequency-independent Spatial Coherence"))
         ui.comboBox_specPropModels.setVisible(True)
@@ -1015,4 +1139,5 @@ def updatePropQuantity2(ui):
         for i in range(0,int(ui.spinBox_numPlanes.text())):
             ui.lineEdit_distances_list[i].textChanged.connect(ui.updateOmegaRes)
         ui.updateOmegaRes()
+#_______________________________________________________________________________
 
