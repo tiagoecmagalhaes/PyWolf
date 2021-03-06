@@ -69,8 +69,8 @@ def geomFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug):
                 int row =  get_global_id(0);
                 int col = get_global_id(1);
 
-                int x=col-M;
-                int y=(M-row);
+                int x = col-M;
+                int y = M-row;
 
                 double y2=(double) y;
                 double x2=(double) x;

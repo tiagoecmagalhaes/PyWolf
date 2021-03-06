@@ -79,8 +79,9 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
                     //=========================================================
                     // Point R2
                     //=========================================================
-                    int y2=-(M-row);
+
                     int x2= col-M;
+                    int y2= M-row;
 
                     double x22 = (double) x2;
                     double y22 = (double) y2;
@@ -117,8 +118,9 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
                 for j1 in range(0,N):
 
                     # Q functions for object plane
-                    x1=j1-M
                     y1=M-i1
+                    x1=j1-M
+
 
                     r1_x=x1*dlp
                     r1_y=y1*dlp

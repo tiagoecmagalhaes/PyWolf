@@ -38,7 +38,7 @@ def func_testPars(ui):
     # Collecting parameters
     #===========================================================================
     # adding text to app
-
+    ui.update_outputText("Testing Parameters...")
     # options
     nameTime_list = [ui.lineEdit_simName.text(),ui.give_time()]
     pyopencl_list = [ui.checkBox_pyopencl.isChecked(),ui.comboBox_platform.currentIndex(),ui.comboBox_device.currentIndex()]
@@ -208,20 +208,23 @@ def func_testPars(ui):
     #---------------------------------------------------------------------------
     # Creating Directory
     #---------------------------------------------------------------------------
-    ##try:
-        ##add_directory="\\"+"results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
-        ##"_"+str(time_now.hour)+"h"+minutes+"_"+nameTime_list[0]
-    ##except:
-        ##add_directory="\\"+"results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
-        ##"_"+str(time_now.hour)+"h"+minutes
+    try:
+        add_directory="\\"+"results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
+        "_"+str(time_now.hour)+"h"+minutes+"_"+nameTime_list[0]
+    except:
+        add_directory="\\"+"results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
+        "_"+str(time_now.hour)+"h"+minutes
     #---------------------------------------------------------------------------
 
     if options_list[2][0]:
-         options_list[2][1] = options_list[2][1]+add_directory
-         try:
-            os.makedirs(options_list[2][1])
-            ui.update_outputText("Directory created in <"+str(options_list[2][1])+">")
-         except:
+        ui.update_outputText(options_list[2][1])
+        options_list[2][1] = options_list[2][1]+add_directory
+
+        try:
+            pass
+            ##os.makedirs(options_list[2][1])
+            ##ui.update_outputText("Directory created in <"+str(options_list[2][1])+">")
+        except:
             ui.update_outputText("[Error] Unable to create save directory <"+str(options_list[2][1])+">")
             return([False,all_parameters_list])
 

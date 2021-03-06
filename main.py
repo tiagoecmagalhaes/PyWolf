@@ -1374,7 +1374,7 @@ class Ui_MainWindow(QMainWindow):
         self.comboBox_propQuant.setFont(font_normalLabel)
         self.comboBox_propQuant.setObjectName("comboBox_propQuant")
         self.gridLayout_propQuantity.addWidget(self.comboBox_propQuant, 0, 1, 1, 1)
-        self.comboBox_propQuant.addItem("Degree of coherence",1)
+        self.comboBox_propQuant.addItem("Degree of coherence & Intensity",1)
         ##self.comboBox_propQuant.addItem("Spectrum",2)
         # setting size
         #self.comboBox_propQuant.setMaximumWidth(self.minwidth_combo)
@@ -1677,9 +1677,9 @@ class Ui_MainWindow(QMainWindow):
             border-width: 5px;
             /*border-radius: 10px;*/
             border-color: #C29A00;
-            font: bold 17px;
+            font: bold 16px;
             color: #00234C;
-            padding: 6px;
+            padding: 0px; /* 6px*/
         }
         QPushButton::pressed{
                              background-color : #C29A00;
@@ -2492,9 +2492,6 @@ This software is licensed to you under the terms of the GNU General Public Licen
     def updateSpecDenPars(self):
         updateSpecDenPars2(self)
 
-
-    def resizeEvent(self, *args, **kwargs):
-        print("a")
 
     #***************************************************************************
     # Starts the Simulation

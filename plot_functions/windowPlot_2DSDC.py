@@ -1,18 +1,19 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        WindowPlot 2D Spectral Degree of Coherence
+# Purpose:     PyWolf function to plot the spectral degree of coherence for a
+#              given point x1
 #
-# Author:      Tiago
+# Author:      Tiago E. C. Magalhaes
 #
-# Created:     25/01/2020
-# Copyright:   (c) Tiago 2020
-# Licence:     <your licence>
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
+
 
 #===============================================================================
 # Importing Packages
 #===============================================================================
 
+# sys, os, random, copy
 import sys, os, random, copy
 
 # PyQt5
@@ -740,7 +741,7 @@ class Canvas_2DSDC:
         try:
             self.axes.set_title(self.lineEdit_title.text(),fontsize = self.fsize)
             self.canvas.draw()
-            self.title = str(self.lineEdit_title.text())
+            ##self.title = str(self.lineEdit_title.text())
         except:
             pass
 

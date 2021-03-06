@@ -8,12 +8,28 @@
 #-------------------------------------------------------------------------------
 
 
+
+#===============================================================================
+# Importing Packages
+#===============================================================================
+# NumPy
+from numpy import save, load
+
+# OS
+import os
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
 #===============================================================================
 # Save Project File <.wolf>
 #===============================================================================
 def save_project_file2(ui,dirName):
     "Saves project into a <.wolf> file"
     try:
+        ui.update_outputText(dirName)
         file = open(dirName,"w")
 
         # building file
@@ -203,56 +219,63 @@ def load_project_file2(ui,dirProj):
 
         ui.final_list = []
 
-        actual = ""
+        actual  = ""
         count_n = 0
-        for i in range(12,Nt):
-            if text[i]=="!":
-                one_list = []
-                one_state = True
+        i       = 12
+        while count_n < 41:
+            while i<=Nt:
+            ##for i in range(12,Nt):
+                if text[i]=="!":
+                    one_list = []
+                    one_state = True
 
-            elif text[i]=="%":
-                sub_list = []
-                two_list = []
-                double_state = True
-
-            elif text[i] == "\t":
-                # case !
-                if one_state == True:
-                    one_list.append(actual)
-                    actual = ""
-
-                # case %
-                elif double_state == True:
-                    sub_list.append(actual)
-                    actual=""
-
-            elif text[i]=="&":
-                two_list.append(sub_list)
-                sub_list = []
-                actual = ""
-
-            elif text[i]=="?":
-                ui.final_list.append([text[i+1:-1]])
-
-            elif text[i]=="\n":
-                if one_state == True:
-                    ui.final_list.append(one_list)
-                    one_list  = []
-                    one_state = False
-                    actual    = ""
-
-                elif double_state == True:
-                    ui.final_list.append(two_list)
-                    double_state = False
+                elif text[i]=="%":
                     sub_list = []
                     two_list = []
-                    actual   = ""
+                    double_state = True
 
-                else:
-                    ui.final_list.append(actual)
+                elif text[i] == "\t":
+                    # case !
+                    if one_state == True:
+                        one_list.append(actual)
+                        actual = ""
+
+                    # case %
+                    elif double_state == True:
+                        sub_list.append(actual)
+                        actual=""
+
+                elif text[i]=="&":
+                    two_list.append(sub_list)
+                    sub_list = []
                     actual = ""
-            else:
-                actual+= text[i]
+
+                elif count_n==41: # text[i]=="?"
+                    ui.final_list.append(text[i+1:-1])
+                    break
+
+                elif text[i]=="\n":
+                    count_n +=1
+
+                    if one_state == True:
+                        ui.final_list.append(one_list)
+                        one_list  = []
+                        one_state = False
+                        actual    = ""
+
+                    elif double_state == True:
+                        ui.final_list.append(two_list)
+                        double_state = False
+                        sub_list = []
+                        two_list = []
+                        actual   = ""
+
+                    else:
+                        ui.final_list.append(actual)
+                        actual = ""
+                else:
+                    actual+= text[i]
+                i+=1
         #-----------------------------------------------------------------------
         #///////////////////////////////////////////////////////////////////////
         #-----------------------------------------------------------------------
@@ -529,7 +552,7 @@ def save_results_file2(ui,dirName,spec=False):
         ui.update_outputText("[Info] Source SDC Phase saved in "+str(dirName)+"/CSDA_source2dSDC_phase.npy")
 
         # Propagated SDC
-        save(dirName+"\\sourceSDC_mag",ui.canvasPropSDC.propSDC_mag)
+        save(dirName+"\\propSDC_mag",ui.canvasPropSDC.propSDC_mag)
         ui.update_outputText("[Info] Source 2D SDC magnitude saved in "+str(dirName)+"/source2dSDC_mag.npy")
         save(dirName+"\\sourceSDC_phase",ui.canvasPropSDC.propSDC_phase)
         ui.update_outputText("[Info] Source SDC Phase saved in "+str(dirName)+"/CSDA_source2dSDC_phase.npy")
@@ -556,34 +579,51 @@ def save_results_file2(ui,dirName,spec=False):
 
         # SDC prop x-array
         save(dirName+"\\x_array_prop",ui.canvasPropSDC.b_array)
-        ui.update_outputText("[Info] Propagation x-array saved in "+str(dirName)+"/x_array_prop.npy")
+        ui.update_outputText("[Info] Propagation x-array saved in "+str(dirName)+"\\x_array_prop.npy")
 
         # SDC Source points
-        file1    = open(dirName+"\\SourceSDCpoints.txt","w")
-        temp_txt = "P_1x: "+str(ui.canvasSourceSDC.P1x)+"\n"+"P_1y: "+str(ui.canvasSourceSDC.P1y)+"\n"+"P_2x: "+str(ui.canvasSourceSDC.P2x)+"\n"
-        file1.write(temp_txt)
-        file1.close()
+        try:
+            ui.update_outputText(dirName+"\\SourceSDCpoints.txt")
+            file1    = open(dirName+"\\SourceSDCpoints.txt","w")
+            temp_txt = "P_1x: "+str(ui.canvasSourceSDC.P1x)+"\n"+"P_1y: "+str(ui.canvasSourceSDC.P1y)+"\n"+"P_2x: "+str(ui.canvasSourceSDC.P2x)+"\n"
+            file1.write(temp_txt)
+            file1.close()
+            ui.update_outputText("[Info] SDC source points saved in "+str(dirName)+"\\SourceSDCpoints.txt")
+        except Exception as error:
+            ui.update_outputText(str(error))
 
         # SDC Propagation points
-        file1    = open(dirName+"\\PropagationSDCpoints.txt","w")
-        temp_txt = "P_1x: "+str(ui.canvasPropSDC.P1x)+"\n"+"P_1y: "+str(ui.canvasPropSDC.P1y)+"\n"+"P_2x: "+str(ui.canvasPropSDC.P2x)+"\n"
-        file1.write(temp_txt)
-        file1.close()
+        try:
+            file1    = open(dirName+"\\PropagationSDCpoints.txt","w")
+            temp_txt = "P_1x: "+str(ui.canvasPropSDC.P1x)+"\n"+"P_1y: "+str(ui.canvasPropSDC.P1y)+"\n"+"P_2x: "+str(ui.canvasPropSDC.P2x)+"\n"
+            file1.write(temp_txt)
+            file1.close()
+            ui.update_outputText("[Info] SDC propagation points saved in "+str(dirName)+"\\PropSDCpoints.txt")
+        except Exception as error:
+            ui.update_outputText(str(error))
 
         # SDC 2D Source points
-        file1    = open(dirName+"\\Source2dSDCpoints.txt","w")
-        temp_txt = "P_1x: "+str(ui.canvasSourceSDC2d.P1x)+"\n"+"P_1y: "+str(ui.canvasSourceSDC.P1y)
-        file1.write(temp_txt)
-        file1.close()
+        try:
+            file1    = open(dirName+"\\Source2dSDCpoints.txt","w")
+            temp_txt = "P_1x: "+str(ui.canvasSourceSDC2d.P1x)+"\n"+"P_1y: "+str(ui.canvasSourceSDC.P1y)
+            file1.write(temp_txt)
+            file1.close()
+            ui.update_outputText("[Info] 2D SDC source points saved in "+str(dirName)+"\\Source2dSDCpoints.txt")
+        except Exception as error:
+            ui.update_outputText(str(error))
 
         # SDC 2D Propagation points
-        file1    = open(dirName+"\\Propagation2dSDCpoints.txt","w")
-        temp_txt = "P_1x: "+str(ui.canvasProp2D_SDC.P1x)+"\n"+"P_1y: "+str(ui.canvasProp2D_SDC.P1y)
-        file1.write(temp_txt)
-        file1.close()
+        try:
+            file1    = open(dirName+"\\Prop2dSDCpoints.txt","w")
+            temp_txt = "P_1x: "+str(ui.canvasProp2D_SDC.P1x)+"\n"+"P_1y: "+str(ui.canvasProp2D_SDC.P1y)
+            file1.write(temp_txt)
+            file1.close()
+            ui.update_outputText("[Info] 2D SDC propagation points saved in "+str(dirName)+"\\Prop2dSDCpoints.txt")
+        except Exception as error:
+            ui.update_outputText(str(error))
 
         # save project file
-        ui.save_project_file(dirName)
+        save_project_file2(ui,dirName+"\\"+str(ui.lineEdit_simName.text()+".wolf"))
 
         # saving notes
         with open(dirName+"\\notes.txt", 'w') as yourFile:

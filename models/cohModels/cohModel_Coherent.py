@@ -56,10 +56,10 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
         #***********************************************************************
         # PyOpenCL kernel function
         #***********************************************************************
-        CL_incoh=None
+        CL_coh=None
 
         # KERNEL: CODE EXECUTED ON THE GPU
-        CL_incoh=Program(context,"""
+        CL_coh=Program(context,"""
             //PYOPENCL_COMPILER_OUTPUT=1
 
             __kernel void increase(__global float *res,

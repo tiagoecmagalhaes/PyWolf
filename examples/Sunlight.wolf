@@ -1,0 +1,60 @@
+PyWolf v1.00
+Sunlight
+[18/01/2021 15:17:01]
+True
+<pyopencl.Platform 'AMD Accelerated Parallel Processing' at 0x7ffeaf152fd0>
+<pyopencl.Device 'Tonga' on 'AMD Accelerated Parallel Processing' at 0x1fb14150eb0>
+True
+False
+False
+C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
+False
+128
+False
+256
+0
+Frequency-Independent Model
+1e-3
+Single Frequency
+None
+3.24992e15
+9.943e7
+False
+C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
+False
+C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
+Circle
+!7	
+Incoherent
+!
+False
+Gaussian
+!	
+1
+!1.496e11	
+!True	
+!False	
+!None	
+%None&
+!False	
+!None&
+%None	
+?# Propagation of Light from the Sun to Earth
+
+- The Sun is assumed as an incoherent and homogeneous source
+- It's radius is approximately 6.96E8 meters
+- The distance Sun-Earth is approximately 1.496e11 meters
+- The far-field approximation is used
+
+- We will use N=128 and, therefore, the CSDA will have N^4 complex elements. 
+
+- We will not use zero padding for the FFT
+
+- The angular frequency will be w0 =3.24992e15 rad/seg (yellow)
+
+- The geometry will be a circle, with a radius (in arbitrary units) of r=7
+
+- Therefore, the spatial resolution will be the radius of the Sun divided by the radius in arbitrary units, i.e., 6.96E8/7 = 9.943e7
+
+- The coherence model is incoherent
+

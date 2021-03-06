@@ -538,11 +538,11 @@ def func_startSim(ui,all_parameters):
             dx = None
             if useFFTzeroPadding:
                 ui.update_outputText("FFT zero padding will be used.")
-                dx = 2*pi*3e8*distances_list[0]/(Cfrequency*NZ*sourceRes)
+                dx = 2*pi*c*distances_list[0]/(Cfrequency*NZ*sourceRes)
                 ui.update_outputText("Spatial Resolution in Plane 1 (m): "+str(dx))
             else:
                 ui.update_outputText("FFT zero padding will NOT be used.")
-                dx = 2*pi*3e8*distances_list[0]/(Cfrequency*N*sourceRes)
+                dx = 2*pi*c*distances_list[0]/(Cfrequency*N*sourceRes)
                 ui.update_outputText("Spatial Resolution in Plane 1 (m): "+str(dx))
 
 
@@ -695,7 +695,7 @@ def func_startSim(ui,all_parameters):
             #=======================================================================
             # Creating Propagation Image
             #=======================================================================
-            # creating image source
+            # creating image propagation
             ui.CSDA_prop.image = zeros((N,N))
             for i in range(0,N):
                 for j in range(0,N):
@@ -827,14 +827,6 @@ def func_startSim(ui,all_parameters):
 
                     ui.save_results_file(directory_txt,propQuantity)
 
-                    """
-                    with open(directory_txt+"\\notes.txt", 'w') as yourFile:
-                        yourFile.write(str(ui.plainTextEdit.toPlainText())) ## notes
-                        save(directory_txt+"\\CSDA_prop_image",ui.CSDA_prop.image)
-                        save(directory_txt+"\\CSDA_source_image",ui.CSDA_source.image)
-                        save(directory_txt+"\\CSDA_source_image",ui.CSDA_source.image)
-                        ui.save_project_file(directory_txt)
-                    """
 
                 ## saving CSDA source
                 if toSaveSourceCSDA:

@@ -547,7 +547,7 @@ class Canvas_propSpec:
             self.change_labelx()
             self.change_labely()
             self.update_draw()
-            print(self.fsize)
+            ##print(self.fsize)
 
         except Exception as error:
             pass #self.ui.update_outputText(error)
