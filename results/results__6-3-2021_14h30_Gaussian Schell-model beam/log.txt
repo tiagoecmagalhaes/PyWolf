@@ -1,0 +1,95 @@
+
+[06/03/2021 14:26:45]
+[06/03/2021 14:26:45]	Total Ram: 31.9 GB
+[06/03/2021 14:26:45]	Available Ram: 24.0 GB (75.3 %)
+[06/03/2021 14:27:41]	list index out of range
+[06/03/2021 14:27:41]	list index out of range
+[06/03/2021 14:27:41]	list index out of range
+[06/03/2021 14:27:41]	list index out of range
+[06/03/2021 14:27:41]	list index out of range
+[06/03/2021 14:27:41]	list index out of range
+[06/03/2021 14:27:41]	list index out of range
+[06/03/2021 14:27:41]	Project loaded!
+[06/03/2021 14:28:47]	list index out of range
+[06/03/2021 14:28:47]	list index out of range
+[06/03/2021 14:28:47]	list index out of range
+[06/03/2021 14:28:47]	list index out of range
+[06/03/2021 14:28:48]	list index out of range
+[06/03/2021 14:28:48]	list index out of range
+[06/03/2021 14:28:48]	list index out of range
+[06/03/2021 14:28:48]	list index out of range
+[06/03/2021 14:28:48]	list index out of range
+[06/03/2021 14:28:48]	list index out of range
+[06/03/2021 14:28:48]	list index out of range
+[06/03/2021 14:28:48]	list index out of range
+[06/03/2021 14:30:09]	C:/Users/Tiago/Documents/GitHub/PyWolf/examples/Gaussian Schell-model beam.wolf
+[06/03/2021 14:30:09]	[Info] Project has been saved in C:/Users/Tiago/Documents/GitHub/PyWolf/examples/Gaussian Schell-model beam.wolf
+[06/03/2021 14:30:15]	We will first test the parameters. Please wait...
+[06/03/2021 14:30:15]	Testing Parameters...
+[06/03/2021 14:30:15]	C:\Users\Tiago\Documents\GitHub\PyWolf\results
+[06/03/2021 14:30:15]	No geometry or CSDA is pre-loaded.
+[06/03/2021 14:30:15]	All parameters are OK.
+[06/03/2021 14:30:15]	Organizing Parameters...
+[06/03/2021 14:30:15]	Platform Chosen: <pyopencl.Platform 'AMD Accelerated Parallel Processing' at 0x7ffe9d602fd0>
+[06/03/2021 14:30:15]	Device Chosen: <pyopencl.Device 'Tonga' on 'AMD Accelerated Parallel Processing' at 0x204284e4b90>
+[06/03/2021 14:30:22]	The source geometry is being created. Please wait...
+[06/03/2021 14:30:22]	Starting geometric function...
+[06/03/2021 14:30:22]	This Geometry Model does not require PyOpenCL
+[06/03/2021 14:30:22]	Starting Cycle...
+[06/03/2021 14:30:22]	__
+[06/03/2021 14:30:25]	The Source geometry of the cross-spectral density matrix has been created!
+[06/03/2021 14:30:25]	The Source coherence model will now be constructed...
+[06/03/2021 14:30:25]	Starting Gaussian-Schell model function...
+[06/03/2021 14:30:25]	sigma_S: 41.0
+[06/03/2021 14:30:25]	sigma_mu: 21.0
+[06/03/2021 14:30:25]	PyOpenCl will be used. Starting Cycle...
+[06/03/2021 14:30:25]	__
+[06/03/2021 14:31:02]	elapsed time (s): 36.76336073875427
+[06/03/2021 14:31:02]	The cross-spectral density of the source has been completed!
+[06/03/2021 14:31:02]	Custom Spectral density model not selected.
+[06/03/2021 14:31:02]	Plotting Graphs...
+[06/03/2021 14:31:06]	Completed!
+[06/03/2021 14:31:10]	FFT zero padding will NOT be used.
+[06/03/2021 14:31:10]	Spatial Resolution in Plane 1 (m): 9.993048572156894e-05
+[06/03/2021 14:31:10]	Propagation for Plane 1 initiating...
+[06/03/2021 14:31:10]	Multiplying by Q functions...
+[06/03/2021 14:31:10]	PyOpenCl will be used. Starting Cycle...
+[06/03/2021 14:31:10]	__
+[06/03/2021 14:31:52]	Task Completed!
+[06/03/2021 14:31:52]	Performing 1st 2D Fourier transforms...
+[06/03/2021 14:31:52]	___
+[06/03/2021 14:32:34]	2D Fourier transforms completed!
+[06/03/2021 14:32:34]	Transposing matrix...
+[06/03/2021 14:32:34]	Transposing completed!
+[06/03/2021 14:32:34]	Performing 2nd 2D Fourier transforms...
+[06/03/2021 14:32:34]	___
+[06/03/2021 14:35:49]	2D Fourier transforms completed!
+[06/03/2021 14:35:49]	Transposing matrix...
+[06/03/2021 14:35:49]	Transposing completed!
+[06/03/2021 14:35:49]	Multiplying by Q functions...
+[06/03/2021 14:35:49]	PyOpenCl will be used. Starting Cycle...
+[06/03/2021 14:35:49]	__
+[06/03/2021 14:36:36]	Task Completed!
+[06/03/2021 14:36:36]	Propagation for Plane 1 completed!
+[06/03/2021 14:36:36]	**Propagation Completed**
+[06/03/2021 14:36:41]	[Info] Source image saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/CSDA_source_image.npy
+[06/03/2021 14:36:41]	[Info] Propagation image saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/CSDA_prop_image.npy
+[06/03/2021 14:36:41]	[Info] Source 2D SDC magnitude saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/source2dSDC_mag.npy
+[06/03/2021 14:36:41]	[Info] Source SDC Phase saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/CSDA_source2dSDC_phase.npy
+[06/03/2021 14:36:41]	[Info] Source 2D SDC magnitude saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/source2dSDC_mag.npy
+[06/03/2021 14:36:41]	[Info] Source SDC Phase saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/CSDA_source2dSDC_phase.npy
+[06/03/2021 14:36:41]	[Info] Source 2D SDC magnitude saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/source2dSDC_mag.npy
+[06/03/2021 14:36:41]	[Info] Source 2D SDC Phase saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/CSDA_source2dSDC_phase.npy
+[06/03/2021 14:36:41]	[Info] Propagation 2D SDC real saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/CSDA_propSDC2D_real.npy
+[06/03/2021 14:36:41]	[Info] Propagation 2D SDC imaginary saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/CSDA_propSDC2D_imag.npy
+[06/03/2021 14:36:41]	[Info] Propagation 2D SDC magnitude saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/CSDA_propSDC2D_mag.npy
+[06/03/2021 14:36:41]	[Info] Propagation 2D SDC Phase saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/CSDA_propSDC2D_phase.npy
+[06/03/2021 14:36:41]	[Info] Propagation x-array saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam/x_array_source.npy
+[06/03/2021 14:36:41]	[Info] Propagation x-array saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam\x_array_prop.npy
+[06/03/2021 14:36:41]	C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam\SourceSDCpoints.txt
+[06/03/2021 14:36:41]	[Info] SDC source points saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam\SourceSDCpoints.txt
+[06/03/2021 14:36:41]	[Info] SDC propagation points saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam\PropSDCpoints.txt
+[06/03/2021 14:36:41]	[Info] 2D SDC source points saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam\Source2dSDCpoints.txt
+[06/03/2021 14:36:41]	[Info] 2D SDC propagation points saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam\Prop2dSDCpoints.txt
+[06/03/2021 14:36:41]	C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam\Gaussian Schell-model beam.wolf
+[06/03/2021 14:36:41]	[Info] Project has been saved in C:\Users\Tiago\Documents\GitHub\PyWolf\results\results__6-3-2021_14h30_Gaussian Schell-model beam\Gaussian Schell-model beam.wolf

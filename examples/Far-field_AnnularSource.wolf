@@ -1,0 +1,57 @@
+PyWolf v1.00
+Far-field of an annular source
+[06/03/2021 12:35:13]
+True
+<pyopencl.Platform 'AMD Accelerated Parallel Processing' at 0x7ffe9d602fd0>
+<pyopencl.Device 'Tonga' on 'AMD Accelerated Parallel Processing' at 0x214204e1300>
+True
+False
+False
+C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
+False
+200
+True
+512
+0
+Frequency-Independent Model
+1e-3
+Single Frequency
+None
+3.7699e15
+1e-3
+False
+C:\Users\Tiago\Documents\GitHub\PyWolf\results
+False
+C:\Users\Tiago\Documents\GitHub\PyWolf\results
+Anullar
+!11	5	
+Incoherent
+!
+False
+Gaussian
+!	
+1
+!1	
+!True	
+!False	
+!None	
+%None&
+!False	
+!None&
+%None	
+?# Far-field propagation of an annular source
+
+- Incoherent and homogeneous source with annular shape
+- Inner radius is 5 mm and outter radius is 11 mm.
+- The distance is 1 meter, where the far-field approximation is valid.
+- The far-field approximation is used
+
+- We will use N=200 with a zero padding of Nz=512
+
+- We will use zero padding for the FFT
+
+- The angular frequency will be w0 =3.7699e15 rad/seg (yellow)
+
+- Annular geometry.
+
+- The coherence model is Incoherent.

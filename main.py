@@ -2222,7 +2222,7 @@ This software is licensed to you under the terms of the GNU General Public Licen
 
          * This software is not commercial and cannot be sold.
          * If you find this software useful for you research, please help by citing using the reference provided (F2).
-         * If you have any suggestions or comments, please send it to ___
+         * If you have any suggestions or comments, please send it to tecmagalhaes@fc.up.pt
 
         """
         QtWidgets.QMessageBox.about(self, "About", msg.strip())

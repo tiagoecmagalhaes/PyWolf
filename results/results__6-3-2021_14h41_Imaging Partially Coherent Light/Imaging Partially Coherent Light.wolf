@@ -1,6 +1,6 @@
 PyWolf v1.00
-Square Source - Fresnel propagation
-[06/03/2021 19:03:12]
+Imaging Partially Coherent Light
+[06/03/2021 14:52:56]
 True
 <pyopencl.Platform 'AMD Accelerated Parallel Processing' at 0x7ffe9d602fd0>
 <pyopencl.Device 'Tonga' on 'AMD Accelerated Parallel Processing' at 0x204284e4b90>
@@ -10,36 +10,36 @@ False
 C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
 False
 200
-True
+False
 512
 0
 Frequency-Independent Model
 1e-3
 Single Frequency
 None
-3.1415e15
-3.508771929824561e-08
+2.8560e15
+1e-6
 False
 C:\Users\Tiago\Documents\GitHub\PyWolf\results
 False
 C:\Users\Tiago\Documents\GitHub\PyWolf\results
 Rectangle
-!57	57	
-Coherent
+!10	30	
+Incoherent
 !
 False
 Gaussian
 !	
-1
-!1.0506e-6	
-!False	
-!False	
-!None	
-%None&
-!False	
-!None&
-%None	
-?# Propagation of Light from a rectangular source in the Fresnel approximation
+2
+!0.5	0.5	
+!False	True	
+!True	False	
+!Circular Pupil	None	
+%11	&None&
+!True	False	
+!Thin Lens	None&
+%0.25	&None	
+?# Aperture effects in an imaging system with partially coherent light
 
 - Coherent and homogeneous source with squared shape
 - the length of the square is 2 micrometers
@@ -50,6 +50,6 @@ Gaussian
 
 - The angular frequency will be w0 =3.1416e15 rad/seg (red)
 
-- The geometry will be a square
+- The geometry will be a sware, with a radius (in arbitrary units) of Na=57
 
 - The coherence model is Coherent

@@ -179,7 +179,7 @@ def save_project_file2(ui,dirName):
         ui.update_outputText("[Info] Project has been saved in "+dirName)
 
     except Exception as error:
-        ui.update_outputText("[Error] "+str(error))
+        pass #ui.update_outputText("[Error] "+str(error))
 
 
 #-------------------------------------------------------------------------------
