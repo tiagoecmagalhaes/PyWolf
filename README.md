@@ -1,4 +1,4 @@
-#    <img src="https://github.com/tiagoecmagalhaes/PyWolf/blob/master/logos/wolf_icon.png?raw=True" alt="logo" title="Title" style="zoom:25%;" />PyWolf
+#    <img src="https://github.com/tiagoecmagalhaes/PyWolf/blob/master/logos/wolf_icon2.png?raw=True" alt="logo" title="Title" style="zoom:25%;" />PyWolf
 
 PyWolf is a software that simulates the propagation of partially coherent light using parallel computing devices through PyOpenCL to decrease the computation time. 
 
