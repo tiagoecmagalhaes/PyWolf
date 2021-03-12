@@ -1,11 +1,9 @@
 # PyWolf 
-
 ------
 
 PyWolf is a software that simulates the propagation of partially coherent light using parallel computing devices through PyOpenCL to decrease the computation time. 
 
 ## Installation
-
 ------
 
 PyWolf is build in Python 3.7.6.
