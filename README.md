@@ -1,4 +1,4 @@
-# PyWolf 
+# PyWolf  ![logo](https://github.com/tiagoecmagalhaes/PyWolf/blob/master/logos/wolf_icon.ico "PyWolf")
 
 PyWolf is a software that simulates the propagation of partially coherent light using parallel computing devices through PyOpenCL to decrease the computation time. 
 
@@ -26,6 +26,10 @@ pip install psutil
 ```
 
 For Windows users, the PyOpenCL package can be installed through [Christoph Gohlke website](https://www.lfd.uci.edu/~gohlke/pythonlibs/) with Windows Binaries for Python Extension Packages 
+
+## Usage
+
+To start PyWolf, execute main.py. 
 
 ## License
 
