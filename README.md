@@ -13,7 +13,7 @@ To use PyWolf, the user need to install the following packages:
 - Matplolib
 - PyOpenCL
 - PyQT5
-- psutil
+- psutil (only necessary to view the available RAM)
 
 Using the package manager pip to install packages:
 
@@ -26,4 +26,10 @@ pip install psutil
 ```
 
 For Windows users, the PyOpenCL package can be installed through [Christoph Gohlke website](https://www.lfd.uci.edu/~gohlke/pythonlibs/) with Windows Binaries for Python Extension Packages 
+
+## License
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+
 
