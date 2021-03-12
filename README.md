@@ -17,7 +17,7 @@ To use PyWolf, the user need to install the following packages:
 
 Using the package manager pip to install packages:
 
-```python
+```bash
 pip install numpy
 pip install scipy
 pip install matplotlib
@@ -27,7 +27,7 @@ pip install psutil
 
 To install PyOpenCL, one can try:
 
-```python
+```bash
 pip install pyopencl
 ```
 
