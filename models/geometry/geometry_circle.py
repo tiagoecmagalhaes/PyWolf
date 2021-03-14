@@ -13,7 +13,7 @@
 #===============================================================================
 from pyopencl import *
 
-from numpy import zeros, sqrt, float32, int32, double
+from numpy import zeros, sqrt, float32, int32, double, ones
 
 import copy
 #===============================================================================

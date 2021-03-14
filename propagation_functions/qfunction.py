@@ -15,8 +15,7 @@
 from pyopencl import *
 
 # NumPy
-from numpy import zeros
-from numpy import float32, int32, double
+from numpy import zeros, exp, float32, int32, double
 
 # Import Time
 import time
