@@ -40,7 +40,7 @@ pip install psutil
 
 To start PyWolf, execute main.py and a PyQT5 window will appear (see Fig. 1).
 
-![Fig. 1](https://github.com/tiagoecmagalhaes/PyWolf/blob/master/logos/wolf.png?raw=true "Title")
+![main](https://github.com/tiagoecmagalhaes/PyWolf/blob/master/screenshots/fig1.jpg?raw=true "Fig. 1")
 
 
 
