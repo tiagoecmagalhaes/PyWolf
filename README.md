@@ -4,7 +4,11 @@ PyWolf is a software that simulates the propagation of partially coherent light 
 
 ## Support
 
-PyWolf is build in Python 3.7.6 (x64). It was implemented and tested in Windows 10 (x64).
+PyWolf is build in Python 3.7.6 (x64). It was mostly implemented in Windows 10 (x64). It was tested in the following OS:
+
+- Windows 7 (x64)
+- Windows 8/8.1 (x64)
+- Windows 10 (64)
 
 ## Installation
 
@@ -12,7 +16,7 @@ To use PyWolf, the user need to install the following packages:
 
 - NumPy (numeric)
 - SciPy (scientific)
-- Matplolib (data plots)
+- Matplolib (plots)
 - PyOpenCL (parallel computing)
 - PyQt5 (graphical user interface)
 - psutil (only necessary to view the available RAM)
@@ -43,6 +47,15 @@ To start PyWolf, execute main.py and a PyQT5 window will appear (see Fig. 1).
 ![main](https://github.com/tiagoecmagalhaes/PyWolf/blob/master/screenshots/fig1.jpg?raw=true "Fig. 1")
 
 
+
+## Troubleshooting
+
+- When OpenCL SDK is not correctly installed, the following error usually appears in the Python interpreter:
+
+  `from pyopencl._cl import bitlog2  # noqa: F401
+  ImportError: DLL load failed:`
+
+- For Windows 7 users, the update [Universal C Runtime in Windows](https://support.microsoft.com/en-us/topic/update-for-universal-c-runtime-in-windows-c0514201-7fe6-95a3-b0a5-287930f3560c) must be installed.
 
 ## License
 
