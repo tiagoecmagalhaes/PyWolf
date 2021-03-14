@@ -14,7 +14,7 @@ To use PyWolf, the user need to install the following packages:
 - SciPy (scientific)
 - Matplolib (data plots)
 - PyOpenCL (parallel computing)
-- PyQT5 (graphical user interface)
+- PyQt5 (graphical user interface)
 - psutil (only necessary to view the available RAM)
 
 Using the package manager pip to install packages:
@@ -27,13 +27,14 @@ pip install PyQt5
 pip install psutil
 ```
 
-To install PyOpenCL, one can try:
+**To install PyOpenCL, one can follow two steps:**
 
-```bash
-pip install pyopencl
-```
-
-If installing through pip does not work, Windows users can download the PyOpenCL package (.whl) in [Christoph Gohlke' website](https://www.lfd.uci.edu/~gohlke/pythonlibs/), which contains Windows Binaries for Python Extension Packages. 
+1. Install OpenCL SDK. For example:
+   - [Intel](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk.html)
+   - [NVIDIA](https://developer.nvidia.com/cuda-toolkit-32-downloads)
+   - [AMD](https://github.com/GPUOpen-LibrariesAndSDKs/OCL-SDK/releases)
+2. Install the PyOpenCL Python's package.
+   - Windows users can download the PyOpenCL package (.whl) in [Christoph Gohlke' website](https://www.lfd.uci.edu/~gohlke/pythonlibs/), which contains Windows Binaries for Python Extension Packages. For best compatibility, we recomend the OpenCL 1.2 version (denoted in the package's name by "cl12"). Make sure to download and install the package with your Python version (e.g. *pyopencl‑2021.1.3+cl12‑cp37‑cp37m‑win_amd64.whl* for Python 3.7 x64). 
 
 ## Usage
 
