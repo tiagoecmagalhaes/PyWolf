@@ -30,7 +30,7 @@ pip install psutil
 **To install PyOpenCL, one can follow two steps:**
 
 1. Install OpenCL SDK. For example:
-   - [Intel](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk.html) (Recomended for PyWolf)
+   - [Intel](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk.html) (Recommended for PyWolf)
    - [NVIDIA](https://developer.nvidia.com/cuda-toolkit-32-downloads)
    - [AMD](https://github.com/GPUOpen-LibrariesAndSDKs/OCL-SDK/releases) (Windows)
 2. Install the PyOpenCL Python's package.
