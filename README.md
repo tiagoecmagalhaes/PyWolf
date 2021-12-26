@@ -51,7 +51,7 @@ To start PyWolf, execute main.py and a PyQT5 window will appear (see Fig. 1).
 
 ## Troubleshooting
 
-- When OpenCL SDK is not correctly installed, the following error usually appears in the Python interpreter:
+- When PyOpenCL is not correctly installed, the following error usually appears in the Python interpreter:
 
   `from pyopencl._cl import bitlog2  # noqa: F401
   ImportError: DLL load failed:`
