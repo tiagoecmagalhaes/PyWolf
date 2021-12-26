@@ -8,11 +8,11 @@ PyWolf is build in Python 3.7.6 (x64). It was mostly implemented in Windows 10 (
 
 - Windows 7 (x64)
 - Windows 8/8.1 (x64)
-- Windows 10 (64)
+- Windows 10 (x64)
 
 ## Installation
 
-To use PyWolf, the user need to install the following packages:
+To use PyWolf, the user needs to install the following packages:
 
 - NumPy (numeric)
 - SciPy (scientific)
