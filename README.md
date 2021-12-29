@@ -59,6 +59,8 @@ To start PyWolf, execute main.py and a PyQT5 window will appear (see Fig. 1).
 
 - For Windows 7 users, the update [Universal C Runtime in Windows](https://support.microsoft.com/en-us/topic/update-for-universal-c-runtime-in-windows-c0514201-7fe6-95a3-b0a5-287930f3560c) must be installed.
 
+- For Linux users (e.g., Ubuntu), if PyWolf crashes with the message "Backend terminated or disconnected.", it may be due to the lack of RAM available. Try decreasing the matrix size N or decrease the usage of RAM in other applications. 
+
 ## License
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
