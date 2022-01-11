@@ -30,7 +30,7 @@ pip install matplotlib
 pip install PyQt5
 pip install psutil
 ```
-Additionally, to load images, one need to install Python's OpenCV. Using the package manager pip:
+Additionally, to load images, one needs to install Python's OpenCV. Using the package manager pip:
 ```bash
 pip install numpy opencv-python
 ```
