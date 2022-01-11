@@ -201,10 +201,13 @@ def load_project_file2(ui,dirProj):
         Nt   = len(text)
 
         # checking version
-        if text[0:12] != ui.version:
+        if text[0:11] != ui.version[0:11]:
             ui.update_outputText(text[0:11])
             ui.update_outputText("[Error] The version of PyWolf of this project is different from the current version.")
             return False
+        elif text[0:12] != ui.version[0:12]:
+            ui.update_outputText("[Info] This project was made with version "+text[0:12]+ " of PyWolf and the version you are using currently is " + ui.version[0:13] + ". It should still work.")
+
 
         #-----------------------------------------------------------------------
         # Loading Parameters
@@ -538,63 +541,79 @@ def load_project_file2(ui,dirProj):
 def save_results_file2(ui,dirName,spec=False):
     try:
         # Source image
-        save(dirName+"\\source_image",ui.CSDA_source.image)
+        # save(dirName+"\\source_image",ui.CSDA_source.image) # windows only
+        save(os.path.join(dirName,"source_image"), ui.CSDA_source.image)
         ui.update_outputText("[Info] Source image saved in "+str(dirName)+"/CSDA_source_image.npy")
 
         # Propagated image
-        save(dirName+"\\prop_image",ui.CSDA_prop.image)
+        #save(dirName+"\\prop_image",ui.CSDA_prop.image) # windows only
+        save(os.path.join(dirName,"prop_image"),ui.CSDA_prop.image)
         ui.update_outputText("[Info] Propagation image saved in "+str(dirName)+"/CSDA_prop_image.npy")
 
         # Source SDC
-        save(dirName+"\\sourceSDC_mag",ui.canvasSourceSDC.propSDC_mag)
+        #save(dirName+"\\sourceSDC_mag",ui.canvasSourceSDC.propSDC_mag) # windows only
+        save(os.path.join(dirName,"sourceSDC_mag"), ui.canvasSourceSDC.propSDC_mag)
         ui.update_outputText("[Info] Source 2D SDC magnitude saved in "+str(dirName)+"/source2dSDC_mag.npy")
-        save(dirName+"\\sourceSDC_phase",ui.canvasSourceSDC.propSDC_phase)
+        # save(dirName+"\\sourceSDC_phase",ui.canvasSourceSDC.propSDC_phase) # windows only
+        save(os.path.join(dirName,"sourceSDC_phase"),ui.canvasSourceSDC.propSDC_phase)
         ui.update_outputText("[Info] Source SDC Phase saved in "+str(dirName)+"/CSDA_source2dSDC_phase.npy")
 
         # Propagated SDC
-        save(dirName+"\\propSDC_mag",ui.canvasPropSDC.propSDC_mag)
+        #save(dirName+"\\propSDC_mag",ui.canvasPropSDC.propSDC_mag) # windows only
+        save(os.path.join(dirName,"propSDC_mag"), ui.canvasPropSDC.propSDC_mag)
         ui.update_outputText("[Info] Source 2D SDC magnitude saved in "+str(dirName)+"/source2dSDC_mag.npy")
-        save(dirName+"\\sourceSDC_phase",ui.canvasPropSDC.propSDC_phase)
+        #save(dirName+"\\sourceSDC_phase",ui.canvasPropSDC.propSDC_phase) # windows only
+        save(os.path.join(dirName,"sourceSDC_phase"), ui.canvasPropSDC.propSDC_phase)
         ui.update_outputText("[Info] Source SDC Phase saved in "+str(dirName)+"/CSDA_source2dSDC_phase.npy")
 
         # Source 2D SDC
-        save(dirName+"\\source2dSDC_mag",ui.canvasSourceSDC2d.SDC2D_mag)
+        #save(dirName+"\\source2dSDC_mag",ui.canvasSourceSDC2d.SDC2D_mag) # windows only
+        save(os.path.join(dirName,"source2dSDC_mag"),ui.canvasSourceSDC2d.SDC2D_mag)
         ui.update_outputText("[Info] Source 2D SDC magnitude saved in "+str(dirName)+"/source2dSDC_mag.npy")
-        save(dirName+"\\source2dSDC_phase",ui.canvasSourceSDC2d.SDC2D_phase)
+        #save(dirName+"\\source2dSDC_phase",ui.canvasSourceSDC2d.SDC2D_phase) # windows only
+        save(os.path.join(dirName,"source2dSDC_phase"),ui.canvasSourceSDC2d.SDC2D_phase)
         ui.update_outputText("[Info] Source 2D SDC Phase saved in "+str(dirName)+"/CSDA_source2dSDC_phase.npy")
 
         # Propagated 2D SDC
-        save(dirName+"\\prop2dSDC_real",ui.canvasProp2D_SDC.SDC2D_real)
+        #save(dirName+"\\prop2dSDC_real",ui.canvasProp2D_SDC.SDC2D_real) # windows only
+        save(os.path.join(dirName,"prop2dSDC_real"), ui.canvasProp2D_SDC.SDC2D_real)
         ui.update_outputText("[Info] Propagation 2D SDC real saved in "+str(dirName)+"/CSDA_propSDC2D_real.npy")
-        save(dirName+"\\prop2dSDC_imag",ui.canvasProp2D_SDC.SDC2D_imag)
+        #save(dirName+"\\prop2dSDC_imag",ui.canvasProp2D_SDC.SDC2D_imag) # windows only
+        save(os.path.join(dirName,"prop2dSDC_imag"),ui.canvasProp2D_SDC.SDC2D_imag)
         ui.update_outputText("[Info] Propagation 2D SDC imaginary saved in "+str(dirName)+"/CSDA_propSDC2D_imag.npy")
-        save(dirName+"\\prop2dSDC_mag",ui.canvasProp2D_SDC.SDC2D_mag)
+        #save(dirName+"\\prop2dSDC_mag",ui.canvasProp2D_SDC.SDC2D_mag) # windows only
+        save(os.path.join(dirName,"prop2dSDC_mag"), ui.canvasProp2D_SDC.SDC2D_mag)
         ui.update_outputText("[Info] Propagation 2D SDC magnitude saved in "+str(dirName)+"/CSDA_propSDC2D_mag.npy")
-        save(dirName+"\\prop2dSDC_phase",ui.canvasProp2D_SDC.SDC2D_phase)
+        #save(dirName+"\\prop2dSDC_phase",ui.canvasProp2D_SDC.SDC2D_phase) # windows only
+        save(os.path.join(dirName,"prop2dSDC_phase"), ui.canvasProp2D_SDC.SDC2D_phase)
         ui.update_outputText("[Info] Propagation 2D SDC Phase saved in "+str(dirName)+"/CSDA_propSDC2D_phase.npy")
 
         # SDC source x-array
-        save(dirName+"\\x_array_source",ui.canvasSourceSDC.b_array)
+        #save(dirName+"\\x_array_source",ui.canvasSourceSDC.b_array) # windows only
+        save(os.path.join(dirName,"x_array_source"),ui.canvasSourceSDC.b_array)
         ui.update_outputText("[Info] Propagation x-array saved in "+str(dirName)+"/x_array_source.npy")
 
         # SDC prop x-array
-        save(dirName+"\\x_array_prop",ui.canvasPropSDC.b_array)
+        #save(dirName+"\\x_array_prop",ui.canvasPropSDC.b_array) # windows only
+        save(os.path.join(dirName,"x_array_prop"), ui.canvasPropSDC.b_array)
         ui.update_outputText("[Info] Propagation x-array saved in "+str(dirName)+"\\x_array_prop.npy")
 
         # SDC Source points
         try:
-            ui.update_outputText(dirName+"\\SourceSDCpoints.txt")
-            file1    = open(dirName+"\\SourceSDCpoints.txt","w")
+            #ui.update_outputText(dirName+"/SourceSDCpoints.txt")
+            #file1    = open(dirName+"\\SourceSDCpoints.txt","w") # windows only
+            file1    = open(os.path.join(dirName,"SourceSDCpoints.txt"),"w") # windows only
             temp_txt = "P_1x: "+str(ui.canvasSourceSDC.P1x)+"\n"+"P_1y: "+str(ui.canvasSourceSDC.P1y)+"\n"+"P_2x: "+str(ui.canvasSourceSDC.P2x)+"\n"
             file1.write(temp_txt)
             file1.close()
-            ui.update_outputText("[Info] SDC source points saved in "+str(dirName)+"\\SourceSDCpoints.txt")
+            ui.update_outputText("[Info] SDC source points saved in "+str(dirName)+"/SourceSDCpoints.txt")
         except Exception as error:
             ui.update_outputText(str(error))
 
         # SDC Propagation points
         try:
-            file1    = open(dirName+"\\PropagationSDCpoints.txt","w")
+            #file1    = open(dirName+"\\PropagationSDCpoints.txt","w") # windows only
+            file1    = open(os.path.join(dirName,"PropagationSDCpoints.txt"),"w")
             temp_txt = "P_1x: "+str(ui.canvasPropSDC.P1x)+"\n"+"P_1y: "+str(ui.canvasPropSDC.P1y)+"\n"+"P_2x: "+str(ui.canvasPropSDC.P2x)+"\n"
             file1.write(temp_txt)
             file1.close()
@@ -604,7 +623,8 @@ def save_results_file2(ui,dirName,spec=False):
 
         # SDC 2D Source points
         try:
-            file1    = open(dirName+"\\Source2dSDCpoints.txt","w")
+            #file1    = open(dirName+"\\Source2dSDCpoints.txt","w") # windows only
+            file1    = open(os.path.join(dirName,"Source2dSDCpoints.txt"),"w")
             temp_txt = "P_1x: "+str(ui.canvasSourceSDC2d.P1x)+"\n"+"P_1y: "+str(ui.canvasSourceSDC.P1y)
             file1.write(temp_txt)
             file1.close()
@@ -614,7 +634,8 @@ def save_results_file2(ui,dirName,spec=False):
 
         # SDC 2D Propagation points
         try:
-            file1    = open(dirName+"\\Prop2dSDCpoints.txt","w")
+            ##file1    = open(dirName+"\\Prop2dSDCpoints.txt","w") # windows only
+            file1    = open(os.path.join(dirName,"Prop2dSDCpoints.txt"),"w")
             temp_txt = "P_1x: "+str(ui.canvasProp2D_SDC.P1x)+"\n"+"P_1y: "+str(ui.canvasProp2D_SDC.P1y)
             file1.write(temp_txt)
             file1.close()
@@ -623,33 +644,39 @@ def save_results_file2(ui,dirName,spec=False):
             ui.update_outputText(str(error))
 
         # save project file
-        save_project_file2(ui,dirName+"\\"+str(ui.lineEdit_simName.text()+".wolf"))
+        ##save_project_file2(ui,dirName+"\\"+str(ui.lineEdit_simName.text()+".wolf")) # windows only
+        save_project_file2(ui,os.path.join(dirName,str(ui.lineEdit_simName.text()+".wolf")))
 
         # saving notes
-        with open(dirName+"\\notes.txt", 'w') as yourFile:
+        with open(os.path.join(dirName,"notes.txt"), 'w') as yourFile:
             yourFile.write(str(ui.plainTextEdit.toPlainText())) ## notes
 
         # Spectrum
         if spec:
 
             # Source Spectrum
-            save(dirName+"\\sourceSpectrum",ui.CSDA_source.spectrum)
+            ##save(dirName+"\\sourceSpectrum",ui.CSDA_source.spectrum) # windows only
+            save(os.path.join(dirName,"sourceSpectrum"), ui.CSDA_source.spectrum)
             ui.update_outputText("[Info] Source Spectrum saved in "+str(dirName)+"/sourceSpectrum.npy")
 
             # Propagation Spectrum
-            save(dirName+"\\propSpectrum",ui.CSDA_prop.spectrum)
+            ##save(dirName+"\\propSpectrum",ui.CSDA_prop.spectrum) # windows only
+            save(os.path.join(dirName,"propSpectrum"), ui.CSDA_prop.spectrum)
             ui.update_outputText("[Info] Propagation Spectrum saved in "+str(dirName)+"/propSpectrum.npy")
 
             # Angular Frequency Array
-            save(dirName+"\\omega_array",ui.CSDA_prop.omega_array)
+            ##save(dirName+"\\omega_array",ui.CSDA_prop.omega_array) # windows only
+            save(os.path.join(dirName,"omega_array"), ui.CSDA_prop.omega_array)
             ui.update_outputText("[Info] Angular frequency array saved in "+str(dirName)+"/omega_array.npy")
 
             # Ciii Array
-            save(dirName+"\\C4ir",ui.CSDA_prop.Ciiii_real)
+            ##save(dirName+"\\C4ir",ui.CSDA_prop.Ciiii_real) # windows only
+            save(os.path.join(dirName,"C4ir"), ui.CSDA_prop.Ciiii_real)
             ui.update_outputText("[Info]C4ir array saved in "+str(dirName)+"/C4ir.npy")
 
         # Save log file
-        file_log    = open(dirName+"\\log.txt","w")
+        #file_log    = open(dirName+"\\log.txt","w") # windows only
+        file_log    = open(os.path.join(dirName,"log.txt"),"w")
         file_log.write(ui.log_txt)
         file_log.close()
         ui.log_txt = "" # empty log

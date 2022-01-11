@@ -125,7 +125,8 @@ def openFileNameDialog_openGeo2(ui):
     #options |= QFileDialog.DontUseNativeDialog
     filename = None
     try:
-        geo_path = QFileDialog.getOpenFileName(None,"Open Numpy Array File",ui.current_dir+"\\source_images", "NPY Files (*.NPY *.jpg *.bmp *.png)")
+        #geo_path = QFileDialog.getOpenFileName(None,"Open Numpy Array File",ui.current_dir+"\\source_images", "NPY Files (*.NPY *.jpg *.bmp *.png)") # windows only
+        geo_path = QFileDialog.getOpenFileName(None,"Open Numpy Array File",os.path.join(ui.current_dir,"source_images"), "NPY Files (*.NPY *.jpg *.bmp *.png)")
         ui.dirSourceGeo = geo_path[0]
         ui.lineEdit_dirGeoMatrix.setText(str(ui.dirSourceGeo))
     except:
@@ -203,7 +204,8 @@ def update_titleProject2(ui):
 #*******************************************************************************
 def search_specModel2(ui):
     "Seachs for spectrum models"
-    spec_dir=ui.current_dir+"\\models\\specModels\\"
+    #spec_dir = ui.current_dir+"\\models\\specModels\\"  # windows only
+    spec_dir = os.path.join(ui.current_dir, "models", "specModels")
     os.chdir(spec_dir)
     sys.path.append(spec_dir)
     # cleaning combo box of spectrum models
@@ -331,7 +333,8 @@ def update_specPars2(ui):
 #*******************************************************************************
 def search_geometry2(ui):
     "searchs for geometry models <*.py> in a given directory"
-    geometry_dir=ui.current_dir+"\\models\\geometry\\"
+    # geometry_dir = ui.current_dir+"\\models\\geometry\\" # windows only
+    geometry_dir = os.path.join(ui.current_dir, "models", "geometry")
     os.chdir(geometry_dir)
     sys.path.append(geometry_dir)
     # cleaning combo box of spectrum models
@@ -408,7 +411,8 @@ def updateGeometryPars2(ui):
 #*******************************************************************************
 def search_cohModel2(ui):
     "Searches for coherence model functions <*.py> in a given directory"
-    coh_dir=ui.current_dir+"\\models\\cohModels\\"
+    # coh_dir = ui.current_dir+"\\models\\cohModels\\" # windows only
+    coh_dir = os.path.join(ui.current_dir, "models", "cohModels")
     os.chdir(coh_dir)
     sys.path.append(coh_dir)
     # cleaning combo box of spectrum models
@@ -491,7 +495,8 @@ def update_specDenArea2(ui):
 #*******************************************************************************
 def search_specDenModels2(ui):
     "Searches Spectral Density models <*.py> in a given directory"
-    specDen_dir=ui.current_dir+"\\models\\specDensity\\"
+    # specDen_dir = ui.current_dir+"\\models\\specDensity\\" # windows only
+    specDen_dir = os.path.join(ui.current_dir, "models", "specDensity")
     os.chdir(specDen_dir)
     sys.path.append(specDen_dir)
     # cleaning combo box of spectral density models models
@@ -797,7 +802,8 @@ def updatePupilArea2(ui):
 def searchPupilGeom2(ui):
     "Search for Pupil geometry functions <*.py>"
     try:
-        pupilGeom_dir = ui.current_dir+"\\models\\pupilGeom\\"
+        # pupilGeom_dir = ui.current_dir+"\\models\\pupilGeom\\" # windows only
+        pupilGeom_dir = os.path.join(ui.current_dir, "models", "pupilGeom")
         os.chdir(pupilGeom_dir)
         sys.path.append(pupilGeom_dir)
         # cleaning combo box of Pupil Geometric Functions
@@ -893,7 +899,8 @@ def update_opticsArea2(ui):
 def searchOpticsFunc2(ui):
     "Search for optical device function in <functions\optics>"
     try:
-        opticsFunc_dir = ui.current_dir+"\\models\\optics"
+        # opticsFunc_dir = ui.current_dir+"\\models\\optics" # windows only
+        opticsFunc_dir = os.path.join(ui.current_dir, "models", "optics")
         os.chdir(opticsFunc_dir)
         sys.path.append(opticsFunc_dir)
 
@@ -985,6 +992,8 @@ def updateSpaceRes2(ui):
         NZ   = int(ui.lineEdit_NZ.text())
         angF = float(ui.lineEdit_centralFreq.text())
 
+
+
         for i in range(0,numPlanes):
             ds = None
             if i ==0:
@@ -998,13 +1007,15 @@ def updateSpaceRes2(ui):
                 text1 = "Spatial Resolution of Plane "+str(i+1)+":  "+"{:.6E}".format(Decimal(str(dx)))+" m"
                 ui.textBrowser_spatialRes_list[i].setText(text1)
                 dx_list.append(dx)
-                ## van Cittert-Zernike correlation length
-                try:
-                    vCZCL = 7.66*3e8*distance/(2*angF*float(ui.geometry_lineEditParameters[0].text())*ds)
-                    text2 = "Van Cittert-Zernike correlation length at Plane "+str(i+1)+":  "+"{:.6E}".format(Decimal(str(vCZCL)))+" m"
-                    ui.textBrowser_spatialRes_list[i].setText(text1+"\n\n"+text2)
-                except Exception as error:
-                    ui.update_outputText(error)
+                if ui.geometry_lineEditParameters != []:
+                    ## van Cittert-Zernike correlation length
+                    try:
+                        vCZCL = 7.66*3e8*distance/(2*angF*float(ui.geometry_lineEditParameters[0].text())*ds)
+                        text2 = "Van Cittert-Zernike correlation length at Plane "+str(i+1)+":  "+"{:.6E}".format(Decimal(str(vCZCL)))+" m"
+                        ui.textBrowser_spatialRes_list[i].setText(text1+"\n\n"+text2)
+                    except Exception as error:
+                        pass
+                        #ui.update_outputText("<<"+str(error)+">> in calculating the Van Cittert-Zernike correlation length at Plane "+str(i+1))
             else:
                 ds = float(dx_list[i-1])
                 distance = float(ui.lineEdit_distances_list[i].text())
@@ -1024,7 +1035,8 @@ def updateSpaceRes2(ui):
             ui.dx_list = dx_list
 
     except Exception as error:
-        pass ## ui.update_outputText(error)
+        pass
+        #ui.update_outputText(error)
 #_______________________________________________________________________________
 
 

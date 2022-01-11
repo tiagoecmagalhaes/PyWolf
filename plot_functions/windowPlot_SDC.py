@@ -28,8 +28,10 @@ from matplotlib.figure import Figure
 from numpy import zeros
 from numpy import sqrt
 from numpy import angle
+from numpy import unwrap
 from numpy import arange
 from numpy import float32
+from numpy import concatenate
 
 import os
 current_dir = os.getcwd()
@@ -215,8 +217,7 @@ class Canvas_SDC:
             if S1!=0.0 and S2!=0.0:
                 self.propSDC_mag[i]   = sqrt(self.W_matrix[self.P1x,self.P1y,self.P2x,i].real**2+self.W_matrix[self.P1x,self.P1y,self.P2x,i].imag**2)/(sqrt(S1)*sqrt(S2))
 
-
-        self.propSDC_phase = angle(self.W_matrix[self.P1y,self.P1y,self.P2x])
+        self.propSDC_phase = angle(self.W_matrix[self.P1y,self.P1y,self.P2x]) # version 1.00
 
         # b array
         self.b_array = arange(0,self.N,1,dtype=float32)

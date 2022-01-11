@@ -1,0 +1,10 @@
+PyWolf v1.0.1
+
+- 2D SDC plot error fixed
+- Folder directories error in Linux fixed
+- Some conversions from float to integer were corrected
+- Linux menu bar error fixed
+- Execution time of the simulation is now printed out
+- Message error “list index out of range” was fixed. It occurred when using geometric model “source plane”
+- Error in “Gaussian Schell-model beam” was fixed when option “use PyOpenCL” is not selected
+- In some cases, zeros are printed out. This issue was fixed.

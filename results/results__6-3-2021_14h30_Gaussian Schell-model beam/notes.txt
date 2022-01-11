@@ -1,9 +1,0 @@
-# Gaussian Schell-model beam
-
-- Gaussian Schell-model
-- The distance is such that the spatial resolution of the observation plane is the same as the source plane
-- The far-field approximation is NOT used
-
-- We will use N=200 WITHOUT a zero padding
-
-- The angular frequency will be w0 =2.9920e15 rad/seg (630 nm)

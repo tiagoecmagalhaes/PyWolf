@@ -1,5 +1,5 @@
 """
-PyWolf version 1.0
+PyWolf version 1.01
 
 *
 Software to perform simulations of the propagation of partially coherent light
@@ -7,7 +7,7 @@ using parallel computing devices through PyOpenCL
 *
 
 Tiago E. C. Magalhaes
-2021
+2022
 """
 
 
@@ -50,10 +50,12 @@ import glob
 
 # Adding directories to import packages
 current_dir = os.getcwd()
-sys.path.append(current_dir+"\\plot_functions\\")
-sys.path.append(current_dir+"\\app_functions\\")
-sys.path.append(current_dir+"\\styles\\")
-sys.path.append(current_dir+"\\logos\\")
+
+sys.path.append(os.path.join(current_dir,"plot_functions"))
+sys.path.append(os.path.join(current_dir,"app_functions"))
+sys.path.append(os.path.join(current_dir,"styles"))
+sys.path.append(os.path.join(current_dir,"logos"))
+
 
 # PyWolf packages
 from palettes import *
@@ -83,7 +85,7 @@ class Ui_MainWindow(QMainWindow):
         # parameters
         #=======================================================================
         # version
-        self.version = "PyWolf v1.00"
+        self.version = "PyWolf v1.0.1"
 
         # simulation successful
         self.sim = False
@@ -126,7 +128,7 @@ class Ui_MainWindow(QMainWindow):
         MainWindow.setObjectName("MainWindow")
 
         # setting app window size
-        MainWindow.resize(2*rect.width()/3, 2*rect.height()/3)
+        MainWindow.resize(int(2*rect.width()/3), int(2*rect.height()/3))
 
         # MainWindows Color palette
         MainWindow.setPalette(palette_mainwindow)
@@ -221,7 +223,7 @@ class Ui_MainWindow(QMainWindow):
 
         # Size
         percentage = 0.22
-        self.scrollArea_messages.setMaximumHeight(int(MainWindow.frameGeometry().height())*percentage)
+        self.scrollArea_messages.setMaximumHeight(int(MainWindow.frameGeometry().height()*percentage))
 
         # Scroll Area Message
         self.scrollAreaWidgetContents_messages = QtWidgets.QWidget()
@@ -392,7 +394,7 @@ class Ui_MainWindow(QMainWindow):
         self.scrollArea_textBox = QtWidgets.QScrollArea(self.scrollAreaWidgetContents_numPlanes)
         self.scrollArea_textBox.setWidgetResizable(True)
         self.scrollArea_textBox.setObjectName("ScrollArea_textBox")
-        self.scrollArea_textBox.setMinimumHeight(rect.height()/6.)
+        self.scrollArea_textBox.setMinimumHeight(int(rect.height()/6.))
 
         self.scrollAreaWidgetContents_textBox = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_textBox.setGeometry(QtCore.QRect(0, 0, 421, 85))
@@ -436,7 +438,7 @@ class Ui_MainWindow(QMainWindow):
         self.scrollArea_FFT = QtWidgets.QScrollArea(self.scrollAreaWidgetContents_numPlanes)
         self.scrollArea_FFT.setWidgetResizable(True)
         self.scrollArea_FFT.setObjectName("ScrollArea_FFT")
-        self.scrollArea_FFT.setMinimumHeight(rect.height()/6.)
+        self.scrollArea_FFT.setMinimumHeight(int(rect.height()/6.))
 
         self.scrollAreaWidgetContents_FFT = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_FFT.setGeometry(QtCore.QRect(0, 0, 421, 85))
@@ -455,7 +457,7 @@ class Ui_MainWindow(QMainWindow):
         self.scrollArea_save = QtWidgets.QScrollArea(self.scrollAreaWidgetContents_numPlanes)
         self.scrollArea_save.setWidgetResizable(True)
         self.scrollArea_save.setObjectName("ScrollArea_save")
-        self.scrollArea_save.setMinimumHeight(rect.height()/6.)
+        self.scrollArea_save.setMinimumHeight(int(rect.height()/6.))
 
         self.scrollAreaWidgetContents_save = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_save.setGeometry(QtCore.QRect(0, 0, 421, 85))
@@ -474,7 +476,7 @@ class Ui_MainWindow(QMainWindow):
         self.scrollArea_propQuantity = QtWidgets.QScrollArea(self.scrollAreaWidgetContents_numPlanes)
         self.scrollArea_propQuantity.setWidgetResizable(True)
         self.scrollArea_propQuantity.setObjectName("ScrollArea_cohModel")
-        self.scrollArea_propQuantity.setMinimumHeight(rect.height()/6.)
+        self.scrollArea_propQuantity.setMinimumHeight(int(rect.height()/6.))
 
         self.scrollAreaWidgetContents_propQuantity = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_propQuantity.setGeometry(QtCore.QRect(0, 0, 421, 85))
@@ -493,7 +495,7 @@ class Ui_MainWindow(QMainWindow):
         self.scrollArea_spectrumModel = QtWidgets.QScrollArea(self.scrollAreaWidgetContents_numPlanes)
         self.scrollArea_spectrumModel.setWidgetResizable(True)
         self.scrollArea_spectrumModel.setObjectName("ScrollArea_spectrumModel")
-        self.scrollArea_spectrumModel.setMinimumHeight(rect.height()/6.)
+        self.scrollArea_spectrumModel.setMinimumHeight(int(rect.height()/6.))
 
 
         self.scrollAreaWidgetContents_spectrumModel = QtWidgets.QWidget()
@@ -513,7 +515,7 @@ class Ui_MainWindow(QMainWindow):
         self.scrollArea_fromFile = QtWidgets.QScrollArea(self.scrollAreaWidgetContents_numPlanes)
         self.scrollArea_fromFile.setWidgetResizable(True)
         self.scrollArea_fromFile.setObjectName("ScrollArea_fromFile")
-        self.scrollArea_fromFile.setMinimumHeight(rect.height()/6.)
+        self.scrollArea_fromFile.setMinimumHeight(int(rect.height()/6.))
 
         self.scrollAreaWidgetContents_fromFile = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_fromFile.setGeometry(QtCore.QRect(0, 0, 421, 85))
@@ -532,7 +534,7 @@ class Ui_MainWindow(QMainWindow):
         self.scrollArea_cohModel = QtWidgets.QScrollArea(self.scrollAreaWidgetContents_numPlanes)
         self.scrollArea_cohModel.setWidgetResizable(True)
         self.scrollArea_cohModel.setObjectName("ScrollArea_cohModel")
-        self.scrollArea_cohModel.setMinimumHeight(rect.height()/6.)
+        self.scrollArea_cohModel.setMinimumHeight(int(rect.height()/6.))
 
         self.scrollAreaWidgetContents_cohModel = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_cohModel.setGeometry(QtCore.QRect(0, 0, 421, 85))
@@ -551,7 +553,7 @@ class Ui_MainWindow(QMainWindow):
         self.scrollArea_geometry = QtWidgets.QScrollArea(self.scrollAreaWidgetContents_numPlanes)
         self.scrollArea_geometry.setWidgetResizable(True)
         self.scrollArea_geometry.setObjectName("ScrollArea_geometry")
-        self.scrollArea_geometry.setMinimumHeight(rect.height()/6.)
+        self.scrollArea_geometry.setMinimumHeight(int(rect.height()/6.))
 
         self.scrollAreaWidgetContents_geometry = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_geometry.setGeometry(QtCore.QRect(0, 0, 421, 85))
@@ -570,7 +572,7 @@ class Ui_MainWindow(QMainWindow):
         self.scrollArea_SpecDensity = QtWidgets.QScrollArea(self.scrollAreaWidgetContents_numPlanes)
         self.scrollArea_SpecDensity.setWidgetResizable(True)
         self.scrollArea_SpecDensity.setObjectName("ScrollArea_geometry")
-        self.scrollArea_SpecDensity.setMinimumHeight(rect.height()/6.)
+        self.scrollArea_SpecDensity.setMinimumHeight(int(rect.height()/6.))
 
         self.scrollAreaWidgetContents_SpecDensity = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_SpecDensity.setGeometry(QtCore.QRect(0, 0, 421, 85))
@@ -666,7 +668,7 @@ class Ui_MainWindow(QMainWindow):
         self.spinBox_numPlanes.setFont(font_normalLabel)
         self.spinBox_numPlanes.setMinimum(1)
         self.spinBox_numPlanes.setMaximum(3)
-        self.spinBox_numPlanes.setMaximumWidth(size_spinBox(self))
+        self.spinBox_numPlanes.setMaximumWidth(int(size_spinBox(self)))
         self.gridLayout_7.addWidget(self.spinBox_numPlanes, 64, 1, 1, 1)
         self.spinBox_numPlanes.valueChanged.connect(self.update_numPlanes)
         #_______________________________________________________________________
@@ -1223,7 +1225,7 @@ class Ui_MainWindow(QMainWindow):
         self.lineEdit_simName.setStyleSheet('background: '+colortxt_textEdit)
         self.gridLayout_7.addWidget(self.lineEdit_simName, 0, 1, 1, 1)
         # setting size
-        self.lineEdit_simName.setMaximumWidth(self.minwidth_combo)
+        self.lineEdit_simName.setMaximumWidth(int(self.minwidth_combo))
         #self.lineEdit_simName.actionEvent()
         self.lineEdit_simName.textChanged.connect(self.update_titleProject)
 
@@ -1233,13 +1235,14 @@ class Ui_MainWindow(QMainWindow):
         self.lineEdit_saveFiles.setObjectName("Save File")
         self.lineEdit_saveFiles.setStyleSheet('background: '+colortxt_textEdit)
         self.gridLayout_save.addWidget(self.lineEdit_saveFiles, 6, 1, 1, 1)
-        results_directory = str(current_dir)+'\\results'
+        #results_directory = str(current_dir)+'\\results' # windows only
+        results_directory = os.path.join(str(current_dir),"results")
         self.saveDirName = results_directory
         self.lineEdit_saveFiles.setText(results_directory)
         # start at the line 0:
         self.lineEdit_saveFiles.setCursorPosition(0)
         # setting size
-        self.lineEdit_saveFiles.setMaximumWidth(self.minwidth_combo)
+        self.lineEdit_saveFiles.setMaximumWidth(int(self.minwidth_combo))
 
         # line open geometry matrix source
         self.lineEdit_dirGeoMatrix = QtWidgets.QLineEdit(self.scrollAreaWidgetContents_fromFile)
@@ -1251,7 +1254,7 @@ class Ui_MainWindow(QMainWindow):
         # start at the line 0:
         self.lineEdit_dirGeoMatrix.setCursorPosition(0)
         # setting size
-        self.lineEdit_dirGeoMatrix.setMaximumWidth(self.minwidth_combo)
+        self.lineEdit_dirGeoMatrix.setMaximumWidth(int(self.minwidth_combo))
 
         # line open CSDA matrix source
         self.lineEdit_dirCSDAmatrix = QtWidgets.QLineEdit(self.scrollAreaWidgetContents_fromFile)
@@ -1263,7 +1266,7 @@ class Ui_MainWindow(QMainWindow):
         # start at the line 0:
         self.lineEdit_dirCSDAmatrix.setCursorPosition(0)
         # setting size
-        self.lineEdit_dirCSDAmatrix.setMaximumWidth(self.minwidth_combo)
+        self.lineEdit_dirCSDAmatrix.setMaximumWidth(int(self.minwidth_combo))
 
         # text edit Angle
         self.lineEdit_theta = QtWidgets.QLineEdit(self.scrollAreaWidgetContents_propQuantity)
@@ -1271,7 +1274,7 @@ class Ui_MainWindow(QMainWindow):
         self.lineEdit_theta.setObjectName("lineEdit_N")
         self.lineEdit_theta.setStyleSheet('background: '+colortxt_textEdit)
         self.gridLayout_propQuantity.addWidget(self.lineEdit_theta, 3, 1, 1, 1)
-        self.lineEdit_theta.setMaximumWidth(size_entries(self))
+        self.lineEdit_theta.setMaximumWidth(int(size_entries(self)))
         self.lineEdit_theta.textChanged.connect(self.updateSpaceRes)
         self.lineEdit_theta.setText("1e-3")
 
@@ -1281,7 +1284,7 @@ class Ui_MainWindow(QMainWindow):
         self.lineEdit_N.setObjectName("lineEdit_N")
         self.lineEdit_N.setStyleSheet('background: '+colortxt_textEdit)
         self.gridLayout_7.addWidget(self.lineEdit_N, 15, 1, 1, 1)
-        self.lineEdit_N.setMaximumWidth(size_entries(self))
+        self.lineEdit_N.setMaximumWidth(int(size_entries(self)))
         self.lineEdit_N.textChanged.connect(self.updateSpaceRes)
         self.lineEdit_N.setText("80")
 
@@ -1291,7 +1294,7 @@ class Ui_MainWindow(QMainWindow):
         self.lineEdit_NZ.setObjectName("lineEdit_NZ")
         self.lineEdit_NZ.setStyleSheet('background: '+colortxt_textEdit)
         self.gridLayout_FFT.addWidget(self.lineEdit_NZ, 1, 1, 1, 1)
-        self.lineEdit_NZ.setMaximumWidth(size_entries(self))
+        self.lineEdit_NZ.setMaximumWidth(int(size_entries(self)))
         self.lineEdit_NZ.setText("256")
         self.lineEdit_NZ.setVisible(False)
         self.lineEdit_NZ.textChanged.connect(self.updateSpaceRes)
@@ -1305,7 +1308,7 @@ class Ui_MainWindow(QMainWindow):
         self.lineEdit_centralFreq.setFont(font_normalLabel)
         self.lineEdit_centralFreq.textChanged.connect(self.updateSpaceRes)
         self.lineEdit_centralFreq.setText("3.887e15")
-        self.lineEdit_centralFreq.setMaximumWidth(size_entries(self))
+        self.lineEdit_centralFreq.setMaximumWidth(int(size_entries(self)))
 
         # line edit text source resolution
         self.lineEdit_sourceRes = QtWidgets.QLineEdit(self.scrollAreaWidgetContents_numPlanes)
@@ -1316,7 +1319,7 @@ class Ui_MainWindow(QMainWindow):
         # setting size
         self.lineEdit_sourceRes.textChanged.connect(self.updateSpaceRes)
         self.lineEdit_sourceRes.setText("1e-3")
-        self.lineEdit_sourceRes.setMaximumWidth(size_entries(self))
+        self.lineEdit_sourceRes.setMaximumWidth(int(size_entries(self)))
 
         # line edit text distance for propagation planes
         self.lineEdit_distances_list = []
@@ -1345,7 +1348,7 @@ class Ui_MainWindow(QMainWindow):
         for i in range(0,len(self.list_platforms)):
             self.comboBox_platform.addItem(str(self.list_platforms[i]),self.platform_choices[str(self.list_platforms[i])])
         # setting size
-        self.comboBox_platform.setMaximumWidth(self.minwidth_combo)
+        self.comboBox_platform.setMaximumWidth(int(self.minwidth_combo))
         self.comboBox_platform.setStyleSheet('''*
         QComboBox QAbstractItemView
             {
@@ -1361,7 +1364,7 @@ class Ui_MainWindow(QMainWindow):
         self.update_devices()
         self.comboBox_platform.currentIndexChanged.connect(self.update_devices)
         # setting size
-        self.comboBox_device.setMaximumWidth(self.minwidth_combo)
+        self.comboBox_device.setMaximumWidth(int(self.minwidth_combo))
         self.comboBox_device.setStyleSheet('''*
         QComboBox QAbstractItemView
             {
@@ -1669,7 +1672,7 @@ class Ui_MainWindow(QMainWindow):
         self.pushButton_start.setPalette(palette_buttonStart)
         self.pushButton_start.setFont(font_button)
         self.pushButton_start.setObjectName("pushButton_start")
-        self.pushButton_start.setMaximumHeight(self.rect.height()/25)
+        self.pushButton_start.setMaximumHeight(int(self.rect.height()/25))
         stylesheet_start = """
         QPushButton{
             background-color: #FFF3C4;
@@ -1763,8 +1766,9 @@ class Ui_MainWindow(QMainWindow):
         # Menu Bar
         #=======================================================================
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1017, 26))
+        #self.menubar.setGeometry(QtCore.QRect(0, 0, 1017, 26))
         self.menubar.setObjectName("menubar")
+        self.menubar.setStyleSheet(menuBar_style)
 
         # File
         self.menuFile = QtWidgets.QMenu(self.menubar)
@@ -2216,7 +2220,7 @@ class Ui_MainWindow(QMainWindow):
 
 
     def on_about(self):
-        msg = """ PyWolf version 1.0
+        msg = """ PyWolf version 1.0.1
 
 This software is licensed to you under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -2303,7 +2307,8 @@ This software is licensed to you under the terms of the GNU General Public Licen
                 download_path = self.lineEdit_saveFiles.text()
                 dirName = QFileDialog.getExistingDirectory(None,"Save Source Image",download_path)
                 if dirName:
-                    save(dirName+"\\CSDA_source_image",ui.CSDA_source.image)
+                    # save(dirName+"\\CSDA_source_image",ui.CSDA_source.image) # windows only
+                    save(os.path.join(dirName,"CSDA_source_image"), ui.CSDA_source.image)
                     self.update_outputText("[Info] Source image saved in "+str(dirName)+"/CSDA_source_image.npy")
             except Exception as error:
                 update_outputText("[Error] "+str(error))
@@ -2317,7 +2322,8 @@ This software is licensed to you under the terms of the GNU General Public Licen
                 download_path = self.lineEdit_saveFiles.text()
                 dirName = QFileDialog.getExistingDirectory(None,"Save Propagation Image",download_path)
                 if dirName:
-                    save(dirName+"\\CSDA_prop_image",ui.CSDA_prop.image)
+                    # save(dirName+"\\CSDA_prop_image",ui.CSDA_prop.image) # windows only
+                    save(os.path.join(dirName,"CSDA_prop_image"), ui.CSDA_prop.image)
                     self.update_outputText("[Info] Propagation image saved in "+str(dirName)+"/CSDA_prop_image.npy")
             except Exception as error:
                 update_outputText("[Error] "+str(error))
@@ -2331,7 +2337,8 @@ This software is licensed to you under the terms of the GNU General Public Licen
                 download_path = self.lineEdit_saveFiles.text()
                 dirName = QFileDialog.getExistingDirectory(None,"Save Source CSDA",download_path)
                 if dirName:
-                    save(dirName+"\\CSDA_source",ui.CSDA_source.matrix)
+                    #save(dirName+"\\CSDA_source",ui.CSDA_source.matrix) # windows only
+                    save(os.path.join(dirName,"CSDA_source"), ui.CSDA_source.matrix)
                     self.update_outputText("[Info] Source CSDA saved in "+str(dirName)+"/CSDA_source.npy")
             except Exception as error:
                 update_outputText("[Error] "+str(error))
@@ -2345,7 +2352,8 @@ This software is licensed to you under the terms of the GNU General Public Licen
                 download_path = self.lineEdit_saveFiles.text()
                 dirName = QFileDialog.getExistingDirectory(None,"Save Propagation CSDA",download_path)
                 if dirName:
-                    save(dirName+"\\CSDA_propagation",ui.CSDA_prop.matrix)
+                    #save(dirName+"\\CSDA_propagation",ui.CSDA_prop.matrix) # windows only
+                    save(os.path.join(dirName,"CSDA_propagation"), ui.CSDA_prop.matrix)
                     self.update_outputText("[Info] Propagation CSDA saved in "+str(dirName)+"/CSDA_propagation.npy")
             except Exception as error:
                 self.update_outputText("[Error] "+str(error))
@@ -2372,7 +2380,8 @@ This software is licensed to you under the terms of the GNU General Public Licen
     def save_project(self):
         "Saves Project in a <.wolf> file"
         try:
-            save_path = self.current_dir+"\\"+self.lineEdit_simName.text()
+            #save_path = self.current_dir+"\\"+self.lineEdit_simName.text() # windows only
+            save_path = os.path.join(self.current_dir,self.lineEdit_simName.text())
             print(save_path)
             dirName = QFileDialog.getSaveFileName(None,"Save Project Folder",save_path,"PyWolf Files (*.wolf)")
 
@@ -2419,9 +2428,11 @@ This software is licensed to you under the terms of the GNU General Public Licen
     # Examples
     #***************************************************************************
     def search_examples(self):
-        current_dir = os.getcwd() +"\examples"
+        #current_dir = os.getcwd() +"\examples" # windows only
+        current_dir = os.path.join(os.getcwd(),"examples")
         self.dir_examples = current_dir
-        sys.path.insert(1, current_dir+"\examples")
+        #sys.path.insert(1, current_dir+"\examples") # windows only
+        sys.path.insert(1, os.path.join(current_dir,"examples"))
 
         saved = getcwd()
         chdir(current_dir)
@@ -2437,7 +2448,8 @@ This software is licensed to you under the terms of the GNU General Public Licen
             #self.action_Examples.addAction(self.action_examples_list[-1])
 
     def load_examples(self,name):
-        self.load_project_file(self.dir_examples+"\\"+name+".wolf")
+        # self.load_project_file(self.dir_examples+"\\"+name+".wolf") # windows only
+        self.load_project_file(os.path.join(self.dir_examples,name+".wolf"))
 
     #***************************************************************************
     #///////////////////////////////////////////////////////////////////////////
@@ -2568,7 +2580,7 @@ if __name__ == "__main__":
     # initial parameters
     log_txt    = "" # log file
     debug      = False
-    appname    = "PyWolf v1.0"
+    appname    = "PyWolf v1.0.1"
     cr = "Copyright (C) 2020 Tiago E. C. Magalhaes under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."
 
     # time

@@ -1,9 +1,9 @@
-PyWolf v1.00
+PyWolf v1.0.1
 Far-field of an annular source
-[06/03/2021 12:35:13]
+[04/01/2022 15:44:10]
 True
-<pyopencl.Platform 'AMD Accelerated Parallel Processing' at 0x7ffe9d602fd0>
-<pyopencl.Device 'Tonga' on 'AMD Accelerated Parallel Processing' at 0x214204e1300>
+<pyopencl.Platform 'AMD Accelerated Parallel Processing' at 0x7ffe0a042fd0>
+<pyopencl.Device 'Tonga' on 'AMD Accelerated Parallel Processing' at 0x20237c02fc0>
 True
 False
 False
@@ -20,9 +20,9 @@ None
 3.7699e15
 1e-3
 False
-C:\Users\Tiago\Documents\GitHub\PyWolf\results
+C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
 False
-C:\Users\Tiago\Documents\GitHub\PyWolf\results
+C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
 Anullar
 !11	5	
 Incoherent
@@ -31,7 +31,7 @@ False
 Gaussian
 !	
 1
-!1	
+!5	
 !True	
 !False	
 !None	

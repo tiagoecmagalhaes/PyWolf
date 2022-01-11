@@ -1,9 +1,9 @@
-PyWolf v1.00
+PyWolf v1.0.1
 Gaussian Schell-model beam
-[06/03/2021 14:37:09]
+[11/01/2022 15:42:46]
 True
-<pyopencl.Platform 'AMD Accelerated Parallel Processing' at 0x7ffe9d602fd0>
-<pyopencl.Device 'Tonga' on 'AMD Accelerated Parallel Processing' at 0x204284e4b90>
+<pyopencl.Platform 'AMD Accelerated Parallel Processing' at 0x7ffd33142fd0>
+<pyopencl.Device 'Tonga' on 'AMD Accelerated Parallel Processing' at 0x1aaefef8280>
 True
 False
 False
@@ -20,9 +20,9 @@ None
 2.9920e15
 1e-4
 False
-C:\Users\Tiago\Documents\GitHub\PyWolf\results
+C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
 False
-C:\Users\Tiago\Documents\GitHub\PyWolf\results
+C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
 Source Plane
 !
 Gaussian Schell-model

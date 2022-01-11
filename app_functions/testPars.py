@@ -1,6 +1,7 @@
 #-------------------------------------------------------------------------------
 # Name:        TestPars
 # Purpose:     PyWolf's function to test input parameters
+# Version:     1.0.1
 #
 # Author:      Tiago E. C. Magalhaes
 #
@@ -209,16 +210,17 @@ def func_testPars(ui):
     # Creating Directory
     #---------------------------------------------------------------------------
     try:
-        add_directory="\\"+"results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
+        add_directory="results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
         "_"+str(time_now.hour)+"h"+minutes+"_"+nameTime_list[0]
+
     except:
-        add_directory="\\"+"results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
+        add_directory="results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
         "_"+str(time_now.hour)+"h"+minutes
     #---------------------------------------------------------------------------
 
     if options_list[2][0]:
         ui.update_outputText(options_list[2][1])
-        options_list[2][1] = options_list[2][1]+add_directory
+        options_list[2][1] = os.path.join(options_list[2][1],add_directory)
 
         try:
             pass
@@ -472,7 +474,7 @@ def func_testPars(ui):
 
     # return list = [All ok?, all parameters, output_info]
     return_list = [True,all_parameters_list]
-    #print(return_list)
+
     return return_list
 
 #===============================================================================

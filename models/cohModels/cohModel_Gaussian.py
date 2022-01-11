@@ -159,6 +159,9 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
 
         # Without PyOpenCL
         else:
+            # importing math functions
+            from numpy import exp
+
             user_interface.update_outputText("PyOpenCl will NOT be used. Starting Cycle...")
             for i1 in range(0,N):
 

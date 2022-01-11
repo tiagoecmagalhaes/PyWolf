@@ -28,6 +28,42 @@ color_white = QtGui.QColor(255, 255, 255)
 #===============================================================================
 # Stylesheets
 #===============================================================================
+menuBar_style = """
+QMenuBar {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 rgb(3, 31, 71), stop:1 black);
+}
+QMenuBar::item {
+    spacing: 5px;
+    padding: 5px 10px;
+    background-color: rgb(3, 31, 71);
+    color: rgb(255,255,255);
+
+}
+QMenuBar::item:selected {
+    background-color: rgb(3, 31, 71);
+}
+QMenuBar::item:pressed {
+    background: rgb(128,0,0);
+}
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+QMenu {
+    background-color: #DCDCE2;
+    border: 1px solid black;
+    margin: 2px;
+}
+QMenu::item {
+    background-color: transparent;
+}
+QMenu::item:selected {
+    background-color: #031F47;
+    color: rgb(255,255,255);
+}
+"""
+
+
 stylesheet = """
     QScrollBar:vertical {
         border: 1px solid #999999;

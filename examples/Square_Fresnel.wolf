@@ -1,9 +1,9 @@
-PyWolf v1.00
+PyWolf v1.0.1
 Square Source - Fresnel propagation
-[06/03/2021 19:03:12]
+[11/01/2022 15:43:26]
 True
-<pyopencl.Platform 'AMD Accelerated Parallel Processing' at 0x7ffe9d602fd0>
-<pyopencl.Device 'Tonga' on 'AMD Accelerated Parallel Processing' at 0x204284e4b90>
+<pyopencl.Platform 'AMD Accelerated Parallel Processing' at 0x7ffd33142fd0>
+<pyopencl.Device 'Tonga' on 'AMD Accelerated Parallel Processing' at 0x1aaefef8280>
 True
 False
 False
@@ -18,11 +18,11 @@ Frequency-Independent Model
 Single Frequency
 None
 3.1415e15
-3.508771929824561e-08
+3.51e-08
 False
-C:\Users\Tiago\Documents\GitHub\PyWolf\results
+C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
 False
-C:\Users\Tiago\Documents\GitHub\PyWolf\results
+C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
 Rectangle
 !57	57	
 Coherent
@@ -31,7 +31,7 @@ False
 Gaussian
 !	
 1
-!1.0506e-6	
+!1.06103e-6	
 !False	
 !False	
 !None	

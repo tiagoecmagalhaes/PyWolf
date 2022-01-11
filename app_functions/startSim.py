@@ -1,6 +1,7 @@
 #-------------------------------------------------------------------------------
 # Name:        StartSim
 # Purpose:     PyWolf function to Start the Simulation of Partially Coherent Light Propagation
+# Version:     1.0.1
 #
 # Author:      Tiago E. C. Magalhaes
 #
@@ -32,9 +33,9 @@ from numpy import load
 
 # Adding directories to import packages
 current_dir = os.getcwd()
-sys.path.append(current_dir+"\\plot_functions\\")
-sys.path.append(current_dir+"\\propagation_functions\\")
-sys.path.append(current_dir+"\\class\\")
+sys.path.append(os.path.join(current_dir,"plot_functions"))
+sys.path.append(os.path.join(current_dir,"propagation_functions"))
+sys.path.append(os.path.join(current_dir,"class"))
 
 # PyWolf packages
 from windowPlot_image import *
@@ -271,6 +272,14 @@ def func_startSim(ui,all_parameters):
     # Propagation
     #===========================================================================
 
+    # execution time (seconds)
+    start_source_execution_time = 0 # source
+    end_source_execution_time   = 0 # source
+    total_source_execution_time = 0 # source
+    start_prop_execution_time   = 0 # propagation
+    end_prop_execution_time     = 0 # propagation
+    total_prop_execution_time   = 0 # source
+
     # parameters
     W_temp   = None
 
@@ -286,6 +295,9 @@ def func_startSim(ui,all_parameters):
 
 
     if start_prop==1:
+
+        # starting execution time
+        start_source_execution_time = time.time()
 
         #***********************************************************************
         # Creating or loading source geometry
@@ -361,7 +373,7 @@ def func_startSim(ui,all_parameters):
 
 
             #*******************************************************************
-            # IF IMAGE FROM FILE
+            # IF NOT IMAGE FROM FILE
             #*******************************************************************
             else:
                 # creating Temporary 4D matrix
@@ -468,6 +480,17 @@ def func_startSim(ui,all_parameters):
 
 
         #=======================================================================
+        # Source creation time
+        #=======================================================================
+        end_source_execution_time = time.time()
+        total_source_execution_time = abs(end_source_execution_time-start_source_execution_time)
+        ui.update_outputText("Execution time for source model: "+str(round(total_source_execution_time,3))+" seconds.")
+        #-----------------------------------------------------------------------
+        #///////////////////////////////////////////////////////////////////////
+        #-----------------------------------------------------------------------
+
+
+        #=======================================================================
         # Plot source functions
         #=======================================================================
         try:
@@ -519,7 +542,12 @@ def func_startSim(ui,all_parameters):
         # Propagating
         #=======================================================================
         try:
+            #---
             # Propagation is similar for both degree of coherence and spectrum
+            #---
+
+            # starting execution time
+            start_prop_execution_time = time.time()
 
             # Creating Propagation Matrix
             ui.CSDA_prop    = CSDA(all_parameters,ui)
@@ -685,11 +713,26 @@ def func_startSim(ui,all_parameters):
                     ui.update_outputText("Optical device function completed!")
                 #_______________________________________________________________
 
+                # execution time
+                end_prop_execution_time   = time.time()
 
+                # print text
                 ui.update_outputText("Propagation for Plane "+str(numPlane+1)+" completed!")
             #===================================================================
             #//////////////////////////////////////////////////////////////////
             #===================================================================
+
+
+            #=======================================================================
+            # Propagation execution time
+            #=======================================================================
+            total_prop_execution_time = abs(end_prop_execution_time-start_prop_execution_time)
+            total_execution_time      = total_source_execution_time + total_prop_execution_time
+            ui.update_outputText("Execution time for propagation: "+str(round(total_prop_execution_time,3))+" seconds.")
+            ui.update_outputText("Total execution time: "+str(round(total_execution_time,3))+" seconds.")
+            #-----------------------------------------------------------------------
+            #///////////////////////////////////////////////////////////////////////
+            #-----------------------------------------------------------------------
 
 
             #=======================================================================
@@ -814,14 +857,14 @@ def func_startSim(ui,all_parameters):
 
                     ## creating folder
                     import os
-                    time_now=datetime.datetime.now()
-                    minutes=None
+                    time_now = datetime.datetime.now()
+                    minutes = None
                     if int(time_now.minute)<10:
-                        minutes="0"+str(time_now.minute)
+                        minutes = "0" + str(time_now.minute)
                     else:
-                        minutes=str(time_now.minute)
+                        minutes = str(time_now.minute)
 
-                    directory_txt=save_dir#+"\\results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
+                    directory_txt = save_dir#+"\\results__"+str(time_now.day)+"-"+str(time_now.month)+"-"+str(time_now.year)+\
                         #"__"+str(time_now.hour)+"h"+minutes
                     os.makedirs(directory_txt)
 
@@ -830,11 +873,13 @@ def func_startSim(ui,all_parameters):
 
                 ## saving CSDA source
                 if toSaveSourceCSDA:
-                    save(directory_txt+"\\CSDA_source", ui.CSDA_source.matrix)
+                    #save(directory_txt+"\\CSDA_source", ui.CSDA_source.matrix) # windows only
+                    save(os.path.join(directory_txt,"CSDA_source"), ui.CSDA_source.matrix)
 
                 ## saving CSDA prop
                 if toSavePropCSDA:
-                    save(directory_txt+"\\CSDA_prop", ui.CSDA_prop.matrix)
+                    # save(directory_txt+"\\CSDA_prop", ui.CSDA_prop.matrix) # windows only
+                    save(os.path.join(directory_txt,"CSDA_prop"), ui.CSDA_prop.matrix)
 
             except Exception as error:
                 ui.update_outputText("[Error] "+str(error)+" at <startSim> in saving results.")

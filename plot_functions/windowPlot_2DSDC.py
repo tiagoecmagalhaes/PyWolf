@@ -643,9 +643,16 @@ class Canvas_2DSDC:
 
             self.SDC2D_phase = abs(angle(self.W_matrix[self.P1y,self.P1y]))
 
+            ##--
+            ## BUG
+            #self.im.set_array(self.SDC2D_mag[:-1,:-1].ravel())
+            #self.im_phase.set_array(self.SDC2D_phase[:-1,:-1].ravel())
 
-            self.im.set_array(self.SDC2D_mag[:-1,:-1].ravel())
-            self.im_phase.set_array(self.SDC2D_phase[:-1,:-1].ravel())
+            ## CORRECTED
+            self.im.set_array(self.SDC2D_mag.ravel())
+            self.im_phase.set_array(self.SDC2D_phase.ravel())
+            ##--
+
             self.update_draw()
 
         except Exception as error:

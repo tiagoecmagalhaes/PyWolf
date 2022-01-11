@@ -1,12 +1,12 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        Image conversion tool
+# Purpose:     PyWolf image to .npy conversion
 #
-# Author:      Tiago
+# Author:      Tiago E. C. Magalhaes
 #
 # Created:     23/03/2020
-# Copyright:   (c) Tiago 2020
-# Licence:     <your licence>
+# Copyright:   (c) Tiago Magalhaes 2022
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
 
 
@@ -23,8 +23,8 @@ import cv2 as cv
 from matplotlib import pyplot as plt
 #_____________________________________________________________________________#
 
-## reading image
-imgCal = cv.imread("IA_200_s.bmp")
+## reading image: insert filename below
+imgCal = cv.imread("ia_200_s.bmp")
 
 ## transforming image into array
 imgCal = np.array(imgCal, dtype=np.uint8)
@@ -36,4 +36,4 @@ grayCal = cv.cvtColor(imgCal,cv.COLOR_BGR2GRAY)
 Nx=len(grayCal[0])
 Ny=len(grayCal)
 
-save("IA_200_s.npy",grayCal)
+save("ia_200_s.npy",grayCal)
