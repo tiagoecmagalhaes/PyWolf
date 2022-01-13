@@ -4,11 +4,12 @@ PyWolf is a software that simulates the propagation of partially coherent light 
 
 ## Support
 
-PyWolf is build in Python 3.7.6 (x64). It was mostly implemented in Windows 10 (x64). It was tested in the following OS:
+PyWolf is build in Python 3.7.6 (x64). It was mostly implemented in Windows 10 (x64). It was tested in the following operating systems:
 
 - Windows 7 (x64)
 - Windows 8/8.1 (x64)
 - Windows 10 (x64)
+- Ubuntu 20.04.3 LTS (x64)
 
 ## Installation
 
