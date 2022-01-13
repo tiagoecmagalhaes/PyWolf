@@ -49,7 +49,7 @@ Optionally, one can also install OpenCL SDK to have more OpenCL platforms availa
 
 ## Usage
 
-To start PyWolf, execute main.py and a PyQT5 window will appear (see Fig. 1).
+To start PyWolf, execute main.py and a PyQT5 window will appear (see figure below).
 
 ![main](https://github.com/tiagoecmagalhaes/PyWolf/blob/master/screenshots/fig1.jpg?raw=true "Fig. 1")
 
