@@ -2233,9 +2233,9 @@ This software is licensed to you under the terms of the GNU General Public Licen
 
 
     def on_citation(self):
-        msg = """ Please cite:
-
-         Tiago E. C. Magalhaes, "PyWolf"
+        msg = """ Tiago E.C. Magalhães, José M. Rebordão, "PyWolf: A PyOpenCL implementation for simulating the propagation of partially coherent light", Computer Physics Communications, Volume 276, 2022, 108336.
+         
+         https://doi.org/10.1016/j.cpc.2022.108336
          """
         QtWidgets.QMessageBox.about(self, "Citation", msg.strip())
 
