@@ -1,41 +1,50 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        Qausi-homogeneous Gaussian
+# Purpose:     PyWolf's Coherence Model
 #
-# Author:      Tiago
+# Author:      Tiago E. C. Magalhaes
 #
-# Created:     24/01/2020
-# Copyright:   (c) Tiago 2020
-# Licence:     <your licence>
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
 
 
-#==============================================================================
-# Where do things come from?
-#==============================================================================
+#===============================================================================
+# Importing Packages
+#===============================================================================
+# PyOpenCL
 from pyopencl import *
-from pylab import *
-import copy
 
-from numpy import count_nonzero
-#------------------------------------------------------------------------------
-#//////////////////////////////////////////////////////////////////////////////
-#------------------------------------------------------------------------------
+# NumPy
+from numpy import int32, double, float32, float, zeros, exp, copy, count_nonzero
 
-cohModel_name = "Lorentzian"
-
-cohModel_parameters = ["A1 (a.u.):","A0 (a.u.):","T0 (a.u.):","T1 (a.u.):","w1 (a.u.):"]
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
 
+#===============================================================================
+# Pre-requisites
+#===============================================================================
+
+cohModel_name = "Quasi-homogeneous Gaussian"
+
+cohModel_parameters = ["Effective Coherence Length (a.u.):"]
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# Coherece Model Function
+#===============================================================================
 def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug):
 
     user_interface.update_outputText("Starting Gaussian-Schell model function...")
 
-    A1 = float(parameters[0])
-    A0 = float(parameters[1])
-    T0 = float(parameters[2])
-    T1 = float(parameters[3])
-    w1 = float(parameters[4])
+    sigma = 2*float(parameters[0]**2)
+
+    user_interface.update_outputText("sigma: "+str(sigma))
 
 
     try:
@@ -101,8 +110,8 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                     if not count_nonzero(W_main.real[i1,j1])==0.0:
 
                         # Defining
-                        result=zeros((N,N)).astype(float32)
-                        data=copy.copy(W_main.real[i1,j1])
+                        result = zeros((N,N)).astype(float32)
+                        data   = W_main.real[i1,j1].copy()
 
                         # Radius of point P1
                         x1=j1-M
@@ -120,13 +129,13 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                         # Running the program (kernel)
                         CL_pcohGS.increase(queue,result.shape,None,result_gpu_memory,data_gpu_memory,
                                            int32(N),int32(M),int32(i1),int32(j1),double(x1),double(y1),
-                                           double(A0),double(A1),double(T0),double(T1),double(w1))
+                                            double(sigma))
 
                         #  Copying results to PCmemory
                         enqueue_copy(queue,result,result_gpu_memory)
 
                         # Copying results to matrices
-                        W_main.real[i1,j1]=result
+                        W_main.real[i1,j1]=W_main.real[i1,j1]*result
 
             user_interface.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
 
@@ -165,8 +174,8 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
     except Exception as error:
         user_interface.update_outputTextSameLine(str(error))
 
-
-
-    #__________________________________________________________________________
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
 

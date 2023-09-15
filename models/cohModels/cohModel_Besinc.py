@@ -15,11 +15,7 @@
 from pyopencl import *
 
 # NumPy
-from numpy import int32, double, float32, float, zeros
-from numpy import count_nonzero
-
-# import copy
-import copy
+from numpy import int32, double, float32, float, zeros, copy, sqrt, count_nonzero
 
 # Special Functions
 from scipy.special import jv
@@ -56,7 +52,7 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
     try:
         # useful parameters
         M = N/2
-        CL_pcohGS = None
+        CL_besinc = None
 
         #***********************************************************************
         # USING PyOpenCL
@@ -68,7 +64,7 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
             #-------------------------------------------------------------------
 
             # KERNEL: CODE EXECUTED ON THE GPU
-            CL_pcohGS=Program(context,"""
+            CL_besinc=Program(context,"""
                 __kernel void increase(__global float *res,
                                        __global float *data,
                                        const unsigned int N,
@@ -79,7 +75,7 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                                        const double y1,
                                        const double a)
                 {
-                    int col =  get_global_id(0);
+                    int col = get_global_id(0);
                     int row = get_global_id(1);
 
                     int y2 = -(row-M);
@@ -89,8 +85,9 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                     double y22 = (double) y2;
                     double x22 = (double) x2;
 
-                    double b1 = (double) x1-1*x2;
-                    double b2 = (double) y1-1*y2;
+                    double b1 = (double) x1 -1*x2;
+                    double b2 = (double) y1 -1*y2;
+
                     double b  = (double) sqrt(b1*b1+b2*b2);
                     //double J1 = (double) 1 - pown(a*b,2)/8.0 + pown(a*b,4)/192.0 - pown(a*b,6)/9216.0 + pown(a*b,8)/737280.0 - pown(a*b,10)/88473600.0 + pown(a*b,12)/14863564800.0 ;
 
@@ -161,7 +158,7 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
 
                         # Defining
                         result = zeros((N,N)).astype(float32)
-                        data   = copy.copy(W_main[i1,j1].real)
+                        data   = W_main[i1,j1].real.copy()
 
                         # Radius of point P1
                         x1 = j1-M
@@ -177,7 +174,7 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                         data_gpu_memory = Buffer(context, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=data)
 
                         # Running the program (kernel)
-                        CL_pcohGS.increase(queue,result.shape,None,result_gpu_memory,data_gpu_memory,
+                        CL_besinc.increase(queue,result.shape,None,result_gpu_memory,data_gpu_memory,
                                            int32(N),int32(M),int32(i1),int32(j1),double(x1),double(y1),
                                             double(alpha))
 
@@ -201,25 +198,26 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
 
                 for j1 in range(0,N):
 
-                    x1=(j1-M)
-                    y1=M-i1
+                    x1 = j1-M
+                    y1 = M-i1
 
                     for i2 in range(0,N):
                         for j2 in range(0,N):
 
-                            x2=j2-M
-                            y2=M-i2
+                            x2 = j2-M
+                            y2 = M-i2
 
-                            b = sqrt((x1-x2)**2+(y1-y2)**2)
+                            b = sqrt((x1-x2)**2 + (y1-y2)**2)
 
-                            arg1=alpha*b
+                            arg1 = alpha*b
 
-                            if arg1==0:
-                                y=1
+                            y = 1
+                            if arg1 == 0 :
+                                y = 1
                             else:
-                                y=(2*jv(1,arg1)/arg1)
+                                y = (2*jv(1,arg1)/arg1)
 
-                            W_main.real[i1,j1,i2,j2]=W_main.real[i1,j1,i2,j2]*y
+                            W_main.real[i1,j1,i2,j2] = W_main.real[i1,j1,i2,j2]*y
 
             user_interface.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
 

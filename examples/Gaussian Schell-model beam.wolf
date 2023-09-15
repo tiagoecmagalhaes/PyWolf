@@ -1,4 +1,4 @@
-PyWolf v1.0.1
+PyWolf v2.0.0
 Gaussian Schell-model beam
 [11/01/2022 15:42:46]
 True
@@ -38,7 +38,9 @@ Gaussian
 %None&
 !False	
 !None&
-%None	
+%None
+!Free Space	
+%&	
 ?# Gaussian Schell-model beam
 
 - Gaussian Schell-model

@@ -169,7 +169,21 @@ def save_project_file2(ui,dirName):
                 txt+= "None" + "\t"
         txt+="\n"
 
-        # 42
+        # #!-% 42: Propagation Model
+        txt+= "!"
+        for i in range(0,Np):
+            txt+= str(ui.propModelFunc_list[i][int(ui.comboBox_propModel_list[i].currentIndex())][0]) + "\t"
+        txt+= "\n"
+
+        # #!-% 43: Propagation Model Parameters
+        txt+= "%"
+        for i in range(0,Np):
+            for j in range(len(ui.propModel_lineEditParameters[i])):
+                txt+= str(ui.propModel_lineEditParameters[i][j].text()) + "\t"
+            txt+="&"
+        txt+="\n"
+
+        # #!-% 44
         txt+="?"+str(ui.plainTextEdit.toPlainText())
         txt+="\n"
 
@@ -192,102 +206,76 @@ def save_project_file2(ui,dirName):
 #===============================================================================
 
 def load_project_file2(ui,dirProj):
+
     try:
         # opening File
         new_file = open(dirProj,"r")
 
         # Reading File
         text = new_file.read()
-        Nt   = len(text)
+
+        text_lines = text.split("\n")
+        Nl         = len(text_lines)
+
 
         # checking version
-        if text[0:11] != ui.version[0:11]:
-            ui.update_outputText(text[0:11])
+        if text_lines[0][0:11] != ui.version[0:11]:
+            ui.update_outputText(text_lines[0][0:11])
             ui.update_outputText("[Error] The version of PyWolf of this project is different from the current version.")
             return False
-        elif text[0:12] != ui.version[0:12]:
+        elif text_lines[0][0:12] != ui.version[0:12]:
             ui.update_outputText("[Info] This project was made with version "+text[0:12]+ " of PyWolf and the version you are using currently is " + ui.version[0:13] + ". It should still work.")
 
 
-        #-----------------------------------------------------------------------
-        # Loading Parameters
-        #-----------------------------------------------------------------------
-        one_state = False
-        double_state = False
-
-        one_list = []
-
-        sub_list = []
-        two_list = []
-
         ui.final_list = []
 
-        actual  = ""
-        count_n = 0
-        i       = 12
-        while count_n < 41:
-            while i<=Nt:
-            ##for i in range(12,Nt):
-                if text[i]=="!":
-                    one_list = []
-                    one_state = True
+        for i in range(0, 14):
+            actual = text_lines[i]
+            ui.final_list.append(actual)
 
-                elif text[i]=="%":
-                    sub_list = []
-                    two_list = []
-                    double_state = True
 
-                elif text[i] == "\t":
-                    # case !
-                    if one_state == True:
-                        one_list.append(actual)
-                        actual = ""
+        for i in range(14, 43):
+            actual = text_lines[i]
+            if "!" in actual:
+                actual = actual.replace("&","")
+                actual = actual.replace("!","")
+                actual_tab = actual.split("\t")
+                ui.final_list.append(actual_tab)
 
-                    # case %
-                    elif double_state == True:
-                        sub_list.append(actual)
-                        actual=""
+            elif "%" in actual:
+                actual   = actual.replace("%","")
 
-                elif text[i]=="&":
-                    two_list.append(sub_list)
-                    sub_list = []
-                    actual = ""
+                test     = []
+                actual_p = actual.split("&")
+                for j in range(0, len(actual_p)):
+                    actual_pj = actual_p[j].split("\t")
+                    test.append(actual_pj)
 
-                elif count_n==41: # text[i]=="?"
-                    ui.final_list.append(text[i+1:-1])
-                    break
 
-                elif text[i]=="\n":
-                    count_n +=1
+                ui.final_list.append(test)
+            else:
+                ui.final_list.append(actual)
 
-                    if one_state == True:
-                        ui.final_list.append(one_list)
-                        one_list  = []
-                        one_state = False
-                        actual    = ""
 
-                    elif double_state == True:
-                        ui.final_list.append(two_list)
-                        double_state = False
-                        sub_list = []
-                        two_list = []
-                        actual   = ""
+        text = ""
+        for i in range(43, Nl):
+            if i ==43:
+                actual = text_lines[i][2:]
+                text+=actual+"\n"
+            else:
+                actual = text_lines[i]
+                text+=actual+"\n"
+        ui.final_list.append(text)
 
-                    else:
-                        ui.final_list.append(actual)
-                        actual = ""
-                else:
-                    actual+= text[i]
-                i+=1
-        #-----------------------------------------------------------------------
-        #///////////////////////////////////////////////////////////////////////
-        #-----------------------------------------------------------------------
 
 
         #-----------------------------------------------------------------------
         # Setting Values
         #-----------------------------------------------------------------------
-        ## name
+
+        # change number of planes to default
+        ui.spinBox_numPlanes.setValue(1)
+
         ui.lineEdit_simName.setText(ui.final_list[1])
 
         ## use PyOpenCL
@@ -447,7 +435,7 @@ def load_project_file2(ui,dirProj):
         if ui.final_list[29] == "True":
             ui.checkBox_specDen.setChecked(True)
 
-        ## Spctral Density Model
+        ## Spectral Density Model
         specModel_num = 0
         for i in range(0,ui.comboBox_specDenModel.count()):
             if ui.comboBox_specDenModel.itemText(i) == ui.final_list[30]:
@@ -518,6 +506,18 @@ def load_project_file2(ui,dirProj):
                 for i in range(0,len(ui.optDevicePars_lineEditParameters[iP])):
                     ui.optDevicePars_lineEditParameters[iP][i].setText(ui.final_list[40][iP][i])
 
+
+            ## #!-% Propagation model
+            propModel_list = []
+            for i in range(0,ui.comboBox_propModel_list[iP].count()):
+                if ui.comboBox_propModel_list[iP].itemText(i) == ui.final_list[41][iP]:
+                    ui.comboBox_propModel_list[iP].setCurrentIndex(i)
+                    propModel_list.append(i)
+
+            ## #!-% Propagation model Parameters
+            for i in range(0,len(ui.propModel_lineEditParameters[iP])):
+                ui.propModel_lineEditParameters[iP][i].setText(ui.final_list[42][iP][i])
+
         #-----------------------------------------------------------------------
         #///////////////////////////////////////////////////////////////////////
         #-----------------------------------------------------------------------
@@ -527,12 +527,14 @@ def load_project_file2(ui,dirProj):
 
         ui.update_outputText("Project loaded!")
 
+
     except Exception as error:
-        ui.update_outputText("[Error] "+str(error))
+        print(error)
 
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
 #===============================================================================
+
 
 
 #===============================================================================

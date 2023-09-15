@@ -1,5 +1,5 @@
 """
-PyWolf version 1.01
+PyWolf version 2.0.0
 
 *
 Software to perform simulations of the propagation of partially coherent light
@@ -7,7 +7,7 @@ using parallel computing devices through PyOpenCL
 *
 
 Tiago E. C. Magalhaes
-2022
+2023
 """
 
 
@@ -17,7 +17,7 @@ Tiago E. C. Magalhaes
 
 # PyQT5:
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QDialog, QInputDialog, QFileDialog, QLabel, QHBoxLayout
+from PyQt5.QtWidgets import QDialog, QInputDialog, QFileDialog, QLabel, QHBoxLayout, QMainWindow
 
 # Numpy
 import numpy
@@ -85,14 +85,14 @@ class Ui_MainWindow(QMainWindow):
         # parameters
         #=======================================================================
         # version
-        self.version = "PyWolf v1.0.1"
+        self.version = "PyWolf v2.0.0"
 
         # simulation successful
         self.sim = False
 
         # Spectrum Plot Showed
         self.source_spec_plot = False
-        self.d_omega = None
+        self.d_omega          = None
 
         # load project
         self.final_list = None
@@ -633,6 +633,20 @@ class Ui_MainWindow(QMainWindow):
 
 
         #-----------------------------------------------------------------------
+        # #|-% Propagation Model Function and Parameters | area, widget contents and gridlayout
+        #-----------------------------------------------------------------------
+        # list of scrollArea for Propagation functions and parameters
+        self.scrollArea_propModel_list = []
+
+        # list of scrollArea for Propagation functions and parameters
+        self.scrollAreaWidgetContents_propModel_list = []
+
+        # list of gridlayout for propagation functions and parameters
+        self.gridLayout_propModel_list=[]
+        #_______________________________________________________________________
+
+
+        #-----------------------------------------------------------------------
         # Pupil Function and Parameters | area, widget contents and gridlayout
         #-----------------------------------------------------------------------
         # list of scrollArea for Pupil functions and parameters
@@ -764,6 +778,7 @@ class Ui_MainWindow(QMainWindow):
         #_______________________________________________________________________
 
 
+
         #-----------------------------------------------------------------------
         # Spectral Density Models and parameters | list, line Edit
         #-----------------------------------------------------------------------
@@ -776,6 +791,27 @@ class Ui_MainWindow(QMainWindow):
 
         # Spectral Density Models Line Edit Parameters  ex. [ OBJECT, OBJECT]
         self.specDen_lineEditParameters = []
+        #_______________________________________________________________________
+
+
+        #-----------------------------------------------------------------------
+        # Propagation models and Parameters | list, Line Edits  #!-%
+        #-----------------------------------------------------------------------
+
+        # Propagation Model List
+        self.propModelFunc_list = []
+        for i in range(0,self.max_numPlanes):
+            self.propModelFunc_list.append([])
+
+        # Propagation Model's Parameters List
+        self.propModelPars_list = []
+        for i in range(0,self.max_numPlanes):
+            self.propModelPars_list.append([])
+
+        # Propagation Model's Line Edit Parameters  ex. [ OBJECT, OBJECT]
+        self.propModel_lineEditParameters = []
+        for i in range(0,self.max_numPlanes):
+            self.propModel_lineEditParameters.append([])
         #_______________________________________________________________________
 
 
@@ -994,10 +1030,18 @@ class Ui_MainWindow(QMainWindow):
         # labels for distances of planes
         self.label_distances_list = []
 
+        # #|-% labels propagation models
+        self.label_propModel_list = []
+
+        # #|-% labels propagation model parameters
+        self.propModel_labelParameters = []
+        for i in range(0,self.max_numPlanes):
+            self.propModel_labelParameters.append([])
+
         # labels pupil geometric model
         self.label_pupilGeom_list = []
 
-        # labels pupil geometric model
+        # labels pupil geometric model parameters
         self.pupilGeom_labelParameters = []
         for i in range(0,self.max_numPlanes):
             self.pupilGeom_labelParameters.append([])
@@ -1426,6 +1470,18 @@ class Ui_MainWindow(QMainWindow):
         """
         self.comboBox_cohModel.currentIndexChanged.connect(self.updateCohModelPars)
 
+
+
+        #-----------------------------------------------------------------------
+        # combo box propagation model #!-%
+        #-----------------------------------------------------------------------
+
+
+
+        #-----------------------------------------------------------------------
+
+
+
         # combo box geometry
         self.comboBox_geometry = QtWidgets.QComboBox(self.scrollAreaWidgetContents_geometry)
         self.comboBox_geometry.setFont(font_normalLabel)
@@ -1465,6 +1521,9 @@ class Ui_MainWindow(QMainWindow):
 
         # list of comboBoxes with pupil functions for propagation planes
         self.comboBox_pupilGeom_list = []
+
+        # #!-% list of comboBoxes with propagation functions for propagation planes
+        self.comboBox_propModel_list = []
 
         # list of comboBoxes with optical devices functions for propagation planes
         self.comboBox_optDeviceFunc_list = []
@@ -2017,6 +2076,13 @@ class Ui_MainWindow(QMainWindow):
         self.update_numPlanes()      # updating number of propagation planes
         self.update_specDenArea()    # updating custom spectral density area
 
+
+        # #!-% propagation models
+        self.searchPropModel()       # searching for propagation functions
+        self.updatePupilArea()        # updating pupil scroll area
+        for i in range(0,self.max_numPlanes):
+            self.updatePupilGeomPars(i)
+
         # pupil geometry
         self.searchPupilGeom()       # searching for pupil geometry functions
         self.updatePupilArea()       # updating pupil scroll area
@@ -2147,6 +2213,14 @@ class Ui_MainWindow(QMainWindow):
     def updateCohModelPars(self):
         updateCohModelPars2(self)
 
+    # #!-%
+    def searchPropModel(self):
+        searchPropModel2(self)
+
+    # #!-%
+    def updatePropModelPars(self):
+        updateCohModelPars2(self)
+
     def update_titleProject(self):
         update_titleProject2(self)
 
@@ -2180,6 +2254,9 @@ class Ui_MainWindow(QMainWindow):
 
     def updatePupilGeomPars(self,Plane):
         updatePupilGeomPars2(self,Plane)
+
+    def updatePropModelPars(self,Plane):
+        updatePropModelPars2(self,Plane)
 
     def searchOpticsFunc(self):
         searchOpticsFunc2(self)
@@ -2234,7 +2311,7 @@ This software is licensed to you under the terms of the GNU General Public Licen
 
     def on_citation(self):
         msg = """ Tiago E.C. Magalhães, José M. Rebordão, "PyWolf: A PyOpenCL implementation for simulating the propagation of partially coherent light", Computer Physics Communications, Volume 276, 2022, 108336.
-         
+
          https://doi.org/10.1016/j.cpc.2022.108336
          """
         QtWidgets.QMessageBox.about(self, "Citation", msg.strip())
@@ -2551,7 +2628,7 @@ This software is licensed to you under the terms of the GNU General Public Licen
 
             if test:
                 if all_ok:
-                    self.sim = func_startSim(self,self.all_parameters_list)
+                    self.sim = func_startSim(self, self.all_parameters_list)
 
                 # if simulation was successful
                 if self.sim:
@@ -2580,7 +2657,7 @@ if __name__ == "__main__":
     # initial parameters
     log_txt    = "" # log file
     debug      = False
-    appname    = "PyWolf v1.0.1"
+    appname    = "PyWolf v2.0.0"
     cr = "Copyright (C) 2020 Tiago E. C. Magalhaes under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."
 
     # time

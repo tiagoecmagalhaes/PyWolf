@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Name:        FFT Function
+# Name:        Turbulent medium - Propagation
 # Purpose:     PyWolf functions
 #
 # Author:      TEC MAGALHAES
@@ -15,7 +15,7 @@
 from pyopencl import *
 
 # NumPy
-from numpy import zeros, exp, float32, int32, double
+from numpy import zeros, exp, float32, int32, double, pi, sqrt, inf, longdouble
 
 # Import Time
 import time
@@ -25,23 +25,83 @@ import time
 #===============================================================================
 
 
-###############################################################################
-###############################################################################
-###############################################################################
-#
-#
 #===============================================================================
-# PROPAGATION FROM SOURCE TO ENTRANCE PUPIL
+# Pre-requisites - Inputs
 #===============================================================================
-def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel,debug):
+propModel_name = "Turbulent medium: Kolmogorov"
 
-    # parameters
-    #omega0   = parameters[0]
-    #distance = parameters[1]
+propModel_parameters = ["refractive index:", "Cn2 (constant):"]
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
 
-    C1 = parameters[0] #omega0/(2*distance*c)
+#===============================================================================
+# Propagation plane spatial resolution
+#===============================================================================
+def spatial_resolution(N, gen_pars, prop_pars):
 
+    # general parameters
+    R         = float(gen_pars[0]) # distance, 40e-6
+    omega0    = float(gen_pars[1]) # angular frequency, 2271030833920332.5
+    c         = float(gen_pars[2]) # speed of light
+    sourceRes = float(gen_pars[3])
+
+    # propagation parameters
+    n0   = float(prop_pars[0])   # refractive index, 1.53
+
+    # calculation
+    dx = 2*pi*c*R/(n0*omega0*N*sourceRes)
+    dx = 2*pi*c*R/(n0*omega0*N*sourceRes)
+
+    return dx
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# Propagation Model - Q function - source
+#===============================================================================
+def func_qfunctionA(user_interface, context, queue, W_main, N, dlp, gen_pars, prop_pars, parallel, debug):
+
+
+
+    # printing
+    user_interface.update_outputText("Using turbulent medium Kolmogorov model...")
+    user_interface.update_outputText("Only spectral density results are valid!")
+
+    # general parameters
+    R      = float(gen_pars[0]) # distance, 40e-6
+    omega0 = float(gen_pars[1]) # angular frequency, 2271030833920332.5
+    c      = float(gen_pars[2]) # speed of light
+
+    # propagation parameters
+    n0   = float(prop_pars[0])   # refractive index, 1.53
+    Cn2  = float(prop_pars[1])   # constant, 9.854e-4
+
+    # calculated paramters
+    k = n0*omega0/c
+
+
+    wavelength = 2*pi*c/omega0
+
+    Mt = 0.49 * (Cn2)**(6/5) * k**(12/5) * R**(6/5)
+    print(Mt)
+
+
+    C1 = n0*omega0/(2*R*3e8)
+
+
+    if True:
+        print("R: "+str(R))
+        print("omega0: "+str(omega0))
+        print("wavelength_0: "+str(2*pi*3e8/omega0))
+        print("k: "+str(k))
+        print("n0: "+str(n0))
+        print("Cn2: "+str(Cn2))
+        print("Mt: "+str(Mt))
 
     if C1 !=0.0:
 
@@ -69,7 +129,10 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
                                        const unsigned int i1,
                                        const unsigned int j1,
                                        const double dlp,
+                                       const double r1_x,
+                                       const double r1_y,
                                        const double C1,
+                                       const double Mt,
                                        const double theta1)
                 {
                     int row= get_global_id(0);
@@ -85,6 +148,7 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
                     double x22 = (double) x2;
                     double y22 = (double) y2;
 
+                    // points
                     double r2_x = x22*dlp;
                     double r2_y = y22*dlp;
 
@@ -98,13 +162,23 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
                     double a = (double) data_real[row*N + col ];
                     double b = (double) data_imag[row*N + col ];
 
+
+                    // turbulence parameter
+                    double arg1 = (r1_x-r2_x)*(r1_x-r2_x)*Mt;
+                    double arg2 = (r1_y-r2_y)*(r1_y-r2_y)*Mt;
+                    double argT = arg1 + arg2;
+                    double exp3 = exp(-argT);
+
+                    double a2 = a*exp3; //* exp( 2*(r1_x*r2_x + r1_y*r2_y)*MR) ;
+                    double b2 = b*exp3; //* exp( 2*(r1_x*r2_x + r1_y*r2_y)*MR ) ;
+
                     double sin_x = sin(total_theta);
                     double cos_x = cos(total_theta);
 
-                    double real = a*cos_x - b*sin_x;
-                    double imag = a*sin_x + b*cos_x;
+                    double real = a2*cos_x - b2*sin_x;
+                    double imag = a2*sin_x + b2*cos_x;
 
-                    res_real[row*N + col] = (float) real;
+                    res_real[row*N + col]  = (float) real;
                     res_imag[row*N + col]  = (float) imag;
 
                 }
@@ -127,6 +201,7 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
 
                     theta1 = -C1*(r1_mag)
 
+
                     import copy
 
                     # Data
@@ -148,8 +223,8 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
                     # Running the program (kernel)
                     CL_qfunc.increase(queue,data_real.shape,None,result_real_gpu_memory,result_imag_gpu_memory,
                                        data_real_gpu_memory,data_imag_gpu_memory,
-                                       int32(N),int32(M),int32(i1),int32(j1),double(dlp),
-                                       double(C1),double(theta1))
+                                       int32(N),int32(M),int32(i1),int32(j1),double(dlp),double(r1_x),double(r1_y),
+                                       double(C1),double(Mt),double(theta1))
 
                     # Copying Result to PC memory
                     enqueue_copy(queue,result_real,result_real_gpu_memory)
@@ -178,9 +253,11 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
                     r1x = x1*dlp
                     r1y = y1*dlp
 
-                    r1_mag = r1x**2 + r1y**2
+                    r1_mag = r1x**2 + r1y**2 ## |r1_mag|^2
 
-                    theta1 = -C1*(r1_mag)
+
+                    # free space + turbulence - r1
+                    exp_1 = exp(-(1j*C1 ) *r1_mag )
 
                     for i2 in range(0,N):
                         for j2 in range(0,N):
@@ -194,11 +271,32 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
 
                             r2_mag = r2x**2 + r2y**2
 
-                            theta2 = C1*r2_mag
 
-                            WP = theta1 + theta2
+                            exp_2 = exp( (1j*C1 ) *r2_mag )
 
-                            W_main[i1,j1,i2,j2]*=exp(1j*WP)
+
+                            arg1 = (r1x-r2x)*(r1x-r2x)
+                            arg2 = (r1y-r2y)*(r1y-r2y)
+                            argT = (arg1+arg2)*Mt
+                            exp3 = exp(-argT)
+
+                            """
+                            arg1 = (r1x-r2x)*(r1x-r2x)/abs_rho02
+                            arg2 = (r1y-r2y)*(r1y-r2y)/abs_rho02
+                            argT = arg1+arg2
+                            exp3 = exp(-argT)
+                            """
+                            """
+                            arg1   = 2*(r1x*r2x)/abs_rho02
+                            exp_31 = exp(arg1)
+
+                            if exp_31 == inf:
+                                print(arg1, r1x, r2x)
+
+                            arg2   = 2*(r1y*r2y)/abs_rho02
+                            exp_32 = exp(arg2)
+                            """
+                            W_main[i1,j1,i2,j2]*=exp_1*exp_2*exp3#*exp_31*exp_32
 
         user_interface.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
         return W_main
@@ -206,3 +304,16 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
     else:
         user_interface.update_outputText("No need for q function multiplication: no phase values to add.")
         return W_main
+
+#_______________________________________________________________________________
+
+
+#===============================================================================
+# Propagation Model - Q function - source
+#===============================================================================
+
+def func_qfunctionB(user_interface, context, queue, W_main, N, dlp, gen_pars, prop_pars, parallel, debug):
+    ##res = func_qfunctionB(user_interface, context, queue, W_main, N, dlp, gen_pars, prop_pars, parallel, debug)
+    return W_main
+
+#_______________________________________________________________________________

@@ -1,0 +1,4 @@
+PyWolf v2.0.0
+•	PyWolf now initiates without needing of pyopencl platforms or devices
+•	Some errors associated with the importation of packages have been corrected
+•	Phase correction in the FFT algorithm for odd arrays, which can affect the propagation image, has been made.

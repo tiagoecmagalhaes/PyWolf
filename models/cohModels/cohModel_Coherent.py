@@ -15,11 +15,8 @@
 from pyopencl import *
 
 # NumPy
-from numpy import int32, double, float32, float, zeros
-from numpy import count_nonzero
+from numpy import int32, double, float32, float, zeros, count_nonzero, copy, sqrt
 
-# import copy
-import copy
 
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
@@ -91,16 +88,16 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
         S = zeros((N,N)).astype(float32)
         for i in range(0,N):
             for j in range(0,N):
-                S[i,j] = copy.copy(W_main[i,j,i,j].real)
+                S[i,j] = W_main[i,j,i,j].real.copy()
 
         for i1 in range(0,N):
             user_interface.update_outputTextSameLine(str(round(i1*100./N,1))+"% concluded ("+str(i1)+"/"+str(N-1)+").")
             for j1 in range(0,N):
 
                     # Defining
-                    result = zeros((N,N)).astype(float32)
-                    dataW   = copy.copy(W_main[i1,j1].real)
-                    data   = S
+                    result  = zeros((N,N)).astype(float32)
+                    dataW   = W_main[i1,j1].real.copy()
+                    data    = S
 
                     # creating memory on gpu
                     mf = mem_flags

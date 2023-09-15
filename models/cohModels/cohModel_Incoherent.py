@@ -15,11 +15,8 @@
 from pyopencl import *
 
 # NumPy
-from numpy import int32, double, float32, float, zeros
-from numpy import count_nonzero
+from numpy import int32, double, float32, float, zeros, count_nonzero, copy
 
-# import copy
-import copy
 
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////

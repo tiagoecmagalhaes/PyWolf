@@ -30,10 +30,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from matplotlib.figure import Figure
 
 # Numpy
-from numpy import zeros
-from numpy import arange
-from numpy import float32
-from numpy import flip
+from numpy import zeros, arange, float32, flip, linspace
 
 # Adding directories to import packages
 current_dir = os.getcwd()
@@ -168,6 +165,9 @@ class Canvas_Image:
             # xy array
             self.x_array = arange(0,self.N,1,dtype=float32)
             self.x_array -= int(self.N/2)
+
+            #MM = int(self.N/2)
+            #self.x_array = linspace(-MM, MM-1, self.N)
             self.x_array *= self.dx
 
             # PLOT

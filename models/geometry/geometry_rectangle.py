@@ -15,10 +15,8 @@
 from pyopencl import *
 
 # Numpy
-from numpy import zeros, float32, int32
+from numpy import zeros, float32, int32, copy
 
-# Copy
-import copy
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
 #===============================================================================
@@ -111,7 +109,7 @@ def geomFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug):
                 if x1<=wp and y1<=hp and y1>=-hn and x1>=-wn:
 
                     # Data
-                    data_real=copy.copy(W_main[i1,j1].real)
+                    data_real = W_main[i1,j1].real.copy()
 
                     # creating memory on gpu
                     mf = mem_flags
@@ -128,7 +126,7 @@ def geomFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug):
                     enqueue_copy(queue,result_real,result_real_gpu_memory)
 
                     # Copying to Main Matrix
-                    W_main.real[i1,j1]=copy.copy(result_real)
+                    W_main.real[i1,j1] =  result_real.copy()
 
         user_interface.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
 

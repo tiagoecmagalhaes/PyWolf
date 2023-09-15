@@ -26,9 +26,6 @@ import glob
 import numpy, functools
 from decimal import Decimal
 
-# Time
-##from datetime import datetime
-
 # PyWolf packages
 from windowPlot_image  import *
 from palettes import *
@@ -415,7 +412,7 @@ def search_cohModel2(ui):
     coh_dir = os.path.join(ui.current_dir, "models", "cohModels")
     os.chdir(coh_dir)
     sys.path.append(coh_dir)
-    # cleaning combo box of spectrum models
+    # cleaning combo box of coherence models
     ui.comboBox_cohModel.clear()
     new_file=None
     count=0
@@ -435,6 +432,75 @@ def search_cohModel2(ui):
 #*
 #*******************************************************************************
 def updateCohModelPars2(ui):
+    "Updates Coherence Model paramters"
+    for j in range(0,len(ui.cohModelPar_list)):
+        current_cohModel = ui.comboBox_cohModel.currentText()
+        for i in range(0,len(ui.cohModel_list)):
+            if current_cohModel == ui.cohModel_list[i][0]:
+                # clearing
+                for lab in ui.cohModel_labelParameters:
+                    ui.clear_LabelText(lab)
+                    lab.deleteLater()
+                for edits in ui.cohModel_lineEditParameters:
+                    edits.deleteLater()
+                # clearing label parameters
+                ui.cohModel_labelParameters = []
+                ui.cohModel_lineEditParameters = []
+                # for each parameter:
+                for j in range(0,len(ui.cohModelPar_list[i])):
+                    # adding label for each parameter
+                    ui.cohModel_labelParameters.append(QtWidgets.QLabel(ui.scrollAreaWidgetContents_cohModel))
+                    ui.cohModel_labelParameters[-1].setPalette(palette_parSection)
+                    ui.cohModel_labelParameters[-1].setFont(font_normalLabel)
+                    ui.cohModel_labelParameters[-1].setObjectName(ui.cohModelPar_list[i][j])
+                    ui.gridLayout_cohModel.addWidget(ui.cohModel_labelParameters[-1], 1+j, 0, 1, 1)
+                    # adding line edit entries
+                    ui.cohModel_lineEditParameters.append(QtWidgets.QLineEdit(ui.scrollAreaWidgetContents_cohModel))
+                    ui.cohModel_lineEditParameters[-1].setFont(font_normalLabel)
+                    ui.cohModel_lineEditParameters[-1].setObjectName("lineEdit_"+ui.cohModelPar_list[i][j])
+                    ui.cohModel_lineEditParameters[-1].setStyleSheet('background: '+colortxt_textEdit)
+                    ui.gridLayout_cohModel.addWidget(ui.cohModel_lineEditParameters[-1], 1+j, 1, 1, 1)
+                    # setting size
+                    ui.cohModel_lineEditParameters[-1].setMaximumWidth(size_entries(ui))
+                    # Text in APP
+                    ui.add_labelsText(ui.cohModel_labelParameters[-1],ui.cohModelPar_list[i][j]+":")
+#*******************************************************************************
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# Propagation Model #!-%
+#===============================================================================
+
+#*******************************************************************************
+def search_propModel2(ui):
+    "Searches for propagation model functions <*.py> in a given directory"
+    propModels_dir = os.path.join(ui.current_dir, "models", "propagationModels")
+    os.chdir(propModels_dir)
+    sys.path.append(propModels_dir)
+    # cleaning combo box of propagation models
+    ui.comboBox_cohModel.clear()
+    new_file=None
+    count=0
+    for file_dir in glob.glob("*.py"):
+        new_file = __import__(str(file_dir[:-3]))
+        ui.propModel_list.append([new_file.cohModel_name,new_file])
+        ui.cohModelPar_list.append(new_file.cohModel_parameters)
+        ui.comboBox_cohModel.addItem(ui.cohModel_list[-1][0])
+        count+=1
+    if count!=0:
+        ui.updateCohModelPars()
+    else:
+        temp_txt = "No Propagation models were found in folder <propagationModels>"
+        ui.update_outputText(temp_txt)
+#_______________________________________________________________________________
+#*
+#*
+#*******************************************************************************
+def updatePropModelPars2(ui):
     "Updates Coherence Model paramters"
     for j in range(0,len(ui.cohModelPar_list)):
         current_cohModel = ui.comboBox_cohModel.currentText()
@@ -661,6 +727,46 @@ def updatePropPlanePars2(ui):
         ui.gridLayout_propPlanes_list[-1].addWidget(ui.textBrowser_spatialRes_list[-1], 3, 0, 1, 3)
         ui.textBrowser_spatialRes_list[-1].append("Spatial Resolution in Plane "+str(iP+1)+":")
 
+        # #!-% -----------------------------------------------------------------
+        # #!-% adding Propagation Model farfield
+        ui.scrollArea_propModel_list.append(QtWidgets.QScrollArea(ui.scrollAreaWidgetContents_propPlanes_list[-1]))
+        ui.scrollArea_propModel_list[-1].setWidgetResizable(True)
+        ui.scrollArea_propModel_list[-1].setObjectName("ScrollArea_propModel"+str(iP))
+        ui.scrollArea_propModel_list[-1].setMinimumHeight(ui.rect.height()/12.)
+        ui.scrollAreaWidgetContents_propModel_list.append(QtWidgets.QWidget())
+        ui.scrollAreaWidgetContents_propModel_list[-1].setGeometry(QtCore.QRect(0, 0, 421, 85))
+        ui.scrollAreaWidgetContents_propModel_list[-1].setObjectName("scrollAreaWidgetContents_propModel")
+        ui.gridLayout_propModel_list.append(QtWidgets.QGridLayout(ui.scrollAreaWidgetContents_propModel_list[-1]))
+        ui.gridLayout_propModel_list[-1].setObjectName("gridLayout_propModel"+str(iP))
+        ui.scrollArea_propModel_list[-1].setWidget(ui.scrollAreaWidgetContents_propModel_list[-1])
+        ui.gridLayout_propPlanes_list[-1].addWidget(ui.scrollArea_propModel_list[-1], 4, 0, 1, 3)
+
+        # #!-% adding label propagation model
+        ui.label_propModel_list.append(QtWidgets.QLabel(ui.scrollAreaWidgetContents_propModel_list[-1]))
+        ui.label_propModel_list[-1].setPalette(palette_parSection)
+        ui.label_propModel_list[-1].setFont(font_normalLabel)
+        ui.label_propModel_list[-1].setObjectName("label_propModel"+str(iP+1))
+        ui.gridLayout_propModel_list[-1].addWidget(ui.label_propModel_list[-1], 0, 0, 1, 1)
+        ui.label_propModel_list[-1].setText(_translate("MainWindow", "Propagation Model:"))
+
+        # #!-% combo box propagation function
+        ui.comboBox_propModel_list.append(QtWidgets.QComboBox(ui.scrollAreaWidgetContents_propModel_list[-1]))
+        ui.comboBox_propModel_list[-1].setObjectName("comboBox_propModel"+str(iP+1))
+        ui.comboBox_propModel_list[-1].currentIndexChanged.connect(ui.updateSpaceRes)
+        ui.gridLayout_propModel_list[-1].addWidget(ui.comboBox_propModel_list[-1], 0, 1, 1, 1)
+        # setting size
+        ui.comboBox_propModel_list[-1].setMaximumWidth(ui.minwidth_combo)
+        ui.comboBox_propModel_list[-1].setStyleSheet('''*
+        QComboBox QAbstractItemView
+            {
+            min-width: '''+str(ui.maxWidthView_combo)+'''px;
+            }
+        ''')
+        #ui.comboBox_pupilGeom_list[-1].currentIndexChanged.connect(ui.updatePropModelPars)
+        ui.comboBox_propModel_list[-1].currentIndexChanged.connect(functools.partial(ui.updatePropModelPars,iP))
+        # #!-% -----------------------------------------------------------------
+
+
         # adding CheckBox farfield
         ui.checkBox_farfied_list.append(QtWidgets.QCheckBox(ui.scrollAreaWidgetContents_propPlanes_list[-1]))
         ui.checkBox_farfied_list[-1].setFont(font_normalLabel)
@@ -669,6 +775,7 @@ def updatePropPlanePars2(ui):
         ui.checkBox_farfied_list[-1].setObjectName("checkBox_farfield"+str(iP+1))
         ui.gridLayout_propPlanes_list[-1].addWidget(ui.checkBox_farfied_list[-1], 5, 0, 1, 1)
         ui.checkBox_farfied_list[-1].setText(_translate("MainWindow", "Far-field"))
+
 
         #***********************************************************************
         # PUPIL
@@ -689,7 +796,7 @@ def updatePropPlanePars2(ui):
         ui.scrollArea_pupil_list[-1].setMinimumHeight(ui.rect.height()/12.)
         ui.scrollAreaWidgetContents_pupil_list.append(QtWidgets.QWidget())
         ui.scrollAreaWidgetContents_pupil_list[-1].setGeometry(QtCore.QRect(0, 0, 421, 85))
-        ui.scrollAreaWidgetContents_pupil_list[-1].setObjectName("scrollAreaWidgetContents_geometry")
+        ui.scrollAreaWidgetContents_pupil_list[-1].setObjectName("scrollAreaWidgetContents_pupil")
         ui.gridLayout_pupil_list.append(QtWidgets.QGridLayout(ui.scrollAreaWidgetContents_pupil_list[-1]))
         ui.gridLayout_pupil_list[-1].setObjectName("gridLayout_pupil"+str(iP))
         ui.scrollArea_pupil_list[-1].setWidget(ui.scrollAreaWidgetContents_pupil_list[-1])
@@ -871,6 +978,81 @@ def updatePupilGeomPars2(ui,Plane):
                 ui.add_labelsText(ui.pupilGeom_labelParameters[Plane][-1],ui.pupilGeomFuncPars_list[Plane][i][j]+":")
 #*******************************************************************************
 
+
+# #!-%**************************************************************************
+def searchPropModel2(ui):
+    "Search for propagation models functions <*.py>"
+
+    try:
+        propModel_dir = os.path.join(ui.current_dir, "models", "propagationModels")
+        os.chdir(propModel_dir)
+        sys.path.append(propModel_dir)
+        # cleaning combo box of Pupil Geometric Functions
+        for i in range(0,ui.max_numPlanes):
+            ui.comboBox_propModel_list[i].clear()
+
+        # for each propagation plane
+        for i in range(0,ui.max_numPlanes):
+            new_file=None
+            count=0
+            for file_dir in glob.glob("*.py"):
+                new_file = __import__(str(file_dir[:-3]))
+                ui.propModelFunc_list[i].append([new_file.propModel_name,new_file,new_file])
+                ui.propModelPars_list[i].append(new_file.propModel_parameters)
+                ui.comboBox_propModel_list[i].addItem(ui.propModelFunc_list[i][-1][0],i+1)
+                count+=1
+            if count!=0:
+                #ui.updatePupilGeomPars()
+                pass
+            else:
+                temp_txt = "No Propagation Models were found in folder <propagationModels>"
+                ui.update_outputText(temp_txt)
+
+    except Exception as error:
+        print(error)
+        ui.update_outputText(str(error)+" at <mainFunctions.py> in function <searchPropModels2>")
+#*******************************************************************************
+
+
+# #!-% *************************************************************************
+def updatePropModelPars2(ui,Plane):
+    "Updates Propagation Model parameters"
+
+    # current selected Geometric model in plane <iP>
+    current_propModel = ui.comboBox_propModel_list[Plane].currentText()
+
+    # clearing
+    for lab in ui.propModel_labelParameters[Plane]:
+        ui.clear_LabelText(lab)
+        lab.deleteLater()
+    for edits in ui.propModel_lineEditParameters[Plane]:
+        edits.deleteLater()
+    # clearing label parameters
+    ui.propModel_labelParameters[Plane] = []
+    ui.propModel_lineEditParameters[Plane] = []
+
+    # for each model
+    num_models = len(ui.propModelFunc_list[Plane])
+    for i in range(0,num_models):
+        if current_propModel == ui.propModelFunc_list[Plane][i][0]:
+            # for each parameter:
+            for j in range(0,len(ui.propModelPars_list[Plane][i])):
+                # adding label for each parameter
+                ui.propModel_labelParameters[Plane].append(QtWidgets.QLabel(ui.scrollAreaWidgetContents_propModel_list[Plane]))
+                ui.propModel_labelParameters[Plane][-1].setPalette(palette_parSection)
+                ui.propModel_labelParameters[Plane][-1].setFont(font_normalLabel)
+                ui.gridLayout_propModel_list[Plane].addWidget(ui.propModel_labelParameters[Plane][-1], 1+j, 0, 1, 1)
+                # adding line edit entries
+                ui.propModel_lineEditParameters[Plane].append(QtWidgets.QLineEdit(ui.scrollAreaWidgetContents_propModel_list[Plane]))
+                ui.propModel_lineEditParameters[Plane][-1].setFont(font_normalLabel)
+                ui.propModel_lineEditParameters[Plane][-1].setStyleSheet('background: '+colortxt_textEdit)
+                ui.propModel_lineEditParameters[Plane][-1].textChanged.connect(ui.updateSpaceRes)
+                ui.gridLayout_propModel_list[Plane].addWidget(ui.propModel_lineEditParameters[Plane][-1], 1+j, 1, 1, 1)
+                # setting size:
+                ui.propModel_lineEditParameters[Plane][-1].setMaximumWidth(size_entries(ui))
+                # Text in APP:
+                ui.add_labelsText(ui.propModel_labelParameters[Plane][-1],ui.propModelPars_list[Plane][i][j]+":")
+#*******************************************************************************
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
 #===============================================================================
@@ -987,24 +1169,37 @@ def updateSpaceRes2(ui):
     "Updates Spatial resolution for each plane"
     try:
         dx_list = []
-        numPlanes = int(ui.spinBox_numPlanes.text())
-        N    = int(ui.lineEdit_N.text())
-        NZ   = int(ui.lineEdit_NZ.text())
-        angF = float(ui.lineEdit_centralFreq.text())
+
+        numPlanes = int(ui.spinBox_numPlanes.text()) # number of planes
+        N         = int(ui.lineEdit_N.text())             # matrix size
+        NZ        = int(ui.lineEdit_NZ.text())            # zero padding size
+        angF      = float(ui.lineEdit_centralFreq.text()) # angular frequency
+        c         = 299792458
 
 
 
         for i in range(0,numPlanes):
             ds = None
-            if i ==0:
-                ds = float(ui.lineEdit_sourceRes.text())
-                distance = float(ui.lineEdit_distances_list[i].text())
-                if ui.checkBox_FFT.isChecked():
-                    dx = 2*pi*3e8*distance/(angF*NZ*ds)
-                else:
-                    dx = 2*pi*3e8*distance/(angF*N*ds)
 
-                text1 = "Spatial Resolution of Plane "+str(i+1)+":  "+"{:.6E}".format(Decimal(str(dx)))+" m"
+            if i ==0:
+                ds             = float(ui.lineEdit_sourceRes.text())
+                distance       = float(ui.lineEdit_distances_list[i].text())
+                propModel_list = []
+
+                # parameters of propagation model
+                propModel     = ui.propModelFunc_list[i][ui.comboBox_propModel_list[i].currentIndex()]
+                propModelFunc = propModel[1]
+                prop_parameters = []
+
+                for j in range(0, len(ui.propModel_lineEditParameters[i])):
+                    prop_parameters.append(ui.propModel_lineEditParameters[i][j].text())
+
+                if ui.checkBox_FFT.isChecked():
+                    dx = propModelFunc.spatial_resolution(NZ, [distance, angF, c, ds], prop_parameters)
+                else:
+                    dx = propModelFunc.spatial_resolution(N, [distance, angF, c, ds], prop_parameters)
+
+                text1 = "(Free space) spatial Resolution of Plane "+str(i+1)+":  "+"{:.6E}".format(Decimal(str(dx)))+" m"
                 ui.textBrowser_spatialRes_list[i].setText(text1)
                 dx_list.append(dx)
                 if ui.geometry_lineEditParameters != []:
@@ -1017,9 +1212,29 @@ def updateSpaceRes2(ui):
                         pass
                         #ui.update_outputText("<<"+str(error)+">> in calculating the Van Cittert-Zernike correlation length at Plane "+str(i+1))
             else:
-                ds = float(dx_list[i-1])
+
+                # propagation parameters
+                propModel     = ui.propModelFunc_list[i][ui.comboBox_propModel_list[i].currentIndex()]
+                propModelFunc = propModel[1]
+                prop_parameters = []
+
+                ##for j in range(0, len(ui.propModel_lineEditParameters[i])):
+                    ##prop_parameters.append(uui.propModel_lineEditParameters[i][j].text())
+
+                for j in range(0, len(ui.propModel_lineEditParameters[i])):
+                    prop_parameters.append(ui.propModel_lineEditParameters[i][j].text())
+
+                ds       = float(dx_list[i-1])
                 distance = float(ui.lineEdit_distances_list[i].text())
-                dx = 2*pi*3e8*distance/(angF*N*ds)
+
+
+                if ui.checkBox_FFT.isChecked():
+                    dx = propModelFunc.spatial_resolution(NZ, [distance, angF, c, ds], prop_parameters)
+
+                else:
+                    ##dx = propModelFuncs[numPlane].spatial_resolution(NZ, gen_pars, propModePars_list[numPlane])
+                    dx = propModelFunc.spatial_resolution(N, [distance, angF, c, ds], prop_parameters)
+
                 dx_list.append(dx)
 
                 text1 = "Spatial Resolution of Plane "+str(i+1)+":  "+"{:.6E}".format(Decimal(str(dx)))+" m"

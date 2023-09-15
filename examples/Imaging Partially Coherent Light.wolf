@@ -1,4 +1,4 @@
-PyWolf v1.0.1
+PyWolf v2.0.0
 Imaging Partially Coherent Light
 [11/01/2022 15:43:07]
 True
@@ -39,6 +39,8 @@ Gaussian
 !True	False	
 !Thin Lens	None&
 %0.25	&None	
+!Free Space	Free Space&	
+%&
 ?# Aperture effects in an imaging system with partially coherent light
 
 - Incoherent and homogeneous source with rectangular shape

@@ -1,8 +1,8 @@
 #-------------------------------------------------------------------------------
-# Name:        Thin Lens with aberrations
-# Purpose:     PyWolf's Optics Models
+# Name:        Free Space Propagation
+# Purpose:     PyWolf functions
 #
-# Author:      Tiago E. C. Magalhaes
+# Author:      TEC MAGALHAES
 #
 # Licence:     GNU GENERAL PUBLIC LICENSE Version 3
 #-------------------------------------------------------------------------------
@@ -14,23 +14,46 @@
 # PyOpenCL
 from pyopencl import *
 
-# Numpy
-from numpy import zeros, float32, int32, double, exp, copy
+# NumPy
+from numpy import zeros, exp, float32, int32, double, pi
+
+# Import Time
+import time
 
 #===============================================================================
-#///////////////////////////////////////////////////////////////////////////////
+#//////////////////////////////////////////////////////////////////////////////
 #===============================================================================
 
 
 #===============================================================================
 # Pre-requisites
 #===============================================================================
+propModel_name = "Constant Refractive Index"
 
-optics_messages   = ""
+propModel_parameters = ["refractive index:"]
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
-optics_name       = "Thin Lens w/aberrations (circular)"
 
-optics_parameters = ["focal length (m)","radius (a.u.)","As (a.u.)"]
+#===============================================================================
+# Propagation plane spatial resolution
+#===============================================================================
+def spatial_resolution(N, gen_pars, prop_pars):
+
+    # general parameters
+    R         = float(gen_pars[0]) # distance, 40e-6
+    omega0    = float(gen_pars[1]) # angular frequency, 2271030833920332.5
+    c         = float(gen_pars[2]) # speed of light
+    sourceRes = float(gen_pars[3])
+
+    # propagation parameters
+    n0   = float(prop_pars[0])   # refractive index, 1.53.854e-4
+
+    # calculation
+    dx = 2*pi*c*R/(n0*omega0*N*sourceRes)
+
+    return dx
 
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
@@ -38,18 +61,20 @@ optics_parameters = ["focal length (m)","radius (a.u.)","As (a.u.)"]
 
 
 #===============================================================================
-# Optics Model Function
+# Propagation Model - Q function - source
 #===============================================================================
-def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,parallel,debug):
+def func_qfunctionA(user_interface, context, queue, W_main, N, dlp, gen_pars, prop_pars, parallel, debug):
 
-    user_interface.update_outputText("Starting thin lens with aberrations function...")
 
-    focal_length = parameters[0]
-    ra           = parameters[1]*dlp
-    As           = parameters[2]
+    # printing
+    user_interface.update_outputText("Using free-space propagation model...")
 
-    C1           = w0/(2*focal_length*3e8)
+    # general parameters
+    R      = gen_pars[0] # distance
+    omega0 = gen_pars[1] # angular frequency
+    c      = gen_pars[2] # speed of light
 
+    C1 = omega0/(2*R*3e8)
 
     if C1 !=0.0:
 
@@ -57,7 +82,7 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
 
         if debug:
             user_interface.update_outputText("C1: "+str(C1))
-            user_interface.update_outputText("dlp: "+str(dlp))
+            user_interface.update_outputText("Spatial Resolution (m): "+str(dlp))
 
         CL_qfunc=None
 
@@ -78,10 +103,7 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
                                        const unsigned int j1,
                                        const double dlp,
                                        const double C1,
-                                       const double theta1,
-                                       const double w0,
-                                       const double ra,
-                                       const double As)
+                                       const double theta1)
                 {
                     int row= get_global_id(0);
                     int col = get_global_id(1);
@@ -89,8 +111,9 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
                     //=========================================================
                     // Point R2
                     //=========================================================
-                    int y2=-(M-row);
+
                     int x2= col-M;
+                    int y2= M-row;
 
                     double x22 = (double) x2;
                     double y22 = (double) y2;
@@ -100,11 +123,10 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
 
                     double r2_mag = r2_x*r2_x + r2_y*r2_y;
 
-                    double theta2 = -C1*r2_mag + (w0/3e8)*As*(r2_mag/ra)*(r2_mag/ra);
+                    double theta2 = C1*r2_mag;
+                    //_________________________________________________________
 
                     double total_theta = theta1 + theta2;
-
-                    //___Converting to real and imaginary__//
 
                     double a = (double) data_real[row*N + col ];
                     double b = (double) data_imag[row*N + col ];
@@ -128,19 +150,21 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
                 for j1 in range(0,N):
 
                     # Q functions for object plane
-                    x1=j1-M
                     y1=M-i1
+                    x1=j1-M
+
 
                     r1_x=x1*dlp
                     r1_y=y1*dlp
                     r1_mag=(r1_x**2)+(r1_y**2)
 
-                    theta1 = C1*(r1_mag)-(w0/3e8)*As*(r1_mag/ra)**2
+                    theta1 = -C1*(r1_mag)
 
+                    import copy
 
                     # Data
-                    data_real = W_main[i1,j1].real.copy()
-                    data_imag = W_main[i1,j1].imag.copy()
+                    data_real=copy.copy(W_main[i1,j1].real)
+                    data_imag=copy.copy(W_main[i1,j1].imag)
 
                     # creating memory on gpu
                     mf = mem_flags
@@ -158,15 +182,16 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
                     CL_qfunc.increase(queue,data_real.shape,None,result_real_gpu_memory,result_imag_gpu_memory,
                                        data_real_gpu_memory,data_imag_gpu_memory,
                                        int32(N),int32(M),int32(i1),int32(j1),double(dlp),
-                                       double(C1),double(theta1),double(w0),double(ra),double(As))
+                                       double(C1),double(theta1))
 
                     # Copying Result to PC memory
                     enqueue_copy(queue,result_real,result_real_gpu_memory)
                     enqueue_copy(queue,result_imag,result_imag_gpu_memory)
 
                     # Copying to Main Matrix
-                    W_main.real[i1,j1] =  result_real.copy()
-                    W_main.imag[i1,j1] =  result_imag.copy()
+                    W_main.real[i1,j1] = copy.copy(result_real)
+                    W_main.imag[i1,j1] = copy.copy(result_imag)
+
 
         else:
             user_interface.update_outputText("PyOpenCl will NOT be used. Starting Cycle...")
@@ -188,7 +213,7 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
 
                     r1_mag = r1x**2 + r1y**2
 
-                    theta1 = C1*(r1_mag)-(w0/3e8)*As*(r1_mag/ra)**2
+                    theta1 = -C1*(r1_mag)
 
                     for i2 in range(0,N):
                         for j2 in range(0,N):
@@ -202,7 +227,7 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
 
                             r2_mag = r2x**2 + r2y**2
 
-                            theta2 = -C1*r2_mag + (w0/3e8)*As*(r2_mag/ra)*(r2_mag/ra)
+                            theta2 = C1*r2_mag
 
                             WP = theta1 + theta2
 
@@ -214,6 +239,21 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
     else:
         user_interface.update_outputText("No need for q function multiplication: no phase values to add.")
         return W_main
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+
+#===============================================================================
+# Propagation Model - Q function - propagation plane
+#===============================================================================
+
+
+def func_qfunctionB(user_interface, context, queue, W_main, N, dlp, gen_pars, prop_pars, parallel, debug):
+    res = func_qfunctionA(user_interface, context, queue, W_main, N, dlp, gen_pars, prop_pars, parallel, debug)
+    return res
+
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
 #===============================================================================

@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # Name:        StartSim
 # Purpose:     PyWolf function to Start the Simulation of Partially Coherent Light Propagation
-# Version:     1.0.1
+# Version:     2.0.0
 #
 # Author:      Tiago E. C. Magalhaes
 #
@@ -22,14 +22,10 @@ from pyopencl import *
 import sys
 import os
 import copy
-##import time
 
 # NumPy
-from numpy import count_nonzero
-from numpy import sqrt
-from numpy import complex64
-from numpy import complex
-from numpy import load
+from numpy import count_nonzero, sqrt, complex64, complex, load, copy
+
 
 # Adding directories to import packages
 current_dir = os.getcwd()
@@ -43,8 +39,6 @@ from windowPlot_2DSDC import *
 from windowPlot_SDC import *
 from windowPlot_sourceSpectrum import *
 from windowPlot_propSpectrum import *
-from qfunction import *
-from qFFT import *
 from qFFT import *
 from func_propSpec import *
 from build_image import *
@@ -80,6 +74,15 @@ def func_startSim(ui,all_parameters):
     # Separating Parameters
     #===========================================================================
     ui.update_outputText("Organizing Parameters...")
+
+
+    # updating spatial resolution
+    ui.updateSpaceRes()
+
+    if ui.dx_list == []:
+        ui.update_outputText("Spatial resolution on one of the propagation planes could not be computed.")
+        return False
+
 
     # Name and Time
     sim_name = all_parameters[0][0][0]
@@ -150,6 +153,8 @@ def func_startSim(ui,all_parameters):
     specModelFunc    = None
     specModelPars    = None
 
+
+
     try:
 
         if polychromatic or quasimonochromatic:
@@ -161,6 +166,9 @@ def func_startSim(ui,all_parameters):
             ui.update_outputText(specModelName)
             ui.update_outputText(specModelFunc)
             ui.update_outputText(specModelPars)
+
+
+
 
     except Exception as error:
         ui.update_outputText(error)
@@ -232,6 +240,12 @@ def func_startSim(ui,all_parameters):
     optDevices_list           = all_parameters[4][7]
     optDevicePars_list        = all_parameters[4][8]
     optDeviceFuncs            = [all_parameters[4][7][i][3] for i in range(0,len(all_parameters[4][7]))]
+
+    # Propagation Model
+    propModel_list           = all_parameters[4][9]
+    propModePars_list        = all_parameters[4][10]
+    propModelFuncs           = [all_parameters[4][9][i][3] for i in range(0,len(all_parameters[4][9]))]
+
     #___________________________________________________________________________
 
     #---------------------------------------------------------------------------
@@ -441,7 +455,7 @@ def func_startSim(ui,all_parameters):
                 if not CSDAFromFile:
                     if useSpecDen:
                         ui.update_outputText("The spectral density model will now be constructed: "+str(chosen_specDensityModelName))
-                        ui.CSDA_source.matrix = chosen_specDensityModelFunc.specDenModelFunc(ui,context,queue,ui.CSDA_source.matrix,N,specDensityPars,sim_usePyOpenCL,debug)
+                        ui.CSDA_source.matrix = chosen_specDensityModelFunc.specDenModelFunc(ui,context, queue, ui.CSDA_source.matrix, N, specDensityPars, sim_usePyOpenCL, debug)
 
                         #ui.CSDA_source.matrix = W_temp
 
@@ -551,8 +565,8 @@ def func_startSim(ui,all_parameters):
 
             # Creating Propagation Matrix
             ui.CSDA_prop    = CSDA(all_parameters,ui)
-            import copy
-            ui.CSDA_prop.matrix = copy.copy(ui.CSDA_source.matrix)
+            ##import copy
+            ui.CSDA_prop.matrix = ui.CSDA_source.matrix.copy()
 
             # speed of light
             c = 2.99792458e8
@@ -560,17 +574,15 @@ def func_startSim(ui,all_parameters):
             # source spatial resolution
             ds = ui.CSDA_source.ds
 
-
-
             # first plane spatial resolution
             dx = None
             if useFFTzeroPadding:
                 ui.update_outputText("FFT zero padding will be used.")
-                dx = 2*pi*c*distances_list[0]/(Cfrequency*NZ*sourceRes)
+                dx = propModelFuncs[0].spatial_resolution(NZ, [distances_list[0], Cfrequency, c, ds], propModePars_list[0])
                 ui.update_outputText("Spatial Resolution in Plane 1 (m): "+str(dx))
             else:
                 ui.update_outputText("FFT zero padding will NOT be used.")
-                dx = 2*pi*c*distances_list[0]/(Cfrequency*N*sourceRes)
+                dx = propModelFuncs[0].spatial_resolution(N, [distances_list[0], Cfrequency, c, ds], propModePars_list[0])
                 ui.update_outputText("Spatial Resolution in Plane 1 (m): "+str(dx))
 
 
@@ -581,36 +593,36 @@ def func_startSim(ui,all_parameters):
 
                 ui.update_outputText("Propagation for Plane "+str(numPlane+1)+" initiating...")
 
+
                 #---------------------------------------------------------------
                 # spatial resolution
                 #---------------------------------------------------------------
                 if numPlane == 0:
                     pass
                 else:
-                    ds = dx
+                    ds = copy.copy(dx)
+
                     if useFFTzeroPadding:
-                        dx = 2*pi*3e8*distances_list[numPlane]/(Cfrequency*NZ*dx)
+                        gen_pars = [distances_list[numPlane], Cfrequency, c, ds]
+                        dx = propModelFuncs[numPlane].spatial_resolution(NZ, gen_pars, propModePars_list[numPlane])
                         ui.update_outputText("Plane "+str(numPlane+1)+" spatial resolution: "+str(dx))
                     else:
-                        dx = 2*pi*3e8*distances_list[numPlane]/(Cfrequency*N*dx)
+                        gen_pars = [distances_list[numPlane], Cfrequency, c, ds]
+                        dx = propModelFuncs[numPlane].spatial_resolution(N,gen_pars, propModePars_list[numPlane])
                         ui.update_outputText("Plane "+str(numPlane+1)+" spatial resolution: "+str(dx))
-
-                C1 = Cfrequency/(2*distances_list[numPlane]*c)
                 #_______________________________________________________________
 
 
                 #---------------------------------------------------------------
                 # Q functions
                 #---------------------------------------------------------------
-                # gathering parameters
-                prop_parameters = [C1]
 
                 if not farfield_list[numPlane]:
                     ui.update_outputText("Multiplying by Q functions...")
 
-
                     # q function
-                    ui.CSDA_prop.matrix = func_qfunction(ui,context,queue,ui.CSDA_prop.matrix,N,ds,prop_parameters,sim_usePyOpenCL,debug)
+                    ##ui.CSDA_prop.matrix = func_qfunction(ui,context,queue,ui.CSDA_prop.matrix,N,ds,prop_parameters,sim_usePyOpenCL,debug)
+                    ui.CSDA_prop.matrix = propModelFuncs[numPlane].func_qfunctionA(ui,context, queue, ui.CSDA_prop.matrix, N, ds, [distances_list[numPlane], Cfrequency, c, ds], propModePars_list[numPlane], sim_usePyOpenCL, debug)
 
                     # messages
                     ui.update_outputText("Task Completed!")
@@ -688,7 +700,9 @@ def func_startSim(ui,all_parameters):
                 ui.update_outputText("Multiplying by Q functions...")
 
                 # q function
-                ui.CSDA_prop.matrix = func_qfunction(ui,context,queue,ui.CSDA_prop.matrix,N,dx,prop_parameters,sim_usePyOpenCL,debug)
+                ##ui.CSDA_prop.matrix = propModelFuncs[numPlane].func_qfunctionB(ui,context,queue,ui.CSDA_prop.matrix,N,dx,prop_parameters,sim_usePyOpenCL,debug)
+                ##ui.CSDA_prop.matrix = propModelFuncs[numPlane](ui,context, queue, ui.CSDA_prop.matrix, N, dx, gen_pars, propModePars_list[numPlane], sim_usePyOpenCL, debug)
+                ui.CSDA_prop.matrix = propModelFuncs[numPlane].func_qfunctionB(ui,context, queue, ui.CSDA_prop.matrix, N, dx, [distances_list[numPlane], Cfrequency, c, dx], propModePars_list[numPlane], sim_usePyOpenCL, debug)
 
                 ui.update_outputText("Task Completed!")
                 #_______________________________________________________________
@@ -742,7 +756,7 @@ def func_startSim(ui,all_parameters):
             ui.CSDA_prop.image = zeros((N,N))
             for i in range(0,N):
                 for j in range(0,N):
-                    ui.CSDA_prop.image[i,j] = ui.CSDA_prop.matrix[i,j,i,j].real
+                    ui.CSDA_prop.image[i,j] = abs(ui.CSDA_prop.matrix[i,j,i,j].real)
             #-----------------------------------------------------------------------
             #///////////////////////////////////////////////////////////////////////
             #-----------------------------------------------------------------------

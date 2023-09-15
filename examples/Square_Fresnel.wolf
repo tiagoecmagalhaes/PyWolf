@@ -1,4 +1,4 @@
-PyWolf v1.0.1
+PyWolf v2.0.0
 Square Source - Fresnel propagation
 [11/01/2022 15:43:26]
 True
@@ -38,7 +38,9 @@ Gaussian
 %None&
 !False	
 !None&
-%None	
+%None
+!Free Space	
+%&	
 ?# Propagation of Light from a rectangular source in the Fresnel approximation
 
 - Coherent and homogeneous source with squared shape

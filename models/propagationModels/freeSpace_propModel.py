@@ -1,44 +1,76 @@
-# -*- coding: utf-8 -*-
-#-----------------------------------------------------------------------------
-# Name:        Prop
-# Purpose:     PyProPCL
+#-------------------------------------------------------------------------------
+# Name:        Free Space Propagation
+# Purpose:     PyWolf functions
 #
-# Author:      Tiago Magalhaes
+# Author:      TEC MAGALHAES
 #
-# Created:     2017
-# Copyright:   (c) Tiago Magalhaes 2017
-# Licence:     IA
-#-----------------------------------------------------------------------------
-##
-##
-#==============================================================================
+# Licence:     GNU GENERAL PUBLIC LICENSE Version 3
+#-------------------------------------------------------------------------------
+
+
+#===============================================================================
 # Importing Packages
-#==============================================================================
+#===============================================================================
+# PyOpenCL
 from pyopencl import *
-from pylab import *
+
+# NumPy
+from numpy import zeros, exp, float32, int32, double, pi
+
+# Import Time
 import time
 
-
-#------------------------------------------------------------------------------
+#===============================================================================
 #//////////////////////////////////////////////////////////////////////////////
-#------------------------------------------------------------------------------
-###############################################################################
-###############################################################################
-###############################################################################
-#
-#
 #===============================================================================
-# PROPAGATION FROM SOURCE TO ENTRANCE PUPIL
+
+
 #===============================================================================
-def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel,debug):
+# Pre-requisites
+#===============================================================================
+propModel_name = "Free Space"
 
-    # parameters
-    #omega0   = parameters[0]
-    #distance = parameters[1]
+propModel_parameters = []
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
 
 
-    C1 = parameters[0] #omega0/(2*distance*c)
+#===============================================================================
+# Propagation plane spatial resolution
+#===============================================================================
+def spatial_resolution(N, gen_pars, prop_pars):
 
+    # general parameters
+    R         = float(gen_pars[0]) # distance, 40e-6
+    omega0    = float(gen_pars[1]) # angular frequency, 2271030833920332.5
+    c         = float(gen_pars[2]) # speed of light
+    sourceRes = float(gen_pars[3])
+
+    dx = 2*pi*c*R/(omega0*N*sourceRes)
+
+    return dx
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# Propagation Model - Q function - source
+#===============================================================================
+def func_qfunctionA(user_interface, context, queue, W_main, N, dlp, gen_pars, prop_pars, parallel, debug):
+
+
+    # printing
+    user_interface.update_outputText("Using free-space propagation model...")
+
+    # general parameters
+    R      = gen_pars[0] # distance
+    omega0 = gen_pars[1] # angular frequency
+    c      = gen_pars[2] # speed of light
+
+    C1 = omega0/(2*R*3e8)
 
     if C1 !=0.0:
 
@@ -46,7 +78,7 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
 
         if debug:
             user_interface.update_outputText("C1: "+str(C1))
-            user_interface.update_outputText("dlp: "+str(dlp))
+            user_interface.update_outputText("Spatial Resolution (m): "+str(dlp))
 
         CL_qfunc=None
 
@@ -75,8 +107,9 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
                     //=========================================================
                     // Point R2
                     //=========================================================
-                    int y2=-(M-row);
+
                     int x2= col-M;
+                    int y2= M-row;
 
                     double x22 = (double) x2;
                     double y22 = (double) y2;
@@ -113,8 +146,9 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
                 for j1 in range(0,N):
 
                     # Q functions for object plane
-                    x1=j1-M
                     y1=M-i1
+                    x1=j1-M
+
 
                     r1_x=x1*dlp
                     r1_y=y1*dlp
@@ -201,3 +235,21 @@ def func_qfunction(user_interface,context,queue,W_main,N,dlp,parameters,parallel
     else:
         user_interface.update_outputText("No need for q function multiplication: no phase values to add.")
         return W_main
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+
+#===============================================================================
+# Propagation Model - Q function - propagation plane
+#===============================================================================
+
+
+def func_qfunctionB(user_interface, context, queue, W_main, N, dlp, gen_pars, prop_pars, parallel, debug):
+    res = func_qfunctionA(user_interface, context, queue, W_main, N, dlp, gen_pars, prop_pars, parallel, debug)
+    return res
+
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================

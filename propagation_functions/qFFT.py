@@ -133,7 +133,7 @@ def func_fft2d(ui,data_in,FTinverse,zeropad=[]):
             return new_fft[M1:M2,M1:M2]
 
         else:
-            return (ifftshift(ifft2(ifftshift(data_in))))
+            return fftshift(ifft2(ifftshift(data_in)))
 
 
     else:
@@ -153,7 +153,8 @@ def func_fft2d(ui,data_in,FTinverse,zeropad=[]):
             return new_fft[M1:M2,M1:M2]
 
         else:
-            return (fftshift(fft2(fftshift(data_in))))
+            return fftshift(fft2(ifftshift(data_in)))
+
 
 
 

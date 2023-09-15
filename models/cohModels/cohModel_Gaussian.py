@@ -15,11 +15,7 @@
 from pyopencl import *
 
 # NumPy
-from numpy import int32, double, float32, float, zeros
-from numpy import count_nonzero
-
-# import copy
-import copy
+from numpy import int32, double, float32, float, zeros, count_nonzero, copy
 
 # import time
 import time
@@ -35,7 +31,7 @@ import time
 
 cohModel_name = "Gaussian Schell-model"
 
-cohModel_parameters = ["Effective Coherence Length (a.u.):","Standard Deviation"]
+cohModel_parameters = ["Effective Coherence Length (a.u.):", "Standard Deviation (a.u.)"]
 
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
@@ -63,7 +59,7 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
 
     try:
         # parameters
-        M = N/2
+        M = int(N/2)
 
         CL_pcohGS = None
 
@@ -127,8 +123,8 @@ def cohModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug
                     if not count_nonzero(W_main.real[i1,j1])==0.0:
 
                         # Defining
-                        result=zeros((N,N)).astype(float32)
-                        data=copy.copy(W_main.real[i1,j1])
+                        result = zeros((N,N)).astype(float32)
+                        data   = W_main.real[i1,j1].copy()
 
                         # Radius of point P1
                         x1 = j1-M

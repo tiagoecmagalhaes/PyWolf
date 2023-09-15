@@ -1,0 +1,53 @@
+PyWolf v2.0.0
+Gaussian Schell-model beam
+[10/08/2023 15:56:55]
+True
+<pyopencl.Platform 'AMD Accelerated Parallel Processing' at 0x7ffd062c0000>
+<pyopencl.Device 'Tonga' on 'AMD Accelerated Parallel Processing' at 0x14ddfe0a810>
+True
+False
+False
+C:\Users\Tiago\Documents\MEGA\PhD Space\PyWolf\results
+False
+200
+False
+256
+0
+Frequency-Independent Model
+1e-3
+Single Frequency
+None
+2271030833920332.5
+1e-4
+False
+C:\Users\Tiago\Documents\MEGA\PyWolf_2.0\results
+False
+C:\Users\Tiago\Documents\MEGA\PyWolf_2.0\results
+Source Plane
+!
+Gaussian Schell-model
+!11	11	
+False
+Gaussian
+!	
+1
+!1500	
+!False	
+!False	
+!None	
+%None&
+!False	
+!None&
+%None	
+!Turbulent medium: Kolmogorov
+%1	10e-13	&
+?# Gaussian Schell-model beam in a turbulent medium described by the Kolmogorov model
+
+- Gaussian Schell-model
+- The far-field approximation is NOT used
+- We will use N=200 WITHOUT a zero padding
+- The angular frequency will be w0 = 2271030833920332.5 rad/seg (830 nm)
+- The values for the Kolmogorov model are typical ones [1]
+
+[1] Lu, Wei, et al. "Change in degree of coherence of partially coherent electromagnetic beams propagating through atmospheric turbulence." Optics Communications 271.1 (2007): 1-8.
+

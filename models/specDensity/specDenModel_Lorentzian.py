@@ -15,10 +15,8 @@
 from pyopencl import *
 
 # Numpy
-from numpy import zeros, float32, int32, double, count_nonzero
+from numpy import zeros, float32, int32, double, count_nonzero, copy
 
-# Copy
-import copy
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
 #===============================================================================
@@ -107,8 +105,8 @@ def specDenModelFunc(user_interface,context,queue,W_main,N,parameters,parallel,d
                     if not count_nonzero(W_main[i1,j1])==0:
 
                         # Defining
-                        result=zeros((N,N)).astype(float32)
-                        data=copy.copy(W_main[i1,j1].real)
+                        result = zeros((N,N)).astype(float32)
+                        data   = W_main[i1,j1].real.copy()
 
                         # Radius of point P1
                         x1=j1-M

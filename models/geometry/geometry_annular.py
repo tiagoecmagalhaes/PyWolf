@@ -15,10 +15,8 @@
 from pyopencl import *
 
 # NumPy
-from numpy import zeros, sqrt, float32, int32
+from numpy import zeros, sqrt, float32, int32, copy
 
-# Copy
-import copy
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
 #===============================================================================
@@ -97,7 +95,7 @@ def geomFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug):
                 if r1<=float(out_radius) and r1>=float(in_radius):
 
                     # Data
-                    data_real=copy.copy(W_main[i1,j1].real)
+                    data_real = W_main[i1,j1].real.copy()
 
                     # creating memory on gpu
                     mf = mem_flags
@@ -115,7 +113,7 @@ def geomFunc(user_interface,context,queue,W_main,N,parameters,parallel,debug):
                     enqueue_copy(queue,result_real,result_real_gpu_memory)
 
                     # Copying to Main Matrix
-                    W_main.real[i1,j1]=copy.copy(result_real)
+                    W_main.real[i1,j1]= result_real.copy()
 
 
 

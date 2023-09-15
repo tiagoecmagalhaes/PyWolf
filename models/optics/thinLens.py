@@ -15,10 +15,8 @@
 from pyopencl import *
 
 # Numpy
-from numpy import zeros, float32, int32, double, exp
+from numpy import zeros, float32, int32, double, exp, copy
 
-# Copy
-import copy
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
 #===============================================================================
@@ -43,6 +41,9 @@ optics_parameters = ["focal length (m)"]
 # Optics Model Function
 #===============================================================================
 def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,parallel,debug):
+
+
+    user_interface.update_outputText("Starting thin lens function...")
 
     C1 = w0/(2*parameters[0]*3e8)
 
@@ -129,11 +130,9 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
 
                     theta1 = C1*(r1_mag)
 
-                    import copy
-
                     # Data
-                    data_real=copy.copy(W_main[i1,j1].real)
-                    data_imag=copy.copy(W_main[i1,j1].imag)
+                    data_real = W_main[i1,j1].real.copy()
+                    data_imag = W_main[i1,j1].imag.copy()
 
                     # creating memory on gpu
                     mf = mem_flags
@@ -158,8 +157,8 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
                     enqueue_copy(queue,result_imag,result_imag_gpu_memory)
 
                     # Copying to Main Matrix
-                    W_main.real[i1,j1] = copy.copy(result_real)
-                    W_main.imag[i1,j1] = copy.copy(result_imag)
+                    W_main.real[i1,j1] = result_real.copy()
+                    W_main.imag[i1,j1] = result_imag.copy()
 
 
         else:
@@ -182,7 +181,7 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
 
                     r1_mag = r1x**2 + r1y**2
 
-                    theta1 = -C1*(r1_mag)
+                    theta1 = C1*(r1_mag)
 
                     for i2 in range(0,N):
                         for j2 in range(0,N):
@@ -196,7 +195,7 @@ def optics_function(user_interface,context,queue,W_main,N,dlp,w0,parameters,para
 
                             r2_mag = r2x**2 + r2y**2
 
-                            theta2 = C1*r2_mag
+                            theta2 = -C1*r2_mag
 
                             WP = theta1 + theta2
 

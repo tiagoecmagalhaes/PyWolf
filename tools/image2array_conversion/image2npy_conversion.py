@@ -24,7 +24,7 @@ from matplotlib import pyplot as plt
 #_____________________________________________________________________________#
 
 ## reading image: insert filename below
-imgCal = cv.imread("ia_200_s.bmp")
+imgCal = cv.imread("IA_200_s.bmp")
 
 ## transforming image into array
 imgCal = np.array(imgCal, dtype=np.uint8)
@@ -36,4 +36,4 @@ grayCal = cv.cvtColor(imgCal,cv.COLOR_BGR2GRAY)
 Nx=len(grayCal[0])
 Ny=len(grayCal)
 
-save("ia_200_s.npy",grayCal)
+save("IA_200_s.npy",grayCal)

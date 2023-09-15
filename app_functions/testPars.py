@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # Name:        TestPars
 # Purpose:     PyWolf's function to test input parameters
-# Version:     1.0.1
+# Version:     2.0.0
 #
 # Author:      Tiago E. C. Magalhaes
 #
@@ -112,6 +112,10 @@ def func_testPars(ui):
     optDevices_list     = [] # [chosen_model_Plane1, chosen_model_Plane2, chosen_model_Plane3]
     optDevicesPars_list = [] # [chosen_modelPars_Plane1,chosen_modelPars_Plane2,chosen_modelPars_Plane3]
 
+    # #!-% PROPAGATION MODELS
+    propModel_list       = []   # [chosen_model_Plane1, chosen_model_Plane2, chosen_model_Plane3]
+    propModelPars_list   = []   # [chosen_modelPars_Plane1,chosen_modelPars_Plane2,chosen_modelPars_Plane3]
+
     try:
         for numP in range(0,num_propPlanes):
             distances_list.append(ui.lineEdit_distances_list[numP].text())
@@ -140,8 +144,19 @@ def func_testPars(ui):
                         actual_optDeviceFuncPar.append(ui.optDevicePars_lineEditParameters[numP][i].text())
                     optDevicesPars_list.append(actual_optDeviceFuncPar)
 
+            # #!-% PROPAGATION MODELS
+            chosen_propModelFunc = int(ui.comboBox_propModel_list[numP].currentIndex())
+            propModel_list.append([chosen_propModelFunc,ui.propModelFunc_list[numP][chosen_propModelFunc][0],ui.propModelFunc_list[numP][chosen_propModelFunc][1], ui.propModelFunc_list[numP][chosen_propModelFunc][2]])
+
+            if type(ui.comboBox_pupilGeom_list[numP].currentIndex()) == int:
+                actual_propModelPar = []
+                for i in range(0, len(ui.propModelPars_list[numP][propModel_list[numP][0]])):
+                    actual_propModelPar.append(ui.propModel_lineEditParameters[numP][i].text())
+                propModelPars_list.append(actual_propModelPar)
+
         # PROPAGATION PLANE LIST
-        propPlanes_list = [num_propPlanes, distances_list,farfield_list,usePupil,pupilGeo_list,pupilGeoPars_list,useOptics,optDevices_list,optDevicesPars_list]
+
+        propPlanes_list = [num_propPlanes, distances_list, farfield_list, usePupil, pupilGeo_list, pupilGeoPars_list, useOptics, optDevices_list, optDevicesPars_list, propModel_list, propModelPars_list]
 
     #___________________________________________________________________________
 
@@ -467,7 +482,23 @@ def func_testPars(ui):
                     ui.update_outputText("[Error] Please fill in the Optics model parameters.")
                     return([False,all_parameters_list])
 
+        # #!-% Propagation models
+        for i in range(0,len(propModelPars_list[iP])):
+
+            if propModelPars_list[iP][i]!= "":
+                try:
+                    a = float(propModelPars_list[iP][i])
+                    all_parameters_list[4][10][iP][i]=a
+                except:
+                    ui.update_outputText("[Error] The parameters of the propagation model must be float/int.")
+                    return([False,all_parameters_list])
+            else:
+                ui.update_outputText("[Error] Please fill in the propagation model parameters in Plane "+str(iP)+".")
+                return([False,all_parameters_list])
+
     #___________________________________________________________________________
+
+
 
     # OK
     ui.update_outputText("All parameters are OK.")

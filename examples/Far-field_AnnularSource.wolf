@@ -1,4 +1,4 @@
-PyWolf v1.0.1
+PyWolf v2.0.0
 Far-field of an annular source
 [04/01/2022 15:44:10]
 True
@@ -38,7 +38,9 @@ Gaussian
 %None&
 !False	
 !None&
-%None	
+%None
+!Free Space	
+%&	
 ?# Far-field propagation of an annular source
 
 - Incoherent and homogeneous source with annular shape

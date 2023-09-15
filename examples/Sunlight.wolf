@@ -1,4 +1,4 @@
-PyWolf v1.0.1
+PyWolf v2.0.0
 Sunlight
 [11/01/2022 15:43:35]
 True
@@ -38,7 +38,9 @@ Gaussian
 %None&
 !False	
 !None&
-%None	
+%None
+!Free Space	
+%&	
 ?# Propagation of Light from the Sun to Earth
 
 - The Sun is assumed as an incoherent and homogeneous source
