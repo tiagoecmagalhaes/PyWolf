@@ -123,7 +123,7 @@ def openFileNameDialog_openGeo2(ui):
     filename = None
     try:
         #geo_path = QFileDialog.getOpenFileName(None,"Open Numpy Array File",ui.current_dir+"\\source_images", "NPY Files (*.NPY *.jpg *.bmp *.png)") # windows only
-        geo_path = QFileDialog.getOpenFileName(None,"Open Numpy Array File",os.path.join(ui.current_dir,"source_images"), "NPY Files (*.NPY *.jpg *.bmp *.png)")
+        geo_path = QFileDialog.getOpenFileName(None,"Open Numpy Array File",os.path.join(os.path.dirname(__file__),"..","source_images"), "NPY Files (*.NPY *.jpg *.bmp *.png)")
         ui.dirSourceGeo = geo_path[0]
         ui.lineEdit_dirGeoMatrix.setText(str(ui.dirSourceGeo))
     except:
@@ -202,7 +202,7 @@ def update_titleProject2(ui):
 def search_specModel2(ui):
     "Seachs for spectrum models"
     #spec_dir = ui.current_dir+"\\models\\specModels\\"  # windows only
-    spec_dir = os.path.join(ui.current_dir, "models", "specModels")
+    spec_dir = os.path.join(os.path.dirname(__file__),"..", "models", "specModels")
     os.chdir(spec_dir)
     sys.path.append(spec_dir)
     # cleaning combo box of spectrum models
@@ -331,7 +331,7 @@ def update_specPars2(ui):
 def search_geometry2(ui):
     "searchs for geometry models <*.py> in a given directory"
     # geometry_dir = ui.current_dir+"\\models\\geometry\\" # windows only
-    geometry_dir = os.path.join(ui.current_dir, "models", "geometry")
+    geometry_dir = os.path.join(os.path.dirname(__file__),"..", "models", "geometry")
     os.chdir(geometry_dir)
     sys.path.append(geometry_dir)
     # cleaning combo box of spectrum models
@@ -409,7 +409,7 @@ def updateGeometryPars2(ui):
 def search_cohModel2(ui):
     "Searches for coherence model functions <*.py> in a given directory"
     # coh_dir = ui.current_dir+"\\models\\cohModels\\" # windows only
-    coh_dir = os.path.join(ui.current_dir, "models", "cohModels")
+    coh_dir = os.path.join(os.path.dirname(__file__),"..", "models", "cohModels")
     os.chdir(coh_dir)
     sys.path.append(coh_dir)
     # cleaning combo box of coherence models
@@ -478,7 +478,7 @@ def updateCohModelPars2(ui):
 #*******************************************************************************
 def search_propModel2(ui):
     "Searches for propagation model functions <*.py> in a given directory"
-    propModels_dir = os.path.join(ui.current_dir, "models", "propagationModels")
+    propModels_dir = os.path.join(os.path.dirname(__file__),"..", "models", "propagationModels")
     os.chdir(propModels_dir)
     sys.path.append(propModels_dir)
     # cleaning combo box of propagation models
@@ -562,7 +562,7 @@ def update_specDenArea2(ui):
 def search_specDenModels2(ui):
     "Searches Spectral Density models <*.py> in a given directory"
     # specDen_dir = ui.current_dir+"\\models\\specDensity\\" # windows only
-    specDen_dir = os.path.join(ui.current_dir, "models", "specDensity")
+    specDen_dir = os.path.join(os.path.dirname(__file__),"..", "models", "specDensity")
     os.chdir(specDen_dir)
     sys.path.append(specDen_dir)
     # cleaning combo box of spectral density models models
@@ -910,7 +910,7 @@ def searchPupilGeom2(ui):
     "Search for Pupil geometry functions <*.py>"
     try:
         # pupilGeom_dir = ui.current_dir+"\\models\\pupilGeom\\" # windows only
-        pupilGeom_dir = os.path.join(ui.current_dir, "models", "pupilGeom")
+        pupilGeom_dir = os.path.join(os.path.dirname(__file__),"..", "models", "pupilGeom")
         os.chdir(pupilGeom_dir)
         sys.path.append(pupilGeom_dir)
         # cleaning combo box of Pupil Geometric Functions
@@ -984,7 +984,7 @@ def searchPropModel2(ui):
     "Search for propagation models functions <*.py>"
 
     try:
-        propModel_dir = os.path.join(ui.current_dir, "models", "propagationModels")
+        propModel_dir = os.path.join(os.path.dirname(__file__),"..", "models", "propagationModels")
         os.chdir(propModel_dir)
         sys.path.append(propModel_dir)
         # cleaning combo box of Pupil Geometric Functions
@@ -1082,7 +1082,7 @@ def searchOpticsFunc2(ui):
     "Search for optical device function in <functions\optics>"
     try:
         # opticsFunc_dir = ui.current_dir+"\\models\\optics" # windows only
-        opticsFunc_dir = os.path.join(ui.current_dir, "models", "optics")
+        opticsFunc_dir = os.path.join(os.path.dirname(__file__),"..", "models", "optics")
         os.chdir(opticsFunc_dir)
         sys.path.append(opticsFunc_dir)
 

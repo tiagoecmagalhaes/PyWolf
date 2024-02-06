@@ -1,5 +1,5 @@
 """
-PyWolf version 2.0.0
+PyWolf version 2.0.2
 
 *
 Software to perform simulations of the propagation of partially coherent light
@@ -49,12 +49,13 @@ import psutil
 import glob
 
 # Adding directories to import packages
-current_dir = os.getcwd()
+current_dir = os.path.dirname(__file__)
 
 sys.path.append(os.path.join(current_dir,"plot_functions"))
 sys.path.append(os.path.join(current_dir,"app_functions"))
 sys.path.append(os.path.join(current_dir,"styles"))
 sys.path.append(os.path.join(current_dir,"logos"))
+
 
 
 # PyWolf packages
@@ -85,7 +86,7 @@ class Ui_MainWindow(QMainWindow):
         # parameters
         #=======================================================================
         # version
-        self.version = "PyWolf v2.0.0"
+        self.version = "PyWolf v2.0.2"
 
         # simulation successful
         self.sim = False
@@ -136,9 +137,12 @@ class Ui_MainWindow(QMainWindow):
         # not a document
         MainWindow.setDocumentMode(False)
 
+        # icon directory
+        icon_dir = self.current_dir
+        icon_dir = icon_dir.replace("\\","/")
 
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("logos/wolf_icon.png"), QtGui.QIcon.Selected, QtGui.QIcon.On)
+        icon.addPixmap(QtGui.QPixmap(icon_dir+"/logos/wolf_icon.png"), QtGui.QIcon.Selected, QtGui.QIcon.On)
         MainWindow.setWindowIcon(icon)
         #=======================================================================
         #///////////////////////////////////////////////////////////////////////
@@ -290,10 +294,12 @@ class Ui_MainWindow(QMainWindow):
         #=======================================================================
         # Matplotlib Scroll Area Color Palette
         #=======================================================================
+        temp_dir = os.path.dirname(__file__)
+        temp_dir = os.path.join(temp_dir, "logos", "wolf.png")
+        temp_dir = str(temp_dir)
+        temp_dir = temp_dir.replace("\\","/")
         stylesheet_pywolf = """
-
-            background-image: url(logos/wolf.png);
-
+            background-image: url('"""+temp_dir+"""');
             background-position: upper center;
             background-repeat: no-repeat;
         """
@@ -2459,7 +2465,7 @@ This software is licensed to you under the terms of the GNU General Public Licen
         try:
             #save_path = self.current_dir+"\\"+self.lineEdit_simName.text() # windows only
             save_path = os.path.join(self.current_dir,self.lineEdit_simName.text())
-            print(save_path)
+            ##print(save_path)
             dirName = QFileDialog.getSaveFileName(None,"Save Project Folder",save_path,"PyWolf Files (*.wolf)")
 
             if dirName:
@@ -2505,8 +2511,8 @@ This software is licensed to you under the terms of the GNU General Public Licen
     # Examples
     #***************************************************************************
     def search_examples(self):
-        #current_dir = os.getcwd() +"\examples" # windows only
-        current_dir = os.path.join(os.getcwd(),"examples")
+        current_dir_t = os.path.dirname(__file__)#os.getcwd() +"\examples" # windows only
+        current_dir   = os.path.join(current_dir_t,"examples")
         self.dir_examples = current_dir
         #sys.path.insert(1, current_dir+"\examples") # windows only
         sys.path.insert(1, os.path.join(current_dir,"examples"))
@@ -2526,7 +2532,7 @@ This software is licensed to you under the terms of the GNU General Public Licen
 
     def load_examples(self,name):
         # self.load_project_file(self.dir_examples+"\\"+name+".wolf") # windows only
-        self.load_project_file(os.path.join(self.dir_examples,name+".wolf"))
+        self.load_project_file(os.path.join(self.current_dir,"examples",name+".wolf"))
 
     #***************************************************************************
     #///////////////////////////////////////////////////////////////////////////
@@ -2657,7 +2663,7 @@ if __name__ == "__main__":
     # initial parameters
     log_txt    = "" # log file
     debug      = False
-    appname    = "PyWolf v2.0.0"
+    appname    = "PyWolf v2.0.2"
     cr = "Copyright (C) 2020 Tiago E. C. Magalhaes under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."
 
     # time
@@ -2669,7 +2675,9 @@ if __name__ == "__main__":
     log_txt+="\n["+str(dt_string)+"]\n"
 
     # directory
-    current_dir = os.getcwd()
+    current_dir = os.path.dirname(__file__)
+    if current_dir == "":
+        current_dir = os.getcwd()
 
     # screen info
     screen = app.primaryScreen()

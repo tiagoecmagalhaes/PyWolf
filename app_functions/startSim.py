@@ -24,14 +24,15 @@ import os
 import copy
 
 # NumPy
-from numpy import count_nonzero, sqrt, complex64, complex, load, copy
+from numpy import count_nonzero, sqrt, complex64, load, copy
 
 
 # Adding directories to import packages
-current_dir = os.getcwd()
-sys.path.append(os.path.join(current_dir,"plot_functions"))
-sys.path.append(os.path.join(current_dir,"propagation_functions"))
-sys.path.append(os.path.join(current_dir,"class"))
+current_dir = os.path.dirname(__file__)
+##print(current_dir)
+sys.path.append(os.path.join(current_dir,"..","plot_functions"))
+sys.path.append(os.path.join(current_dir,"..","propagation_functions"))
+sys.path.append(os.path.join(current_dir,"..","class"))
 
 # PyWolf packages
 from windowPlot_image import *

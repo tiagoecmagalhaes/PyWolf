@@ -1,0 +1,2 @@
+PyWolf v2.0.2
+•	Paths corrected when using Visual Studio

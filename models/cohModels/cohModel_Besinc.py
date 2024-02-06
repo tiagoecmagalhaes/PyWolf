@@ -15,7 +15,7 @@
 from pyopencl import *
 
 # NumPy
-from numpy import int32, double, float32, float, zeros, copy, sqrt, count_nonzero
+from numpy import int32, double, float32,  zeros, copy, sqrt, count_nonzero
 
 # Special Functions
 from scipy.special import jv

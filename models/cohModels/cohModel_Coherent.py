@@ -15,7 +15,7 @@
 from pyopencl import *
 
 # NumPy
-from numpy import int32, double, float32, float, zeros, count_nonzero, copy, sqrt
+from numpy import int32, double, float32, zeros, count_nonzero, copy, sqrt
 
 
 #===============================================================================
