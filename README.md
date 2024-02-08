@@ -14,6 +14,7 @@ Please see the following articless for more technical details:
 If you find this software useful for your research, please cite: 
 
 > Tiago E.C. Magalhães, José M. Rebordão, "PyWolf: A PyOpenCL implementation for simulating the propagation of partially coherent light", Computer Physics Communications, Volume 276, 2022, 108336. [DOI](https://doi.org/10.1016/j.cpc.2022.108336)
+
 > Tiago E.C. Magalhães, Daniela O. Santos, "A new version of PyWolf for the propagation of partially coherent light in media other than free space", Computer Physics Communications, Volume 294, 2024. [DOI](https://doi.org/10.1016/j.cpc.2023.108899)
 
 ## Support
