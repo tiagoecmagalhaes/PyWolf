@@ -20,7 +20,7 @@ pandas==2.1.3
 Pillow==10.1.0
 platformdirs==3.11.0
 psutil==5.9.6
-pyopencl @ file:///C:/Users/Tiago/Desktop/pyopencl-2021.2.9%2Bcl12-cp39-cp39-win_amd64.whl#sha256=2aa018385540e520519842b83e7a6f67c2c83fcff0e3687ebf761d07a4d027c1
+pyopencl @ pyopencl-2021.2.9%2Bcl12-cp39-cp39-win_amd64.whl
 pyparsing==3.1.1
 PyQt5==5.15.10
 PyQt5-Qt5==5.15.2
