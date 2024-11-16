@@ -12,29 +12,15 @@
 # Importing Packages
 #===============================================================================
 
-
-from numpy import zeros, complex64
-from pylab import *
-
-#import multiprocessing
-#import pyfftw
+from numpy import zeros, complex64, count_nonzero, empty_like#, fft
 
 from scipy import fft
 
-import copy
+import copy, time
 
-#import reikna.cluda as cluda
-#from reikna.fft import FFT as FFTcl
-
+import threading
 
 
-
-#from pylab import fftshift
-
-#from numpy import fft
-#from numpy import zeros
-#from numpy import complex64
-#from numpy.fft import fftshift
 #===============================================================================
 #///////////////////////////////////////////////////////////////////////////////
 #===============================================================================
@@ -46,244 +32,300 @@ import copy
 ################################################################################
 ################################################################################
 
+
 #==============================================================================
-# FFT OLD
+# THREADING FUNCTIONS
 #==============================================================================
 
-def func_fft2d_OLD(ui,data_in,FTinverse,zeropad=[]):
+
+def fft2d_slice(data_slice, result_slice):
+    """Perform 2D FFT on a single slice of the 3D matrix."""
+    for i in range(data_slice.shape[0]):
+        result_slice[i] = fft.fftshift(fft.fft2(fft.ifftshift(data_slice[i])))
+
+
+def perform_fft_3d(matrix, N_threads):
+    """Perform 2D FFT on each 2D slice of a 3D complex matrix using threads."""
+    threads = []
+    results = empty_like(matrix, dtype=complex64)
+
+    NN = int(matrix.shape[0]/N_threads)
+
+    for i in range(N_threads):
+        thread = threading.Thread(target=fft2d_slice, args=(matrix[i*NN:(i+1)*NN], results[i*NN:(i+1)*NN]))
+        threads.append(thread)
+        thread.start()
+
+    # Wait for all threads to finish
+    for thread in threads:
+        thread.join()
+
+    return results
+
+
+def ifft2d_slice(data_slice, result_slice):
+    """Perform 2D FFT on a single slice of the 3D matrix."""
+    for i in range(data_slice.shape[0]):
+        result_slice[i] = fft.fftshift(fft.ifft2(fft.ifftshift(data_slice[i])))
+
+
+def perform_ifft_3d(matrix, N_threads):
+    """Perform 2D FFT on each 2D slice of a 3D complex matrix using threads."""
+    threads = []
+    results = empty_like(matrix, dtype=complex64)
+
+    NN = int(matrix.shape[0]/N_threads)
+
+    for i in range(N_threads):
+
+        thread = threading.Thread(target=ifft2d_slice, args=(matrix[i*NN:(i+1)*NN], results[i*NN:(i+1)*NN]))
+        threads.append(thread)
+        thread.start()
+
+    # Wait for all threads to finish
+    for thread in threads:
+        thread.join()
+
+    return results
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+
+#==============================================================================
+# THREADING FUNCTIONS - zero padding
+#==============================================================================
+
+
+def fft2d_slice_zp(data_slice, result_slice, zeropad):
+    """Perform 2D FFT on a single slice of the 3D matrix."""
+    for i in range(data_slice.shape[0]):
+        if count_nonzero(data_slice.real)!=0:
+            N = data_slice.shape[0]
+
+            Np = int(zeropad[1])
+
+            M1 = int(Np/2-N/2)
+            M2 = int(Np/2+N/2)
+
+            new_data = zeros((Np,Np), dtype=complex64)
+
+            new_data[M1:M2,M1:M2] = data_slice[i]
+
+            result_slice[i] = fft.ffftshift(fft.fft2(fft.ifftshift(new_data)))[M1:M2,M1:M2]
+
+def perform_fft_3d_zp(matrix, N_threads, zeropad):
+    """Perform 2D FFT on each 2D slice of a 3D complex matrix using threads."""
+    threads = []
+    results = empty_like(matrix, dtype=complex64)
+
+    NN = int(matrix.shape[0]/N_threads)
+
+    for i in range(N_threads):
+        thread = threading.Thread(target=fft2d_slice_zp, args=(matrix[i*NN:(i+1)*NN], results[i*NN:(i+1)*NN], zeropad))
+        threads.append(thread)
+        thread.start()
+
+    # Wait for all threads to finish
+    for thread in threads:
+        thread.join()
+
+    return results
+
+
+def ifft2d_slice_zp(data_slice, result_slice, zeropad):
+    """Perform 2D FFT on a single slice of the 3D matrix."""
+    for i in range(data_slice.shape[0]):
+        if count_nonzero(data_slice.real)!=0:
+
+            N = data_slice.shape[0]
+
+            Np = int(zeropad[1])
+
+            M1 = int(Np/2-N/2)
+            M2 = int(Np/2+N/2)
+
+            new_data = zeros((Np,Np), dtype=complex64)
+
+            new_data[M1:M2,M1:M2] = data_slice[i]
+
+            result_slice[i] = fft.fftshift(fft.ifft2(fft.ifftshift(new_data)))[M1:M2,M1:M2]
+
+
+def perform_ifft_3d_zp(matrix, N_threads, zeropad):
+    """Perform 2D FFT on each 2D slice of a 3D complex matrix using threads."""
+    threads = []
+    results = empty_like(matrix, dtype=complex64)
+
+    NN = int(matrix.shape[0]/N_threads)
+
+    for i in range(N_threads):
+
+        thread = threading.Thread(target=ifft2d_slice_zp, args=(matrix[i*NN:(i+1)*NN], results[i*NN:(i+1)*NN], zeropad))
+        threads.append(thread)
+        thread.start()
+
+    # Wait for all threads to finish
+    for thread in threads:
+        thread.join()
+
+    return results
+#===============================================================================
+#///////////////////////////////////////////////////////////////////////////////
+#===============================================================================
+
+
+#===============================================================================
+# FFT
+#===============================================================================
+
+def func_fft2d(ui, data_in, useThreads, FTinverse,zeropad=[]):
     "Returns the 2D Fourier Transform"
-    if FTinverse:
-        if zeropad[0]:
 
-            N = data_in.shape[0]
+    N = data_in.shape[0]
 
-            Np = int(zeropad[1])
+    #-----------------------------------------------------------
+    # USING THREADS
+    #-----------------------------------------------------------
+    if useThreads[0]:
+        ui.update_outputText("Multithreading will be used.")
+        ui.update_outputText("___")
 
-            M1 = int(Np/2-N/2)
-            M2 = int(Np/2+N/2)
+        if FTinverse:
 
-            new_data = zeros((Np,Np), dtype=complex64)
-            out_data = pyfftw.empty_aligned((Np,Np), dtype='complex64')
+            if zeropad[0]:
 
-            new_data[M1:M2,M1:M2] = data_in
+                for i in range(0, data_in.shape[0]):
+                    ui.update_outputTextSameLine(str(round(i*100./N,1))+"% concluded ("+str(i)+"/"+str(N-1)+").")
 
-            #new_fft = ifftshift(ifft2(ifftshift(new_data)))
-            new_fft = pyfftw.FFTW(fft.ifftshift(new_data), out_data,axes=(0,1),direction='FFTW_BACKWARD',threads=multiprocessing.cpu_count())
-            return fft.ifftshift(out_data[M1:M2,M1:M2])
+                    new_fft = perform_ifft_3d_zp(data_in[i], useThreads[1], zeropad)
+
+                    data_in[i] =  new_fft
+
+                return data_in
+
+            else:
+
+                for i in range(0, data_in.shape[0]):
+                    ui.update_outputTextSameLine(str(round(i*100./N,1))+"% concluded ("+str(i)+"/"+str(N-1)+").")
+
+                    data_in[i] = perform_ifft_3d(data_in[i], useThreads[1])
+
+                return data_in
 
         else:
-            N = data_in.shape[0]
-            out_data = pyfftw.empty_aligned((N,N), dtype='complex64')
-            new_fft = pyfftw.FFTW(fft.ifftshift(data_in), out_data,axes=(0,1),direction='FFTW_BACKWARD',threads=multiprocessing.cpu_count())
-            return fft.ifftshift(out_data)
+
+            if zeropad[0]:
+
+                for i in range(0, data_in.shape[0]):
+                    ui.update_outputTextSameLine(str(round(i*100./N,1))+"% concluded ("+str(i)+"/"+str(N-1)+").")
+
+                    new_fft = perform_fft_3d_zp(data_in[i], useThreads[1], zeropad)
+
+                    data_in[i] =  new_fft
+
+                return data_in
+
+            else:
+
+                for i in range(0, data_in.shape[0]):
+                    ui.update_outputTextSameLine(str(round(i*100./N,1))+"% concluded ("+str(i)+"/"+str(N-1)+").")
+
+                    data_in[i] = perform_fft_3d(data_in[i], useThreads[1])
+
+            return data_in
+    #-----------------------------------------------------------
+    #///////////////////////////////////////////////////////////
+    #-----------------------------------------------------------
 
 
+    #-----------------------------------------------------------
+    # WITHOUT THREADS
+    #-----------------------------------------------------------
     else:
-        if zeropad[0]:
+        ui.update_outputText("Multithreading will NOT be used...")
 
-            N = data_in.shape[0]
+        if FTinverse:
 
-            Np = int(zeropad[1])
+            if zeropad[0]:
 
-            M1 = int(Np/2-N/2)
-            M2 = int(Np/2+N/2)
+                ui.update_outputText("Zero padding will be used.")
+                ui.update_outputText("___")
 
-            new_data = zeros((Np,Np), dtype=complex64)
-            out_data = pyfftw.empty_aligned((Np,Np), dtype='complex64')
+                for i in range(0, data_in.shape[0]):
+                    ui.update_outputTextSameLine(str(round(i*100./N,1))+"% concluded ("+str(i)+"/"+str(N-1)+").")
+                    for j in range(0, data_in.shape[1]):
 
-            new_data[M1:M2,M1:M2] = data_in
-            #new_fft = fftshift(fft2(fftshift(new_data)))
-            new_fft = pyfftw.FFTW(fft.fftshift(new_data), out_data,axes=(0,1),direction='FFTW_FORWARD',threads=multiprocessing.cpu_count())
-            return fft.fftshift(out_data[M1:M2,M1:M2])
+                        if count_nonzero(data_in[i][j].real)!=0:
 
+                            N = data_in[i,j].shape[0]
+
+                            Np = int(zeropad[1])
+
+                            M1 = int(Np/2-N/2)
+                            M2 = int(Np/2+N/2)
+
+                            new_data = zeros((Np,Np), dtype=complex64)
+
+
+                            new_data[M1:M2,M1:M2] = data_in[i][j]
+
+                            new_fft = fft.ifftshift(fft.ifft2(fft.ifftshift(new_data)))
+                            data_in[i][j] = new_fft[M1:M2,M1:M2]
+
+                return data_in
+
+            else:
+                ui.update_outputText("___")
+                for i in range(0, data_in.shape[0]):
+                    ui.update_outputTextSameLine(str(round(i*100./N,1))+"% concluded ("+str(i)+"/"+str(N-1)+").")
+                    for j in range(0, data_in.shape[1]):
+                        if count_nonzero(data_in[i][j].real)!=0:
+                            data_in[i][j] = fft.ifftshift(fft.ifft2(fft.ifftshift(data_in[i][j])))
+
+                return data_in
         else:
-            N = data_in.shape[0]
-            out_data = pyfftw.empty_aligned((N,N), dtype='complex64')
-            new_fft = pyfftw.FFTW(fft.fftshift(data_in),out_data,axes=(0,1),direction='FFTW_FORWARD',threads=multiprocessing.cpu_count())
-            return fft.fftshift(out_data)
+            if zeropad[0]:
+                ui.update_outputText("Zero padding will be used.")
+                ui.update_outputText("___")
 
-#------------------------------------------------------------------------------
-#//////////////////////////////////////////////////////////////////////////////
-#------------------------------------------------------------------------------
+                for i in range(0, data_in.shape[0]):
+                    ui.update_outputTextSameLine(str(round(i*100./N,1))+"% concluded ("+str(i)+"/"+str(N-1)+").")
+                    for j in range(0, data_in.shape[1]):
 
+                        if count_nonzero(data_in[i][j].real)!=0:
+                            N = data_in.shape[0]
 
+                            Np = int(zeropad[1])
 
-#==============================================================================
-# FFT ORIGINAL
-#==============================================================================
+                            M1 = int(Np/2-N/2)
+                            M2 = int(Np/2+N/2)
 
-def func_fft2d(ui,data_in,FTinverse,zeropad=[]):
-    "Returns the 2D Fourier Transform"
-    if FTinverse:
-        if zeropad[0]:
+                            new_data = zeros((Np,Np), dtype=complex64)
 
-            N = data_in.shape[0]
+                            new_data[M1:M2,M1:M2] = data_in[i][j]
 
-            Np = int(zeropad[1])
+                            new_fft = fft.fftshift(fft.fft2(fft.fftshift(new_data)))
 
-            M1 = int(Np/2-N/2)
-            M2 = int(Np/2+N/2)
 
-            new_data = zeros((Np,Np), dtype=complex64)
+                            data_in[i][j] = new_fft[M1:M2,M1:M2]
 
+                return data_in
 
-            new_data[M1:M2,M1:M2] = data_in
+            else:
+                ui.update_outputText("___")
+                for i in range(0, data_in.shape[0]):
+                    ui.update_outputTextSameLine(str(round(i*100./N,1))+"% concluded ("+str(i)+"/"+str(N-1)+").")
+                    for j in range(0, data_in.shape[1]):
 
-            new_fft = ifftshift(ifft2(ifftshift(new_data)))
-            return new_fft[M1:M2,M1:M2]
+                        if count_nonzero(data_in[i][j].real)!=0:
+                            data_in[i][j] = fft.fftshift(fft.fft2(fft.ifftshift(data_in[i][j])))
 
-        else:
-            return fftshift(ifft2(ifftshift(data_in)))
-
-
-    else:
-        if zeropad[0]:
-
-            N = data_in.shape[0]
-
-            Np = int(zeropad[1])
-
-            M1 = int(Np/2-N/2)
-            M2 = int(Np/2+N/2)
-
-            new_data = zeros((Np,Np), dtype=complex64)
-            new_data[M1:M2,M1:M2] = data_in
-
-            new_fft = fftshift(fft2(fftshift(new_data)))
-            return new_fft[M1:M2,M1:M2]
-
-        else:
-            return fftshift(fft2(ifftshift(data_in)))
-
-
-
-
-
-#------------------------------------------------------------------------------
-#//////////////////////////////////////////////////////////////////////////////
-#------------------------------------------------------------------------------
-
-
-#==============================================================================
-# FFT MOD
-#==============================================================================
-
-def func_fft2d_as(ui,data_in,FTinverse,zeropad=[],api=0,thr=0,FFT=0,a_dev=0):
-    "Returns the 2D Fourier Transform"
-    if FTinverse:
-        if zeropad[0]:
-
-            N = data_in.shape[0]
-
-            Np = int(zeropad[1])
-
-            M1 = int(Np/2-N/2)
-            M2 = int(Np/2+N/2)
-
-            new_data = zeros((Np,Np), dtype=complex64)
-
-
-            new_data[M1:M2,M1:M2] = data_in
-
-            a = ifftshift(new_data)
-            dims = a.shape
-
-            # results to device
-            res_dev = thr.array(dims, dtype=complex64)
-
-            # data do device
-            a_dev = thr.to_device(a)
-
-            # performing FFT
-            #FFT = FFTcl(a_dev).compile(thr)
-
-            # copying results to res_dev
-            FFT(res_dev, a_dev,inverse=True)
-
-
-            res_cl = res_dev.get()
-
-            new_fft = ifftshift(res_cl)
-
-            return new_fft[M1:M2,M1:M2]
-
-        else:
-
-            a = ifftshift(data_in)
-            dims = a.shape
-
-            # results to device
-            res_dev = thr.array(dims, dtype=complex64)
-
-            # data do device
-            a_dev = thr.to_device(a)
-
-            # performing FFT
-            #FFT = FFTcl(a_dev).compile(thr)
-
-            # copying results to res_dev
-            FFT(res_dev, a_dev,inverse=True)
-            res_cl = res_dev.get()
-
-            new_fft = ifftshift(res_cl)
-
-            return new_fft
-
-    else:
-        if zeropad[0]:
-
-            N = data_in.shape[0]
-
-            Np = int(zeropad[1])
-
-            M1 = int(Np/2-N/2)
-            M2 = int(Np/2+N/2)
-
-            new_data = zeros((Np,Np), dtype=complex64)
-            new_data[M1:M2,M1:M2] = data_in
-
-
-            a = fftshift(new_data)
-            dims = a.shape
-
-            # results to device
-            res_dev = thr.array(dims, dtype=complex64)
-
-            # data do device
-            a_dev = thr.to_device(a)
-
-            # performing FFT
-            #FFT = FFTcl(a_dev).compile(thr)
-
-            # copying results to res_dev
-            FFT(res_dev, a_dev)
-            res_cl = res_dev.get()
-
-            new_fft = fftshift(res_cl)
-
-            return new_fft[M1:M2,M1:M2]
-
-        else:
-
-            a = fftshift(data_in)
-            dims = a.shape
-
-            # results to device
-            res_dev = thr.array(dims, dtype=complex64)
-
-            # data do device
-            a_dev = thr.to_device(a)
-
-            # performing FFT
-            #FFT = FFTcl(a_dev).compile(thr)
-
-            # copying results to res_dev
-            FFT(res_dev, a_dev)
-            res_cl = res_dev.get()
-
-            new_fft = fftshift(res_cl)
-
-            return new_fft
+                return data_in
+    #-----------------------------------------------------------
+    #///////////////////////////////////////////////////////////
+    #-----------------------------------------------------------
 
 #------------------------------------------------------------------------------
 #//////////////////////////////////////////////////////////////////////////////

@@ -1,13 +1,12 @@
 """
-PyWolf version 2.0.2
+PyWolf version 3.0.0
 
 *
 Software to perform simulations of the propagation of partially coherent light
 using parallel computing devices through PyOpenCL
 *
 
-Tiago E. C. Magalhaes
-2023
+2024
 """
 
 
@@ -34,6 +33,9 @@ from matplotlib import rc
 
 # PyOpenCL
 import pyopencl
+
+# threading
+import threading
 
 # OS
 import os
@@ -86,7 +88,7 @@ class Ui_MainWindow(QMainWindow):
         # parameters
         #=======================================================================
         # version
-        self.version = "PyWolf v2.0.2"
+        self.version = "PyWolf v3.0.0"
 
         # simulation successful
         self.sim = False
@@ -121,6 +123,7 @@ class Ui_MainWindow(QMainWindow):
         #=======================================================================
         #///////////////////////////////////////////////////////////////////////
         #=======================================================================
+
 
         #=======================================================================
         # Main Window
@@ -683,6 +686,8 @@ class Ui_MainWindow(QMainWindow):
         #-----------------------------------------------------------------------
         # Spin Box
         #-----------------------------------------------------------------------
+
+        # Number of Planes
         self.spinBox_numPlanes = QtWidgets.QSpinBox(self.scrollAreaWidgetContents_numPlanes)
         self.spinBox_numPlanes.setObjectName("spinBox_numPlanes")
         self.spinBox_numPlanes.setFont(font_normalLabel)
@@ -691,6 +696,17 @@ class Ui_MainWindow(QMainWindow):
         self.spinBox_numPlanes.setMaximumWidth(int(size_spinBox(self)))
         self.gridLayout_7.addWidget(self.spinBox_numPlanes, 64, 1, 1, 1)
         self.spinBox_numPlanes.valueChanged.connect(self.update_numPlanes)
+
+
+        # Number of Threads
+        self.spinBox_numThreads = QtWidgets.QSpinBox(self.scrollAreaWidgetContents_FFT)
+        self.spinBox_numThreads.setObjectName("spinBox_numPlanes")
+        self.spinBox_numThreads.setFont(font_normalLabel)
+        self.spinBox_numThreads.setMinimum(1)
+        self.spinBox_numThreads.setMaximum(psutil.cpu_count())
+        self.spinBox_numThreads.setMaximumWidth(int(size_spinBox(self)))
+        self.gridLayout_FFT.addWidget(self.spinBox_numThreads, 1, 1, 1, 1)
+        #self.spinBox_numPlanes.valueChanged.connect(self.update_numPlanes)
         #_______________________________________________________________________
 
 
@@ -912,12 +928,20 @@ class Ui_MainWindow(QMainWindow):
         self.gridLayout_7.addWidget(self.label_N, 15, 0, 1, 1)
 
         # Label NZ
-        self.label_NZ = QtWidgets.QLabel(self.scrollAreaWidgetContents_numPlanes)
+        self.label_NZ = QtWidgets.QLabel(self.scrollAreaWidgetContents_FFT)
         self.label_NZ.setFont(font_normalLabel)
         self.label_NZ.setObjectName("label_NZ")
-        self.gridLayout_FFT.addWidget(self.label_NZ, 1, 0, 1, 1)
+        self.gridLayout_FFT.addWidget(self.label_NZ, 4, 0, 1, 1)
         self.label_NZ.setText("Total matrix size (>N): ")
         self.label_NZ.setVisible(False)
+
+        # Label Number of Threads
+        self.label_numThreads = QtWidgets.QLabel(self.scrollAreaWidgetContents_FFT)
+        self.label_numThreads.setPalette(palette_parSection)
+        self.label_numThreads.setFont(font_normalLabel)
+        self.label_numThreads.setObjectName("label_numThreads")
+        self.label_numThreads.setText("Number of Threads: ")
+        self.gridLayout_FFT.addWidget(self.label_numThreads, 1, 0, 1, 1)
 
         # label Propagation Quantities (title)
         self.label_PropagationQuantities = QtWidgets.QLabel(self.scrollAreaWidgetContents_numPlanes)
@@ -1343,7 +1367,7 @@ class Ui_MainWindow(QMainWindow):
         self.lineEdit_NZ.setFont(font_normalLabel)
         self.lineEdit_NZ.setObjectName("lineEdit_NZ")
         self.lineEdit_NZ.setStyleSheet('background: '+colortxt_textEdit)
-        self.gridLayout_FFT.addWidget(self.lineEdit_NZ, 1, 1, 1, 1)
+        self.gridLayout_FFT.addWidget(self.lineEdit_NZ, 4, 1, 1, 1)
         self.lineEdit_NZ.setMaximumWidth(int(size_entries(self)))
         self.lineEdit_NZ.setText("256")
         self.lineEdit_NZ.setVisible(False)
@@ -1555,11 +1579,20 @@ class Ui_MainWindow(QMainWindow):
         # setting checked by default
         self.checkBox_pyopencl.setChecked(True)
 
+        # checkbox use fft
+        self.checkBox_useThread = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_FFT)
+        self.checkBox_useThread.setFont(font_normalLabel)
+        self.checkBox_useThread.setObjectName("checkBox_FFT")
+        self.gridLayout_FFT.addWidget(self.checkBox_useThread, 0, 0, 1, 1)
+        self.checkBox_useThread.setChecked(False)
+        self.checkBox_useThread.setText("Use Multithreading?")
+        ##self.checkBox_useFFT.stateChanged.connect(self.zeroPadingOptions)
+
         # checkbox fft zero padding
         self.checkBox_FFT = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_FFT)
         self.checkBox_FFT.setFont(font_normalLabel)
         self.checkBox_FFT.setObjectName("checkBox_FFT")
-        self.gridLayout_FFT.addWidget(self.checkBox_FFT, 0, 0, 1, 1)
+        self.gridLayout_FFT.addWidget(self.checkBox_FFT, 2, 0, 1, 1)
         self.checkBox_FFT.setChecked(False)
         self.checkBox_FFT.setText("Use FFT Zero Padding?")
         self.checkBox_FFT.stateChanged.connect(self.zeroPadingOptions)
@@ -2303,7 +2336,7 @@ class Ui_MainWindow(QMainWindow):
 
 
     def on_about(self):
-        msg = """ PyWolf version 1.0.1
+        msg = """ PyWolf version 3.0.0
 
 This software is licensed to you under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -2663,7 +2696,7 @@ if __name__ == "__main__":
     # initial parameters
     log_txt    = "" # log file
     debug      = False
-    appname    = "PyWolf v2.0.2"
+    appname    = "PyWolf v3.0.0"
     cr = "Copyright (C) 2020 Tiago E. C. Magalhaes under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."
 
     # time

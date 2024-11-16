@@ -45,7 +45,7 @@ def func_testPars(ui):
     pyopencl_list = [ui.checkBox_pyopencl.isChecked(),ui.comboBox_platform.currentIndex(),ui.comboBox_device.currentIndex()]
     save_list     = [ui.checkBox_save.isChecked(),ui.saveDirName,ui.checkBox_saveSourceCSDA.isChecked(),ui.checkBox_savePropCSDA.isChecked()]
     debug_list    = [ui.checkBox_debug.isChecked()]
-    matrix_list   = [ui.lineEdit_N.text(),ui.checkBox_FFT.isChecked(), ui.lineEdit_NZ.text()]
+    matrix_list   = [ui.lineEdit_N.text(),ui.checkBox_FFT.isChecked(), ui.lineEdit_NZ.text(), ui.checkBox_useThread.isChecked(), int(ui.spinBox_numThreads.text())]
     ##schedule      = [ui.checkBox_schedule.isChecked(),ui.dateTimeEdit.text()]
     options_list  = [nameTime_list, pyopencl_list,save_list,debug_list,matrix_list]
 
@@ -497,7 +497,6 @@ def func_testPars(ui):
                 return([False,all_parameters_list])
 
     #___________________________________________________________________________
-
 
 
     # OK

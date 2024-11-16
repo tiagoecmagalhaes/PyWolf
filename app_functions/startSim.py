@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # Name:        StartSim
 # Purpose:     PyWolf function to Start the Simulation of Partially Coherent Light Propagation
-# Version:     2.0.0
+# Version:     3.0.0
 #
 # Author:      Tiago E. C. Magalhaes
 #
@@ -116,8 +116,11 @@ def func_startSim(ui,all_parameters):
     N     = int(all_parameters[0][4][0])
     NZ    = int(all_parameters[0][4][2])
     M     = int(N/2)
+    useThread         = int(all_parameters[0][4][3])
+    numThreads        = int(all_parameters[0][4][4])
     useFFTzeroPadding = int(all_parameters[0][4][1])
-    FFTpad_list = [useFFTzeroPadding, NZ]
+    FFTpad_list       = [useFFTzeroPadding, NZ]
+    useThreads_list   = [useThread, numThreads]
     NS = None
     if useFFTzeroPadding:
         NS = NZ
@@ -614,6 +617,8 @@ def func_startSim(ui,all_parameters):
                 #_______________________________________________________________
 
 
+
+
                 #---------------------------------------------------------------
                 # Q functions
                 #---------------------------------------------------------------
@@ -636,15 +641,27 @@ def func_startSim(ui,all_parameters):
                 #---------------------------------------------------------------
                 # 1st FFTs
                 #---------------------------------------------------------------
+
+
                 ui.update_outputText("Performing 1st 2D Fourier transforms...")
-                ui.update_outputText("___")
-                for i1 in range(0,N):
-                    ui.update_outputTextSameLine(str(round(i1*100./N,1))+"% concluded ("+str(i1)+"/"+str(N-1)+").")
-                    for j1 in range(0,N):
-                        if count_nonzero(ui.CSDA_prop.matrix[i1,j1].real)==0:
-                            pass
-                        else:
-                            ui.CSDA_prop.matrix[i1,j1] = func_fft2d(ui,ui.CSDA_prop.matrix[i1,j1],False,FFTpad_list)
+                ##ui.update_outputText("___")
+
+                if count_nonzero(ui.CSDA_prop.matrix)==0:
+                    pass
+                else:
+                    ui.CSDA_prop.matrix = func_fft2d(ui,ui.CSDA_prop.matrix, useThreads_list, False, FFTpad_list)
+
+                '''
+                for i in range(0, N):
+                    if count_nonzero(ui.CSDA_prop.matrix[i].real)==0:
+                        pass
+                    else:
+
+                        ui.update_outputTextSameLine(str(round(i*100./N,1))+"% concluded ("+str(i)+"/"+str(N-1)+").")
+
+                        ui.CSDA_prop.matrix[i] = func_fft2d(ui,ui.CSDA_prop.matrix[i],False,FFTpad_list)
+                '''
+
                 ui.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
                 ui.update_outputText("2D Fourier transforms completed!")
                 #_______________________________________________________________
@@ -665,13 +682,13 @@ def func_startSim(ui,all_parameters):
 
                 ui.update_outputText("Performing 2nd 2D Fourier transforms...")
                 ui.update_outputText("___")
-                for i1 in range(0,N):
-                    ui.update_outputTextSameLine(str(round(i1*100./N,1))+"% concluded ("+str(i1)+"/"+str(N-1)+").")
-                    for j1 in range(0,N):
-                        if count_nonzero(ui.CSDA_prop.matrix[i1,j1])==0:
-                            pass
-                        else:
-                            ui.CSDA_prop.matrix[i1,j1]=func_fft2d(ui,ui.CSDA_prop.matrix[i1,j1],True,FFTpad_list)
+
+
+                if count_nonzero(ui.CSDA_prop.matrix)==0:
+                    pass
+                else:
+                    ui.CSDA_prop.matrix = func_fft2d(ui,ui.CSDA_prop.matrix,useThreads_list, True, FFTpad_list)
+
                 ui.update_outputTextSameLine("\r"+str(round(100.0,1))+"% concluded")
                 ui.update_outputText("2D Fourier transforms completed!")
 
